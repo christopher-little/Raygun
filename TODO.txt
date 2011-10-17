@@ -1,0 +1,15 @@
+TODO
+
+-Phong dielectric, transmittance per metre
+-Adaptive sub sampling
+-Hemisphere sampling (better than current crap implementation)
+-soft shadows
+-diffuse reflection
+-GUI interface for loading scenes
+-Intersect Triangles later
+-Implement light emitting objects
+-Area lights
+-spotlights
+-directional infinite lights
+-octree bounding volumes, then kd-tree
+-sub-surface scattering

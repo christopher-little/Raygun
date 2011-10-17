@@ -30,14 +30,12 @@ RayTracer::RayTracer()
 
 	
 	// Pull in an MDL scene file
-	char filename[256];
-	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\basic_test.mdla");
-	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\cornellbox.mdla");
-	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\cornellboxRGB.mdla");
-	sprintf(filename,"C:\\Users\\Chris\\Work\\Projects\\Raygun\\test_scenes\\basic_spheres.mdla");
-	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\basic_spheres_angled.mdla");
 	scene = new Scene();
-	cam = scene->loadMDL(filename);
+	//cam = scene->loadMDL("..\\test_scenes\\basic_test.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\cornellbox.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
+	cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
 
 
 	// Add some lights to see what happens (literally!)

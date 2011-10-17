@@ -1,0 +1,21 @@
+-------- Raygun ---------
+
+Currently, Raygun is a basic toy ray tracer project.
+
+Features:
+-Win32 window (controls are non-existent at the moment)
+-loads MDL files (i.e. Cornell box scene)
+-Meshes (quads, triangles coming soon), spheres
+-Point lights
+-Direct diffuse, specular lighting
+-Specular reflection
+-Transmission/refraction (only for spheres at the moment)
+
+Planned features:
+-Diffuse reflection
+-Area lights
+-Transformation (rotation, etc.)
+-Depth of field
+-Motion blur
+-BVH (i.e. octrees)
+-GUI (scene and object loading, write image to jpg/png, etc)

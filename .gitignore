@@ -26,9 +26,21 @@
 *.sql
 *.sqlite
 
+# VS2010 files #
+################
+*.*sdf
+*.user
+ipch
+*Debug
+*Release
+
 # OS generated files #
 ######################
 .DS_Store*
 ehthumbs.db
 Icon?
 Thumbs.db
+
+# Project #
+###########
+test_scenes

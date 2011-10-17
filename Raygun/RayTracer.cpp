@@ -34,7 +34,7 @@ RayTracer::RayTracer()
 	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\basic_test.mdla");
 	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\cornellbox.mdla");
 	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\cornellboxRGB.mdla");
-	sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\basic_spheres.mdla");
+	sprintf(filename,"C:\\Users\\Chris\\Work\\Projects\\Raygun\\test_scenes\\basic_spheres.mdla");
 	//sprintf(filename,"C:\\Users\\Chris\\Dropbox\\RayTracerBasic\\basic_spheres_angled.mdla");
 	scene = new Scene();
 	cam = scene->loadMDL(filename);

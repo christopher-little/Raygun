@@ -84,6 +84,7 @@
     <ClCompile Include="MDL\mdl_chunks.cpp" />
     <ClCompile Include="MDL\mdl_common.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sphere.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="MDL\mdl.H" />
     <ClInclude Include="MDL\mdlScan.H" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="Scene.h" />

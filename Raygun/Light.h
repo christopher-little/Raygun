@@ -3,20 +3,24 @@
 #ifndef LIGHT
 #define LIGHT
 
+#include <vector>
+
+using namespace std;
+
 class Light
 {
 public:
-	Light(Vector &p, Colour &c) : _p(p), _c(c)
-	{
-
-	}
+	Light(){}
 	~Light(void) {}
 
-	inline Vector p() const { return _p; }
-	inline Colour c() const { return _c; }
 
-private:
-	Vector _p;	// Point light position
+	// Get the light colour value
+	Colour c() { return _c; }
+
+	// Return a bunch of points on the light surface for the ray tracer to sample
+	virtual vector<Vector> getSamplePoints(int sampleCount) = 0;
+
+protected:
 	Colour _c;	// Light emittance colour
 };
 

@@ -6,6 +6,8 @@
 #include "Light.h"
 #include "Sphere.h"
 
+#include "PointLight.h"
+
 // epsilon - allowable margin of error ( 0.9999 == 1.0 )
 const float eps = 0.0001f;
 // value of pi
@@ -31,7 +33,6 @@ RayTracer::RayTracer()
 	
 	// Pull in an MDL scene file
 	scene = new Scene();
-	//cam = scene->loadMDL("..\\test_scenes\\basic_test.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\cornellbox.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
 	cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
@@ -41,9 +42,7 @@ RayTracer::RayTracer()
 	// Add some lights to see what happens (literally!)
 	//Light *testLight = new Light(Vector(278.0, 525.0, 270.0), Colour(1.0, 1.0, 1.0));
 	//Light *testLight = new Light(Vector(450.0, 200.0, 100.0), Colour(1.0, 1.0, 1.0));
-	Light *testLight = new Light(Vector(10.0, 40.0, -10.0), Colour(1.0, 1.0, 1.0));
-	//Light *testLight = new Light(Vector(0.0, 25.0, 50.0), Colour(1.0, 1.0, 1.0));
-	scene->addLight(testLight);
+	//scene->addLight(testLight);
 }
 
 RayTracer::~RayTracer()
@@ -152,43 +151,57 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	Colour ambient, diffuseIllum, specularIllum; // Direct illumination (Ambient, diffuse and specular)
 	Colour specularRefl, specularRefr; // Reflection (diffuse, specular)
 	bool shadow;
+
+	// Sample the light sources
+	Colour sampleDiffuseIllum, sampleSpecularIllum;
 	for(int i=0; i<scene->nLights(); i++)
 	{
 		Light *light = scene->getLight(i);
+
+		// Grab the ambient component
 		ambient = ambient + light->c();
 
-		// Calculate light direction and check for shadows
-		Vector l = light->p() - nearest_p;
-		// Bail out if normal is pointing away from light
-		if(nearest_n.dot(l) < 0.0f)
-			continue;
-		// Cast shadow ray
-		shadow = false;
-		// Check for intersections between eps (surface) and 1.0 (distance to light source), in which case something is blocking the light
-		if(rtCastShadows)
+		// Reset the sample colour
+		sampleDiffuseIllum = Colour();
+		sampleSpecularIllum = Colour();
+
+		// Get a list of light sample points
+		vector<Vector> lightPoints = light->getSamplePoints(1);
+		for(vector<Vector>::iterator li=lightPoints.begin(); li!=lightPoints.end(); li++)
 		{
-			if(sampleTrace(Ray(nearest_p, l), eps, 1.0))
+			// Get the light direction
+			Vector l = *li - nearest_p;
+			// Bail out if the surface normal points away from light
+			if(nearest_n.dot(l) < eps)
+				continue;
+
+			// Check for shadows (light direction ray occluded)
+			shadow = false;
+			if(rtCastShadows)
 			{
-				shadow = true;
+				if(sampleTrace(Ray(nearest_p, l), eps, 1.0))
+					shadow = true;
+			}
+
+			// Perform diffuse and specular shading when not in shadow
+			if(!shadow)
+			{
+				l = l.normalized();
+				// Only compute illumination if diffuse or specular components are valid/non-zero)
+				if(mat->d().visible())
+				{
+					sampleDiffuseIllum = sampleDiffuseIllum + light->c()*nearest_n.dot(l);
+				}
+				if(mat->s().visible())
+				{
+					Vector h = (ray.d()*-1.0 + l).normalized();
+					sampleSpecularIllum  = sampleSpecularIllum + light->c() * pow(h.dot(nearest_n), mat->p());
+				}
 			}
 		}
 
-		// When surface is not in shadow compute diffuse and specular lighting
-		if(!shadow)
-		{
-			l = l.normalized();
-			// Only compute illumination if diffuse or specular components are valid/non-zero)
-			if(mat->d().visible())
-			{
-				diffuseIllum = diffuseIllum + light->c()*nearest_n.dot(l);
-			}
-			if(mat->s().visible())
-			{
-				Vector h = (ray.d()*-1.0 + l).normalized();
-				specularIllum  = specularIllum + light->c() * pow(h.dot(nearest_n), mat->p());
-			}
-
-		}
+		diffuseIllum = diffuseIllum + sampleDiffuseIllum/lightPoints.size();
+		specularIllum = specularIllum + sampleSpecularIllum/lightPoints.size();
 	}
 	// Clamp the resulting illumination values
 	ambient = ambient.clamp();

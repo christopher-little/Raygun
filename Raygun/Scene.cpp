@@ -4,6 +4,8 @@
 #include "TRACE.h"
 
 #include "Sphere.h"
+#include "Light.h"
+#include "PointLight.h"
 #include "Mesh.h"
 #include "Material.h"
 
@@ -124,6 +126,20 @@ Camera* Scene::loadMDL(char *filename)
 
 			inp.EndChunk();
 		}
+		// Find a point light
+		else if(k == mdlKey("pntSrc"))
+		{
+			// Skip light name
+			inp.ReadString();
+
+			Colour c = mdlRetrieveColour(&inp);
+			x = inp.ReadFloat();
+			y = inp.ReadFloat();
+			z = inp.ReadFloat();
+
+			PointLight *light = new PointLight(Vector(x,y,z), c);
+			lightList.push_back(light);
+		}
 		// Find a shared vertex mesh (i.e. ply) chunk
 		else if(k == mdlKey("msh"))
 		{
@@ -188,7 +204,7 @@ Camera* Scene::loadMDL(char *filename)
 				inp.EndChunk();
 			}
 		}
-		// Collect a sphere object
+		// Find a sphere object
 		else if(k == mdlKey("sphr"))
 		{
 			// Skip sphere name

@@ -7,8 +7,6 @@
 // class RayTracer
 //
 // This object manages all aspects of ray tracing
-// -goal: Keep completely separate from UI/WIN32 (i.e. no RGB macro for returning colour values)
-//  -note ImageBuffer has conditional _WIN32 method for outputting windows RGB colours
 ////////////////////////////////////////////////////////////////////////////////
 #include "ImageBuffer.h"
 #include "Camera.h"

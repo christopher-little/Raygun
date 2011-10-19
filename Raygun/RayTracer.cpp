@@ -4,9 +4,8 @@
 
 #include "TRACE.h"
 #include "Light.h"
-#include "Sphere.h"
 
-#include "PointLight.h"
+#include "AABB.h"
 
 // epsilon - allowable margin of error ( 0.9999 == 1.0 )
 const float eps = 0.0001f;
@@ -14,15 +13,15 @@ const float eps = 0.0001f;
 const float pi = 3.141592f;
 
 // Rendering parameters
-Colour rtDefaultColour;		// Default background colour
-float rtClipNear = eps;		// Near and far ray clipping distance
-float rtClipFar = 5000.0f;
-float rtRefrIndex = 1.0f;	// Refractive index of "air" (empty space of the scene)
-int rtDepthMax = 2;			// Maximum recursion count, i.e. maximum number of reflections
-int rtPixelSampleCount = 1;	// Number of samples per pixel
-bool rtCastShadows = true;	// Cast shadow rays
-bool rtCastAmbient = false;	// Cast ambient rays
-int rtAmbientSampleCount = 4;
+Colour	rtDefaultColour;			// Default background colour
+float	rtClipNear = eps;			// Near and far ray clipping distance
+float	rtClipFar = 5000.0f;
+float	rtRefrIndex = 1.0f;			// Refractive index of "air" (empty space of the scene)
+int		rtDepthMax = 2;				// Maximum recursion count, i.e. maximum number of reflections
+int		rtPixelSampleCount = 1;		// Number of samples per pixel
+bool	rtCastShadows = true;		// Cast shadow rays
+bool	rtCastAmbient = false;		// Cast ambient rays
+int		rtAmbientSampleCount = 4;
 
 
 RayTracer::RayTracer()
@@ -37,12 +36,6 @@ RayTracer::RayTracer()
 	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
 	cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
-
-
-	// Add some lights to see what happens (literally!)
-	//Light *testLight = new Light(Vector(278.0, 525.0, 270.0), Colour(1.0, 1.0, 1.0));
-	//Light *testLight = new Light(Vector(450.0, 200.0, 100.0), Colour(1.0, 1.0, 1.0));
-	//scene->addLight(testLight);
 }
 
 RayTracer::~RayTracer()

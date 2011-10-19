@@ -22,6 +22,12 @@ public:
 	inline float x() const { return _x; }
 	inline float y() const { return _y; }
 	inline float z() const { return _z; }
+	inline float w() const { return _w; }
+
+	// Set respective component
+	inline void x(float c) { _x = c; }
+	inline void y(float c) { _y = c; }
+	inline void z(float c) { _z = c; }
 
 
 	// Sum two vectors

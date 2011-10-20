@@ -2,13 +2,14 @@
 
 #include <ctime>
 
-#include "TRACE.h"
+#include "ImageIO.h"
 #include "Light.h"
-
 #include "AABB.h"
 
-// epsilon - allowable margin of error ( 0.9999 == 1.0 )
-const float eps = 0.0001f;
+#include "TRACE.h"
+
+// epsilon - allowable margin of error ( i.e. 0.9999 == 1.0 )
+const float eps = 0.001f;
 // value of pi
 const float pi = 3.141592f;
 
@@ -17,7 +18,7 @@ Colour	rtDefaultColour;			// Default background colour (is set to black by defau
 float	rtClipNear = eps;			// Near and far ray clipping distance
 float	rtClipFar = 5000.0f;
 float	rtRefrIndex = 1.0f;			// Refractive index of "air" (empty space of the scene)
-int		rtDepthMax = 2;				// Maximum recursion count, i.e. maximum number of reflections
+int		rtDepthMax = 3;				// Maximum recursion count, i.e. maximum number of reflections
 int		rtPixelSampleCount = 1;		// Number of samples per pixel
 bool	rtCastShadows = true;		// Cast shadow rays
 bool	rtCastAmbient = false;		// Cast ambient rays
@@ -28,6 +29,9 @@ Vector	rtSkyBoxSize;				// Physical dimensions of the cube map sky box. Assumes 
 // Variables used for rendering
 Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. For now these are in the ray tracer, but the textures themselves are in the Scene.
 
+
+//***Temp development variables
+ImageBuffer *skyBox[6];
 
 
 RayTracer::RayTracer()
@@ -46,14 +50,31 @@ RayTracer::RayTracer()
 
 
 	// Create a skybox
-	rtSkyBoxSize = Vector(200.0, 200.0, 200.0);
+	rtSkyBoxSize = Vector(20.0, 20.0, 20.0);
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
 
-	ImageBuffer temp(256, 256);
-	temp.rainbowStatic();
+	
+	skyBox[0] = readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg");
+	skyBox[1] = readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg");
+	skyBox[2] = readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg");
+	skyBox[3] = readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg");
+	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
+	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
+	
+	/*
+	ImageBuffer *temp;
 	for(int i=0; i<6; i++)
-		scene->setSkyBoxTex(i, temp.makeCopy(), temp.width(), temp.height());
+	{
+		temp = new ImageBuffer(1024, 1024);
+		temp->rainbowStatic();
+		skyBox[i] = temp;
+	}
+
+	delete skyBox[4];
+	temp = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
+	skyBox[4] = temp;
+	*/
 }
 
 RayTracer::~RayTracer()
@@ -152,7 +173,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	if(nearestShape < 0)
 	{
 		// Sample the skybox if it exists, otherwise use the default ray tracer colour
-		if(scene->skyBox())
+		if(skyBox[0] != NULL)
 		{
 			int enter_face, exit_face;
 			float enter_t, exit_t;
@@ -176,12 +197,16 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			else if(exit_face == 4 || exit_face == 5)
 			{
 				u = pSkyBox.x() / rtSkyBoxSize.x();
+				if(exit_face == 5)
+					u = 1-u;
 				v = pSkyBox.y() / rtSkyBoxSize.y();
 			}
 			else
 				TRACE("ANOTHER PROBLEM\n");
 
-			return scene->getSkyBoxTex(exit_face, u, v);
+			int uI = u*(skyBox[exit_face]->width()-1);
+			int vI = v*(skyBox[exit_face]->height()-1);
+			return skyBox[exit_face]->getPixel(vI, uI);
 		}
 		else
 		{

@@ -1,0 +1,18 @@
+#pragma once
+
+#ifndef IMAGEIO
+#define IMAGEIO
+
+#include <cstdio>
+#include <jpeglib.h>
+
+#include "ImageBuffer.h"
+
+////////////////////////////////////////////////////////////////////////////////
+// ImageIO
+//
+// Read/Write float rgb array for various image file types
+////////////////////////////////////////////////////////////////////////////////
+ImageBuffer *readJPG(char *filename);
+
+#endif

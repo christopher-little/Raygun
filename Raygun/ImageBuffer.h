@@ -31,6 +31,11 @@ public:
 	inline int height() const { return _height; }
 
 
+
+
+
+
+
 	// Get and set pixels as Colour objects
 	// -NOTE row is inverted (rendered image is upside down), so getPixel() flips it over
 	inline Colour getPixel(int row, int col) const
@@ -46,6 +51,16 @@ public:
 		buffer[i+2] = c.b();
 	}
 
+
+
+
+
+	// Directly set the image buffer to the supplied float array. rgbArray must be dynamically allocated
+	inline void setBuffer(float *rgbArray)
+	{
+		buffer = rgbArray;
+	}
+
 	// Make a copy of the image buffer in a float* array
 	float *makeCopy()
 	{
@@ -57,6 +72,10 @@ public:
 		return bufferCopy;
 	}
 	
+
+
+
+
 	// This returns 32bit colour values stored in char array (mainly used for win32 conversion to BITMAP)
 	char *getCharArray()
 	{
@@ -77,18 +96,59 @@ public:
 	}
 
 
+
+
+	// Flip the image buffer array vertically (upside down)
+	void flipV()
+	{
+		TRACE("%d %d\n", _width, _height);
+		// There are 3 "columns", one for each component
+		float temp;
+		for(int row=0; row<_height/2; row++) for(int col=0; col<_width; col++)
+		{
+			int i = (row*_width + col)*3;
+			int invi = ((_height-row-1)*_width + col)*3;
+			
+			temp = buffer[i];
+			buffer[i] = buffer[invi];
+			buffer[invi] = temp;
+			
+			temp = buffer[i+1];
+			buffer[i+1] = buffer[invi+1];
+			buffer[invi+1] = temp;
+			
+			temp = buffer[i+2];
+			buffer[i+2] = buffer[invi+2];
+			buffer[invi+2] = temp;
+		}
+	}
+
+
+
+
+
+
 	// Generate rainbow static
 	void rainbowStatic()
 	{
-		for(int row=0; row<_height; row++)
+		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
 		{
-			for(int col=0; col<_width; col++)
-			{
-				Colour out(	(float)rand()/(float)RAND_MAX,
-							(float)rand()/(float)RAND_MAX,
-							(float)rand()/(float)RAND_MAX);
-				setPixel(row, col, out);
-			}
+			Colour out(	(float)rand()/(float)RAND_MAX,
+						(float)rand()/(float)RAND_MAX,
+						(float)rand()/(float)RAND_MAX);
+			setPixel(row, col, out);
+		}
+	}
+
+	// Generate gradient
+	void gradient()
+	{
+		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
+		{
+			Colour out(	((float)row/(float)_height)*1.0f,
+						0.0f,
+						((float)col/(float)_width)*1.0f);
+			setPixel(row, col, out);
 		}
 	}
 

@@ -12,8 +12,8 @@ const float eps = 0.0001f;
 // value of pi
 const float pi = 3.141592f;
 
-// Rendering parameters
-Colour	rtDefaultColour;			// Default background colour
+// Rendering parameters (static)
+Colour	rtDefaultColour;			// Default background colour (is set to black by default)
 float	rtClipNear = eps;			// Near and far ray clipping distance
 float	rtClipFar = 5000.0f;
 float	rtRefrIndex = 1.0f;			// Refractive index of "air" (empty space of the scene)
@@ -22,6 +22,12 @@ int		rtPixelSampleCount = 1;		// Number of samples per pixel
 bool	rtCastShadows = true;		// Cast shadow rays
 bool	rtCastAmbient = false;		// Cast ambient rays
 int		rtAmbientSampleCount = 4;
+// Rendering parameters that must be explicitly set
+Vector	rtSkyBoxSize;				// Physical dimensions of the cube map sky box. Assumes ray will originate at center of these dimensions.
+
+// Variables used for rendering
+Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. For now these are in the ray tracer, but the textures themselves are in the Scene.
+
 
 
 RayTracer::RayTracer()
@@ -34,8 +40,20 @@ RayTracer::RayTracer()
 	scene = new Scene();
 	//cam = scene->loadMDL("..\\test_scenes\\cornellbox.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
-	cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
+	cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
+
+
+	// Create a skybox
+	rtSkyBoxSize = Vector(200.0, 200.0, 200.0);
+	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
+	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
+
+	ImageBuffer temp(256, 256);
+	temp.rainbowStatic();
+	for(int i=0; i<6; i++)
+		scene->setSkyBoxTex(i, temp.makeCopy(), temp.width(), temp.height());
 }
 
 RayTracer::~RayTracer()
@@ -128,13 +146,51 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			}
 		}
 	}
+	
 
-	// False when no intersections occured
+	// When there is no intersection, sample an environment map or return a default colour
 	if(nearestShape < 0)
-		if(depth > 0)
-			return Colour(0.0, 0.0, 0.0);
+	{
+		// Sample the skybox if it exists, otherwise use the default ray tracer colour
+		if(scene->skyBox())
+		{
+			int enter_face, exit_face;
+			float enter_t, exit_t;
+			// Assume ray starting from 0,0,0 will always intersect the skybox, unless it's malformed and doesn't surround 0,0,0; in which case it needs to be fixed.
+			if(!rayBoxIntersect(Vector(0.0,0.0,0.0), ray.d(), _rtSkyBoxMin, _rtSkyBoxMax, enter_face, exit_face, enter_t, exit_t))
+				TRACE("Sky box is not properly placed around the origin (0,0,0)\n");
+
+			// Calculate skybox AABB intersection position
+			Vector pSkyBox = (Vector(0.0,0.0,0.0) + ray.d()*exit_t) - _rtSkyBoxMin;
+			float u, v;
+			if(exit_face == 0 || exit_face == 1)
+			{
+				u = pSkyBox.z() / rtSkyBoxSize.z();
+				v = pSkyBox.y() / rtSkyBoxSize.y();
+			}
+			else if(exit_face == 2 || exit_face == 3)
+			{
+				u = pSkyBox.x() / rtSkyBoxSize.x();
+				v = pSkyBox.z() / rtSkyBoxSize.z();
+			}
+			else if(exit_face == 4 || exit_face == 5)
+			{
+				u = pSkyBox.x() / rtSkyBoxSize.x();
+				v = pSkyBox.y() / rtSkyBoxSize.y();
+			}
+			else
+				TRACE("ANOTHER PROBLEM\n");
+
+			return scene->getSkyBoxTex(exit_face, u, v);
+		}
 		else
-			return rtDefaultColour;
+		{
+			if(depth > 0)
+				return Colour(0.0, 0.0, 0.0);
+			else
+				return rtDefaultColour;
+		}
+	}
 
 
 	// Retrieve shape material

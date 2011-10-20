@@ -14,8 +14,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 LPCWSTR szClassName = L"RayTracerDisplay"; // Make the class name into a global variable
 
-int defaultWidth = 256;		// Default image window width and height
-int defaultHeight = 256;
+int defaultWidth = 800;		// Default image window width and height
+int defaultHeight = 800;
 RayTracer *rt = NULL;		// Ray tracer object
 ImageBuffer *buf = NULL;	// Buffer for rendered image
 HDC memDC;					// Off screen window buffer, write imagebuffer here, then copy to display

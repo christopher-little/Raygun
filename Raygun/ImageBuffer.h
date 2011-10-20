@@ -45,6 +45,17 @@ public:
 		buffer[i+1] = c.g();
 		buffer[i+2] = c.b();
 	}
+
+	// Make a copy of the image buffer in a float* array
+	float *makeCopy()
+	{
+		float *bufferCopy = new float[_width*_height*3];
+
+		for(int i=0; i<_width*_height*3; i++)
+			bufferCopy[i] = buffer[i];
+
+		return bufferCopy;
+	}
 	
 	// This returns 32bit colour values stored in char array (mainly used for win32 conversion to BITMAP)
 	char *getCharArray()

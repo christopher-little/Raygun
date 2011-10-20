@@ -11,13 +11,22 @@
 
 Scene::Scene()
 {
-
+	// Initialize skybox textures to NULL
+	for(int i=0; i<6; i++)
+		_skyBoxTex[i] = NULL;
 }
 
 
 Scene::~Scene()
 {
-	
+	// Make sure all skybox textures are released
+	for(int i=0; i<6; i++)
+	{
+		delete [] _skyBoxTex[i];
+		_skyBoxTex[i] = NULL;
+	}
+
+	//***Need to safely delete all materials in matMap, and all shapes and lights from shape and light lists
 }
 
 

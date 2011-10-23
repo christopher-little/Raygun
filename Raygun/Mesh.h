@@ -30,16 +30,18 @@ public:
 	inline void addFacePoint(int i) { faces.push_back(i); }
 
 	
-	bool intersect(const Ray &r, float &t, Vector &p, Vector &n);
+	bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 
 private:
-	int vertsPerFace; // 3 for triangle mesh, 4 for quad mesh, etc.
+	int vertsPerFace; // 3 for triangle mesh, 4 for quad mesh
 	std::vector<Vector> vertices; // List of vertices
 	std::vector<int> faces; // List of faces (number of components depends on tri vs quad
+
+	//***This needs list of normals and u,v coordinates
 	
 	// Specialized intersection methods for triangles and quads
-	bool intersectTri(const Ray &r, float &t, Vector &p, Vector &n);
-	bool intersectQuad(const Ray &r, float &t, Vector &p, Vector &n);
+	bool intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
+	bool intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 };
 
 #endif

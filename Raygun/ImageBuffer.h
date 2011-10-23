@@ -56,21 +56,9 @@ public:
 
 
 	// Directly set the image buffer to the supplied float array. rgbArray must be dynamically allocated
-	inline void setBuffer(float *rgbArray)
-	{
-		buffer = rgbArray;
-	}
-
-	// Make a copy of the image buffer in a float* array
-	float *makeCopy()
-	{
-		float *bufferCopy = new float[_width*_height*3];
-
-		for(int i=0; i<_width*_height*3; i++)
-			bufferCopy[i] = buffer[i];
-
-		return bufferCopy;
-	}
+	inline void setBuffer(float *rgbArray) { buffer = rgbArray; }
+	// Get a reference to the image buffer array. Note, modifying the returned array will permanently modify the image buffer contents
+	inline float *getBuffer() { return buffer; }
 	
 
 
@@ -97,7 +85,7 @@ public:
 
 
 
-
+	/*
 	// Flip the image buffer array vertically (upside down)
 	void flipV()
 	{
@@ -122,7 +110,7 @@ public:
 			buffer[invi+2] = temp;
 		}
 	}
-
+	*/
 
 
 

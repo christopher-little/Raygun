@@ -13,7 +13,9 @@ Sphere::~Sphere()
 }
 
 
-bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n)
+const float pi = 3.14159;
+
+bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
 	Vector e_c = r.e() - _c;
 	float A = r.d().dot(r.d());
@@ -28,7 +30,7 @@ bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n)
 	// Determine nearest (lowest) intersection distance that occurs in front of the ray origin
 	float sqrtDiscrim = sqrt(discrim);
 	float near_t = (-B - sqrtDiscrim) / A;
-	if(near_t > 0.0f)
+	if(near_t > eps)
 		t = near_t;
 	else
 	{
@@ -41,8 +43,18 @@ bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n)
 			return false;
 	}
 	
-	//t = near_t;
 	p = r.e() + r.d()*t;
 	n = (p-_c).normalized();
+
+	// Compute u,v texture coordinates
+	float th = acos((p.z()-_c.z()) / _r); //theta
+	float ph = atan2(p.y()-_c.y(), p.x()-_c.x()); //phi
+	//float th = acos((-p.y-(-c.y)) / this->r); //theta
+	//float ph = atan2(p.z-c.z, -p.x-(-c.x)); //phi
+	if(ph < 0)
+		ph += 2*pi;
+	u = ph/(2*pi);
+	v = (pi - th)/pi;
+
 	return true;
 }

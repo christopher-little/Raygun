@@ -42,16 +42,51 @@ ImageBuffer *readJPG(char *filename)
 	delete [] raw_row;
 	fclose(imgfile);
 
+	// Package the jpeg image into an ImageBuffer object
+	returnBuffer->setBuffer(raw_image);
+	return returnBuffer;
+}
 
-	// Image comes in as BGR for some reason, so flip it round to RGB
-	for(int i=0; i<returnBuffer->width()*returnBuffer->height(); i++)
+
+
+void writeJPG(char *filename, ImageBuffer *buf)
+{
+	struct jpeg_compress_struct imgInfo;
+	struct jpeg_error_mgr imgErr;
+	imgInfo.err = jpeg_std_error(&imgErr);
+	jpeg_create_compress(&imgInfo);
+
+	//char filename[64];
+	//sprintf(filename, "results/image%d.jpg", runID);
+	FILE *imgFile = fopen(filename, "wb");
+	if(imgFile == NULL)
 	{
-		float temp = raw_image[i*3];
-		raw_image[i*3] = raw_image[i*3 + 2];
-		raw_image[i*3 + 2] = temp;
+		TRACE("Error: Could not open image output file for %s", filename);
+		return;
+	}
+	jpeg_stdio_dest(&imgInfo, imgFile);
+
+	imgInfo.image_width = buf->width();
+	imgInfo.image_height = buf->height();
+	imgInfo.input_components = 3;
+	imgInfo.in_color_space = JCS_RGB;
+	jpeg_set_defaults(&imgInfo);
+	jpeg_set_quality(&imgInfo, 100, TRUE);
+	jpeg_start_compress(&imgInfo, TRUE);
+
+	JSAMPLE *raw_row = new JSAMPLE[imgInfo.image_width * 3];
+	int location = 0;
+	while(imgInfo.next_scanline < imgInfo.image_height)
+	{
+		int rowIndex = (imgInfo.image_height-1-imgInfo.next_scanline) * imgInfo.image_width * 3;
+		float *bufferRow = &buf->getBuffer()[rowIndex];
+		for(int i=0; i<imgInfo.image_width*3; i++)
+			raw_row[i] = bufferRow[i] * 255;
+		jpeg_write_scanlines(&imgInfo, &raw_row, 1);
 	}
 
-	returnBuffer->setBuffer(raw_image);
-
-	return returnBuffer;
+	jpeg_finish_compress(&imgInfo);
+	jpeg_destroy_compress(&imgInfo);
+	delete [] raw_row;
+	fclose(imgFile);
 }

@@ -15,8 +15,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 LPCWSTR szClassName = L"RayTracerDisplay"; // Make the class name into a global variable
 
-int defaultWidth = 640;		// Default image window width and height
-int defaultHeight = 360;
+int defaultWidth = 800;		// Default image window width and height
+int defaultHeight = 600;
 RayTracer *rt = NULL;		// Ray tracer object
 ImageBuffer *buf = NULL;	// Buffer for rendered image
 HDC memDC;					// Off screen window buffer, write imagebuffer here, then copy to display
@@ -145,8 +145,11 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
 			// Ray trace an image!
 			rt->render(buf);
+			
+			// Write image to jpeg file
+			writeJPG("..//image.jpg",buf);
 
-			// Copy the rt image to the offscreen buffer
+			// Copy the rt image to the offscreen buffer which will be copied to the window
 			HBITMAP memBmp = CreateCompatibleBitmap(GetDC(hwnd),buf->width(),buf->height());
 			if(!SetBitmapBits(memBmp, buf->width()*buf->height()*4, buf->getCharArray()))
 				TRACE("Could not display image. Image buffer could not be converted to bitmap.\n");

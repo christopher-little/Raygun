@@ -22,8 +22,8 @@ public:
 
 	// Intersects a ray with the shape object.
 	// -Returns true if an intersection occurs
-	// -Stores distance (t), intersection point (p) and normal (n) in provided variables
-	virtual bool intersect(const Ray &r, float &t, Vector &p, Vector &n) = 0;
+	// -Stores distance (t), intersection point (p), normal (n) and u,v coordinates in provided variables
+	virtual bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v) = 0;
 private:
 	Material *_mat;
 };

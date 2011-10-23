@@ -39,6 +39,16 @@ public:
 	inline int nLights() const { return lightList.size(); }
 	inline Light* getLight(int i) { return lightList[i]; }
 
+	// Temporary function to  give access to material objects
+	inline Material *getMat(string mtrlName)
+	{
+		std::map<std::string, Material*>::iterator it = matMap.find(mtrlName);
+		if(it != matMap.end())
+			return it->second;
+		else
+			return NULL;
+	}
+
 
 
 private:

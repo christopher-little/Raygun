@@ -42,6 +42,8 @@ Camera* Scene::loadMDL(char *filename)
 			break;
 
 		k = inp.BeginChunk();
+
+
 		// Find the camera chunk
 		if(k == mdlKey("cmr"))
 		{
@@ -78,6 +80,8 @@ Camera* Scene::loadMDL(char *filename)
 
 			//***Consider when camera is not defined in the mdl file
 		}
+
+
 		// Find the material chunk (For now, lets just support rgb, rather than spectral)
 		else if(k == mdlKey("nmdMtrl"))
 		{
@@ -126,6 +130,8 @@ Camera* Scene::loadMDL(char *filename)
 
 			inp.EndChunk();
 		}
+
+
 		// Find a point light
 		else if(k == mdlKey("pntSrc"))
 		{
@@ -140,6 +146,8 @@ Camera* Scene::loadMDL(char *filename)
 			PointLight *light = new PointLight(Vector(x,y,z), c);
 			lightList.push_back(light);
 		}
+
+
 		// Find a shared vertex mesh (i.e. ply) chunk
 		else if(k == mdlKey("msh"))
 		{
@@ -204,6 +212,8 @@ Camera* Scene::loadMDL(char *filename)
 				inp.EndChunk();
 			}
 		}
+
+
 		// Find a sphere object
 		else if(k == mdlKey("sphr"))
 		{
@@ -239,8 +249,12 @@ Camera* Scene::loadMDL(char *filename)
 			sphere->setMat(mat);
 			shapeList.push_back(sphere);
 		}
+
+
+		// Otherwise forget about loading the piece
 		else
 			TRACE("Not handling chunk: %s\n", (char *)k);
+
 		inp.EndChunk();
 	}
 
@@ -258,17 +272,47 @@ Colour mdlRetrieveColour(mdlInput *inp)
 	Colour returnColour;
 
 	// Step into color chunk
-	mdlKey color = inp->BeginChunk();
+	mdlKey colour = inp->BeginChunk();
 	// Find an rgb chunk
-	if(color == mdlKey("rgb"))
+	if(colour == mdlKey("rgb"))
 	{
 		float x = inp->ReadFloat();
 		float y = inp->ReadFloat();
 		float z = inp->ReadFloat();
 		returnColour = Colour(x,y,z);
 	}
+
+	// Find a texture map chunk
+	else if(colour == mdlKey("txtrMp"))
+	{
+		// Skip over nexture map name
+		inp->ReadString();
+
+		// Step into next either a imgFl chunk (where texture image file is located), or txtrNm chunk (where texture has already been loaded and stored using a nmdTxtr chunk)
+		mdlKey texType = inp->BeginChunk();
+		if(texType == mdlKey("imgFl"))
+		{
+			// Get texture file name and file type
+			std::string texFileName = inp->ReadString();
+			std::string texFileType = inp->ReadString();
+			if(texFileType.compare("jpeg") == 0 || texFileType.compare("jpg") == 0)
+			{
+				//***This is where you add texture map EXCEPT IT'S NOT A COLOUR OBJECT, SO THIS FUNCTION NEEDS TO BE RETHOUGHT
+			}
+			else
+			{
+				TRACE("Currently not supporting texture image files of type %s\n", texFileType.c_str());
+			}
+		}
+		else if(texType == mdlKey("txtrNm"))
+		{
+			TRACE("Currently not supporting chunk type txtrNm\n");
+		}
+
+		inp->EndChunk();
+	}
 	else
-		TRACE("Found Non-rgb colour, currently not supporting: %s\n", color);
+		TRACE("Found unsupported colour chunk: %s\n", colour);
 
 	inp->EndChunk();
 

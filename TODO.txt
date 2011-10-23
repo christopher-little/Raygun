@@ -13,3 +13,5 @@ TODO
 -directional infinite lights
 -octree bounding volumes, then kd-tree
 -sub-surface scattering
+-toon shading + sobel filter outlines
+-surface of rotation: wine-glasses, torus, etc.

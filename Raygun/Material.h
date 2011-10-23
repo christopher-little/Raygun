@@ -4,6 +4,7 @@
 #define MATERIAL
 
 #include "Colour.h"
+#include "ImageBuffer.h"
 
 class Material
 {
@@ -16,6 +17,8 @@ public:
 		_s = Colour(0.9f, 0.9f, 0.9f);
 		_p = 1.0;
 		_dielectric = false;
+
+		_texture = NULL;
 	}
 	~Material() {}
 
@@ -61,6 +64,27 @@ public:
 		_n = n;
 	}
 
+
+	// Return true if the Material contains a texture
+	inline bool hasTexture() { return _texture != NULL; }
+	// Assign the ImageBuffer tex as the texture for this material
+	bool setTexture(ImageBuffer *tex)
+	{
+		// Return false if the texture is no good
+		if(tex == NULL)
+			return false;
+
+		_texture = tex;
+		return true;
+	}
+	// Retrieve a colour value
+	Colour sampleTex(float u, float v)
+	{
+		int uI = u*(_texture->width()-1);
+		int vI = v*(_texture->height()-1);
+		return _texture->getPixel(vI, uI);
+	}
+
 private:
 	Colour _a; // ambient
 	Colour _d; // diffuse
@@ -68,6 +92,8 @@ private:
 	float  _p; // Phong exponent
 	bool   _dielectric; // Specifies if the material is a dielectric (transmissive) material
 	float  _n; // Index of refraction
+
+	ImageBuffer *_texture;
 };
 
 #endif

@@ -61,20 +61,12 @@ RayTracer::RayTracer()
 	skyBox[3] = readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg");
 	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
 	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
-	
-	/*
-	ImageBuffer *temp;
-	for(int i=0; i<6; i++)
-	{
-		temp = new ImageBuffer(1024, 1024);
-		temp->rainbowStatic();
-		skyBox[i] = temp;
-	}
 
-	delete skyBox[4];
-	temp = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
-	skyBox[4] = temp;
-	*/
+
+
+	// Try slipping a texture into one of the material objects
+	Material *mat = scene->getMat(std::string("textured"));
+	if(mat != NULL) mat->setTexture(readJPG((char*)"..\\textures\\cloud_earth.jpg"));
 }
 
 RayTracer::~RayTracer()
@@ -148,14 +140,16 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	float nearest_t = -1.0;
 	Vector nearest_p;
 	Vector nearest_n;
+	float nearest_u, nearest_v;
 	float nearest_t_temp;
 	Vector nearest_p_temp;
 	Vector nearest_n_temp;
+	float nearest_u_temp, nearest_v_temp;
 	
 	int nShapes = scene->nShapes();
 	for(int i=0; i<nShapes; i++)
 	{
-		if(scene->getShape(i)->intersect(ray, nearest_t_temp, nearest_p_temp, nearest_n_temp))
+		if(scene->getShape(i)->intersect(ray, nearest_t_temp, nearest_p_temp, nearest_n_temp, nearest_u_temp, nearest_v_temp))
 		{
 			// Store a new nearest intersection
 			if(nearest_t_temp > 0.0f && (nearestShape < 0 || nearest_t_temp < nearest_t))
@@ -164,6 +158,8 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 				nearest_t = nearest_t_temp;
 				nearest_p = nearest_p_temp;
 				nearest_n = nearest_n_temp;
+				nearest_u = nearest_u_temp;
+				nearest_v = nearest_v_temp;
 			}
 		}
 	}
@@ -182,7 +178,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 				TRACE("Sky box is not properly placed around the origin (0,0,0)\n");
 
 			// Calculate skybox AABB intersection position
-			Vector pSkyBox = (Vector(0.0,0.0,0.0) + ray.d()*exit_t) - _rtSkyBoxMin;
+			Vector pSkyBox = (Vector(0.0,0.0,0.0) + ray.d()*(exit_t-eps) - _rtSkyBoxMin);
 			float u, v;
 			if(exit_face == 0 || exit_face == 1)
 			{
@@ -204,6 +200,11 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			else
 				TRACE("ANOTHER PROBLEM\n");
 
+			if(u >= 1.0f)
+				u = 1.0f-eps;
+			if(v >= 1.0f)
+				v = 1.0f-eps;
+			
 			int uI = u*(skyBox[exit_face]->width()-1);
 			int vI = v*(skyBox[exit_face]->height()-1);
 			return skyBox[exit_face]->getPixel(vI, uI);
@@ -322,7 +323,8 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 		float exit_t;
 		Vector exit_p;
 		Vector exit_n;
-		scene->getShape(nearestShape)->intersect(refrRay, exit_t, exit_p, exit_n);
+		float temp_u, temp_v;
+		scene->getShape(nearestShape)->intersect(refrRay, exit_t, exit_p, exit_n, temp_u, temp_v);
 
 		// Refract the ray again and trace further
 		refrRatio = mat->n()/rtRefrIndex;
@@ -386,9 +388,16 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	}
 
 
+	// Sample the material texture (if present)
+	Colour texColour(1.0f,1.0f,1.0f);
+	if(mat->hasTexture())
+	{
+		texColour = mat->sampleTex(nearest_u, nearest_v);
+	}
+
 	// Finalize the colour value and return
 	Colour returnColour =	ambient*mat->a() +
-							diffuseIllum*mat->d() +
+							diffuseIllum*mat->d()*texColour +
 							specularIllum*mat->s() +
 							specularRefl*mat->s()*fresnelR +
 							specularRefr*mat->s()*(1-fresnelR);
@@ -401,11 +410,12 @@ bool RayTracer::sampleTrace(const Ray &ray, float clipNear, float clipFar)
 	float nearest_t_temp;
 	Vector nearest_p_temp;
 	Vector nearest_n_temp;
+	float nearest_u_temp, nearest_v_temp;
 
 	for(int i=0; i<scene->nShapes(); i++)
 	{
 		// Ray origin is offset by epsilon from the surface to avoid rounding error
-		if(scene->getShape(i)->intersect(ray, nearest_t_temp, nearest_p_temp, nearest_n_temp))
+		if(scene->getShape(i)->intersect(ray, nearest_t_temp, nearest_p_temp, nearest_n_temp, nearest_u_temp, nearest_v_temp))
 		{
 			// Ensure that the intersected object is between the surface and the light sample point
 			if(nearest_t_temp > clipNear && nearest_t_temp < clipFar)

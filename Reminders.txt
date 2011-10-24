@@ -1,7 +1,7 @@
 Reminders
 
--Scene.cpp has temp code to load textures through MDL, but its in the wrong spot (get Colour function)
--Scene.h also has function for getting Materials from the material map to allow manual application of textures
+-Scene.cpp has pretty janky texture reading shoved into "lmbrtn" chunk, needs revising
+-Scene.h has function to retrieve Materials from matMap, this shouldn't be needed
 
 -RayTracer.cpp skybox is still set within the ray tracer rather than the scene
 	-Still need to decide, should skybox be considered strictly part of the scene? (probably)

@@ -67,7 +67,7 @@ public:
 
 	// Return true if the Material contains a texture
 	inline bool hasTexture() { return _texture != NULL; }
-	// Assign the ImageBuffer tex as the texture for this material
+	// Assign the ImageBuffer tex as the texture for this material, returns true if the texture is successfully set
 	bool setTexture(ImageBuffer *tex)
 	{
 		// Return false if the texture is no good
@@ -80,9 +80,33 @@ public:
 	// Retrieve a colour value
 	Colour sampleTex(float u, float v)
 	{
-		int uI = u*(_texture->width()-1);
-		int vI = v*(_texture->height()-1);
-		return _texture->getPixel(vI, uI);
+		float eps = 0.001f;
+
+		if(u > 1.0f-eps)
+			u = 1.0f-eps;
+		if(v > 1.0f-eps)
+			v = 1.0f-eps;
+
+		// Compute texture position, texture texel position, and fractional distance inside texel
+		float uT = u*(_texture->width()-1);
+		float vT = v*(_texture->height()-1);
+		int uI = static_cast<int>(uT);
+		int vI = static_cast<int>(vT);
+		float uD = uT-uI;
+		float vD = vT-vI;
+
+		// Bilinear interpolation across the 4 nearest texels
+		Colour c0 = _texture->getPixel(vI, uI);
+		Colour c1 = _texture->getPixel(vI, uI+1);
+		Colour c2 = _texture->getPixel(vI+1, uI);
+		Colour c3 = _texture->getPixel(vI+1, uI+1);
+
+		Colour d0 = c0 + (c1*uD + c0*-uD);
+		Colour d1 = c2 + (c3*uD + c2*-uD);
+
+		Colour d3 = d0 + (d1*vD + d0*-vD);
+
+		return d3;
 	}
 
 private:
@@ -93,7 +117,7 @@ private:
 	bool   _dielectric; // Specifies if the material is a dielectric (transmissive) material
 	float  _n; // Index of refraction
 
-	ImageBuffer *_texture;
+	ImageBuffer *_texture; // Pointer to image buffer that contains a texture for the material. When a texture is present, _d diffuse colour becomes modifier for texture colour
 };
 
 #endif

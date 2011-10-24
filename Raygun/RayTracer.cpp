@@ -46,7 +46,8 @@ RayTracer::RayTracer()
 	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
-	cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
+	cam = scene->loadMDL("..\\test_scenes\\final_frontier.mdla");
 
 
 	// Create a skybox
@@ -65,8 +66,8 @@ RayTracer::RayTracer()
 
 
 	// Try slipping a texture into one of the material objects
-	Material *mat = scene->getMat(std::string("textured"));
-	if(mat != NULL) mat->setTexture(readJPG((char*)"..\\textures\\cloud_earth.jpg"));
+	//Material *mat = scene->getMat(std::string("earth"));
+	//if(mat != NULL) mat->setTexture(readJPG((char*)"..\\textures\\cloud_earth.jpg"));
 }
 
 RayTracer::~RayTracer()

@@ -47,10 +47,11 @@ bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, f
 	n = (p-_c).normalized();
 
 	// Compute u,v texture coordinates
-	float th = acos((p.z()-_c.z()) / _r); //theta
-	float ph = atan2(p.y()-_c.y(), p.x()-_c.x()); //phi
-	//float th = acos((-p.y-(-c.y)) / this->r); //theta
-	//float ph = atan2(p.z-c.z, -p.x-(-c.x)); //phi
+	//float th = acos((p.z()-_c.z()) / _r); //theta
+	//float ph = atan2(p.y()-_c.y(), p.x()-_c.x()); //phi
+	float th = acos((p.y()-(-_c.y())) / _r); //theta
+	float ph = atan2(p.z()-_c.z(), p.x()-(-_c.x())); //phi
+
 	if(ph < 0)
 		ph += 2*pi;
 	u = ph/(2*pi);

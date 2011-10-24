@@ -8,13 +8,13 @@
 #include <string>
 
 #include "MDL\mdl.H"
+#include "ImageBuffer.h"
 #include "Vector.h"
 #include "Colour.h"
 #include "Shape.h"
 #include "Light.h"
 #include "Camera.h"
 #include "Material.h"
-#include "ImageBuffer.h"
 
 #include "TRACE.h"
 
@@ -23,9 +23,6 @@ class Scene
 public:
 	Scene();
 	~Scene();
-
-	// Build a scene and return the Camera object to the ray tracer
-	Camera* loadMDL(char *filename);
 
 
 	// Add objects to the scene
@@ -40,7 +37,7 @@ public:
 	inline Light* getLight(int i) { return lightList[i]; }
 
 	// Temporary function to  give access to material objects
-	inline Material *getMat(string mtrlName)
+	inline Material *getMat(std::string mtrlName)
 	{
 		std::map<std::string, Material*>::iterator it = matMap.find(mtrlName);
 		if(it != matMap.end())
@@ -50,9 +47,16 @@ public:
 	}
 
 
+	
+
+	// Build a scene and return the Camera object to the ray tracer
+	Camera* loadMDL(char *filename);
+
+
 
 private:
-	std::map<std::string,Material*> matMap; // Map material name to matList index
+	std::map<std::string,Material*> matMap; // Map material name to Material object
+	std::map<std::string,ImageBuffer*> texMap; // Map texture name to ImageBuffer object containing the texture
 	std::vector<Shape*> shapeList;	// List of shapes to render
 	std::vector<Light*> lightList;	// List of light sources (these can correspond to a shape object)
 

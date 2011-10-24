@@ -3,11 +3,11 @@
 #include "MDL\mdl.H"
 #include "TRACE.h"
 
+#include "ImageIO.h"
 #include "Sphere.h"
 #include "Light.h"
 #include "PointLight.h"
 #include "Mesh.h"
-#include "Material.h"
 
 Scene::Scene()
 {
@@ -86,14 +86,66 @@ Camera* Scene::loadMDL(char *filename)
 		else if(k == mdlKey("nmdMtrl"))
 		{
 			// Grab the material "name"
-			char *matName = inp.ReadString();
+			char matName[256];
+			char *temp = inp.ReadString();
+			strcpy(matName, temp);
+
 			// Step into material chunk
 			mdlKey mat = inp.BeginChunk();
 			Material *surfaceMat = new Material(); // Create a default material in case the specified material isn't supported
 			if(mat == mdlKey("lmbrtn"))
 			{
 				// Find a lambertian material (only defines diffuse component)
-				surfaceMat->makeLambertian(mdlRetrieveColour(&inp));
+				mdlKey colourKey = inp.BeginChunk();
+				if(colourKey == mdlKey("rgb"))
+				{
+					x = inp.ReadFloat();
+					y = inp.ReadFloat();
+					z = inp.ReadFloat();
+					surfaceMat->makeLambertian(Colour(x,y,z));
+				}
+
+				else if(colourKey == mdlKey("txtrMp"))
+				{
+					surfaceMat->makeLambertian(Colour(1.0f,1.0f,1.0f));
+					/*std::map<std::string, ImageBuffer*>::iterator it = texMap.find(std::string("earth tex"));
+					if(it != texMap.end())
+					{
+						if(surfaceMat->setTexture(it->second))
+							TRACE("Texture assigned\n");
+					}*/
+					
+					// skip over texture map name
+					char *bwah = inp.ReadString();
+					
+					// Step into texture chunk (can be either txtrNm to ref named texture, or imgFl to directly load texture from image file)
+					mdlKey texKey = inp.BeginChunk();
+					if(texKey == mdlKey("txtrNm"))
+					{
+						char texMapName[256];
+						temp = inp.ReadString();
+						strcpy(texMapName, temp);
+
+						std::map<std::string, ImageBuffer*>::iterator it = texMap.find(std::string(texMapName));
+						if(it != texMap.end())
+						{
+							if(!surfaceMat->setTexture(it->second))
+								TRACE("Unable to assign texture: %s\n", texMapName);
+						}
+						else
+							TRACE("Named texture, %s, could not be found in texture map list\n", texMapName);
+					}
+					else
+						TRACE("In txtrMp, currently not supporting chunk: %s\n", (char*)texKey);
+					
+					inp.EndChunk();
+				}
+				else
+				{
+					surfaceMat->makeLambertian(Colour(0.0f,1.0f,1.0f));
+				}
+				inp.EndChunk();
+				//surfaceMat->makeLambertian(mdlRetrieveColour(&inp));
 			}
 			else if(mat == mdlKey("phng"))
 			{
@@ -132,6 +184,42 @@ Camera* Scene::loadMDL(char *filename)
 		}
 
 
+		// Find a named texture map
+		else if(k == mdlKey("nmdTxtr"))
+		{
+			// Get the texture name for adding to the texture map list
+			char texName[256];
+			char *temp = inp.ReadString();
+			strcpy(texName, temp);
+
+			mdlKey imageChunk = inp.BeginChunk();
+			if(imageChunk == mdlKey("imgFl"))
+			{
+				// Read the texture file name
+				char texFilename[256];
+				temp = inp.ReadString();
+				strcpy(texFilename, temp);
+
+				std::string texFileType = inp.ReadString();
+				if(texFileType.compare("jpg")==0 || texFileType.compare("jpeg")==0)
+				{
+					ImageBuffer *tex = readJPG(texFilename);
+					texMap.insert(std::pair<std::string, ImageBuffer*>(std::string(texName),tex));
+					TRACE("Texture added\n");
+				}
+				else
+				{
+					TRACE("Texture image file type, %s, currently not supported\n", texFileType.c_str());
+				}
+			}
+			else
+			{
+				TRACE("Texture data type, %s, currently not supported\n", (char*)imageChunk);
+			}
+			inp.EndChunk();
+		}
+
+
 		// Find a point light
 		else if(k == mdlKey("pntSrc"))
 		{
@@ -164,23 +252,24 @@ Camera* Scene::loadMDL(char *filename)
 					break;
 
 				msh_k = inp.BeginChunk();
+
 				// Grab the material name
 				if(msh_k == mdlKey("mtrlNm"))
 				{
 					// Find the material referenced by the material name
 					char *matName = inp.ReadString();
 					std::map<std::string, Material*>::iterator it = matMap.find(std::string(matName));
-					// Set a default colour when the colour reference can't be found
 					if(it == matMap.end())
 					{
+						// Set a default colour when the colour reference can't be found
 						msh->setMat(new Material());
 					}
 					else
 					{
-						Material *mat = it->second;
-						msh->setMat(mat);
+						msh->setMat(it->second);
 					}
 				}
+
 				// Grab the vertices
 				else if(msh_k == mdlKey("vrtxPstn"))
 				{
@@ -192,7 +281,8 @@ Camera* Scene::loadMDL(char *filename)
 						msh->addVertex(Vector(x,y,z));
 					}
 				}
-				// Grab the point (face) list for a quadrilateral
+
+				// Grab the point (face) list for quadrilaterals
 				else if(msh_k == mdlKey("qdrltrl"))
 				{
 					// Tell the Mesh it's make of quads
@@ -203,9 +293,11 @@ Camera* Scene::loadMDL(char *filename)
 						msh->addFacePoint(inp.ReadInt());
 					}
 				}
+				// Or Grab the points (face) list for triangles
 				else if(msh_k == mdlKey("trngl"))
 				{
-					//***Store tri faces inp.NumRemain()/3
+					msh->setVertsPerFace(3);
+					//***Store triangle vertices
 				}
 				else
 					TRACE("For \"msh\", not handling chunk: %s\n", (char *)msh_k);
@@ -282,6 +374,7 @@ Colour mdlRetrieveColour(mdlInput *inp)
 		returnColour = Colour(x,y,z);
 	}
 
+	/*
 	// Find a texture map chunk
 	else if(colour == mdlKey("txtrMp"))
 	{
@@ -311,6 +404,8 @@ Colour mdlRetrieveColour(mdlInput *inp)
 
 		inp->EndChunk();
 	}
+	*/
+
 	else
 		TRACE("Found unsupported colour chunk: %s\n", colour);
 

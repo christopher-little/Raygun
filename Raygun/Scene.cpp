@@ -205,7 +205,6 @@ Camera* Scene::loadMDL(char *filename)
 				{
 					ImageBuffer *tex = readJPG(texFilename);
 					texMap.insert(std::pair<std::string, ImageBuffer*>(std::string(texName),tex));
-					TRACE("Texture added\n");
 				}
 				else
 				{
@@ -282,6 +281,17 @@ Camera* Scene::loadMDL(char *filename)
 					}
 				}
 
+				// Grab the vertex uv coordinates
+				else if(msh_k == mdlKey("vrtxUV"))
+				{
+					while(inp.NumRemain() > 0)
+					{
+						x = inp.ReadFloat();
+						y = inp.ReadFloat();
+						msh->addUVCoord(x, y);
+					}
+				}
+
 				// Grab the point (face) list for quadrilaterals
 				else if(msh_k == mdlKey("qdrltrl"))
 				{
@@ -297,7 +307,11 @@ Camera* Scene::loadMDL(char *filename)
 				else if(msh_k == mdlKey("trngl"))
 				{
 					msh->setVertsPerFace(3);
-					//***Store triangle vertices
+					
+					while(inp.NumRemain() > 0)
+					{
+						msh->addFacePoint(inp.ReadInt());
+					}
 				}
 				else
 					TRACE("For \"msh\", not handling chunk: %s\n", (char *)msh_k);

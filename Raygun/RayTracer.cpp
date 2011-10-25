@@ -5,6 +5,7 @@
 #include "ImageIO.h"
 #include "Light.h"
 #include "AABB.h"
+#include "Mesh.h"
 
 #include "TRACE.h"
 
@@ -47,7 +48,8 @@ RayTracer::RayTracer()
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
-	cam = scene->loadMDL("..\\test_scenes\\final_frontier.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\final_frontier.mdla");
+	cam = scene->loadMDL("..\\test_scenes\\texturing.mdla");
 
 
 	// Create a skybox
@@ -62,12 +64,6 @@ RayTracer::RayTracer()
 	skyBox[3] = readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg");
 	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
 	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
-
-
-
-	// Try slipping a texture into one of the material objects
-	//Material *mat = scene->getMat(std::string("earth"));
-	//if(mat != NULL) mat->setTexture(readJPG((char*)"..\\textures\\cloud_earth.jpg"));
 }
 
 RayTracer::~RayTracer()

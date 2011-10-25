@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 // epsilon - allowable margin of error ( 0.999999 == 1.0 )
-static float eps = 0.00001f;
+static float eps = 0.0001f;
 
 Mesh::Mesh()
 {
@@ -12,6 +12,8 @@ Mesh::~Mesh()
 {
 
 }
+
+
 
 bool Mesh::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
@@ -24,10 +26,126 @@ bool Mesh::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, flo
 }
 
 
+
+
 bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
-	return false;
+	Vector A, B, C;
+	float nearest_t = -1.0f, temp_t;
+	Vector nearest_n;
+	int face_index = -1; // Index of intersected face
+	int temp_index;
+	for(int faceI=0; faceI<faces.size(); faceI+=3)
+	{
+		A = vertices[faces[faceI]];
+		B = vertices[faces[faceI+1]];
+		C = vertices[faces[faceI+2]];
+
+		// Skip face if triangle plane and ray are parallel
+		float temp = ((B-A).cross(C-A)).dot(r.d());
+		if(temp < eps && temp > -eps)
+			continue;
+		else
+		{
+			double a = A.x() - B.x();
+			double b = A.y() - B.y();
+			double c = A.z() - B.z();
+			double d = A.x() - C.x();
+			double e = A.y() - C.y();
+			double f = A.z() - C.z();
+			double g = r.d().x();
+			double h = r.d().y();
+			double i = r.d().z();
+			double j = A.x() - r.e().x();
+			double k = A.y() - r.e().y();
+			double l = A.z() - r.e().z();
+
+			double eiSubhf = e*i - h*f;
+			double gfSubdi = g*f - d*i;
+			double dhSubeg = d*h - e*g;
+
+			double M = a*eiSubhf + b*gfSubdi + c*dhSubeg;
+
+			double akSubjb = a*k - j*b;
+			double jcSubal = j*c - a*l;
+			double blSubkc = b*l - k*c;
+
+			// Gamma and Beta represent distance along vectors (c-a) and (b-a) respectively,
+			// if Gamma or Beta are beyond their respective vectors, then intersection is not within the surface of the triangle
+			double Gamma = (i*akSubjb + h*jcSubal + g*blSubkc)/M;
+			if(Gamma < 0 || Gamma > 1)
+				continue;
+
+			double Beta = (j*eiSubhf + k*gfSubdi + l*dhSubeg)/M;
+			if(Beta < 0 || Beta > (1-Gamma))
+				continue;
+
+
+			temp_t = -((f*akSubjb + e*jcSubal + d*blSubkc)/M);
+
+
+			if(temp_t > eps && (nearest_t <= eps || temp_t < nearest_t))
+			{
+				nearest_t = temp_t;
+
+				// Retain intersected face index (remember face is specified by i*3,i*3+1,i*3+2)
+				face_index = faceI;
+			}
+		}
+	}
+
+	// Return intersection details
+	if(nearest_t > eps)
+	{
+		t = nearest_t;
+		p = r.e() + r.d()*t;
+
+		// Get the intersected triangle vertices
+		A = vertices[faces[face_index]];
+		B = vertices[faces[face_index+1]];
+		C = vertices[faces[face_index+2]];
+
+		// Compute flat face normal
+		n = (B-A).cross(C-A).normalized();
+
+		Vector v0 = C - A;
+		Vector v1 = B - A;
+		Vector v2 = p - A;
+		float dot00 = v0.dot(v0);
+		float dot01 = v0.dot(v1);
+		float dot02 = v0.dot(v2);
+		float dot11 = v1.dot(v1);
+		float dot12 = v1.dot(v2);
+		float invDenom = 1.0f / (dot00*dot11 - dot01*dot01);
+		float local_u = (dot11*dot02 - dot01*dot12) * invDenom;
+		float local_v = (dot00*dot12 - dot01*dot02) * invDenom;
+		
+		// Recall faces[face_index] is the index for the vertex, faces[face_index]*2 then maps to the correct u,v position in the uvList since uvList=(u0,v0,u1,v1,...)
+		int uv_index = faces[face_index]*2;
+		float u_0 = uvList[uv_index];
+		float v_0 = uvList[uv_index+1];
+		uv_index = faces[face_index+1]*2;
+		float u_1 = uvList[uv_index];
+		float v_1 = uvList[uv_index+1];
+		uv_index = faces[face_index+2]*2;
+		float u_2 = uvList[uv_index];
+		float v_2 = uvList[uv_index+1];
+
+		float tu1 = u_1 - u_0;
+		float tv1 = v_1 - v_0;
+		float tu0 = u_2 - u_0;
+		float tv0 = v_2 - v_0;
+
+		u = u_0 + tu0*local_u + tu1*local_v;
+		v = v_0 + tv0*local_u + tv1*local_v;
+
+		return true;
+	}
+	else
+		return false;
 }
+
+
 
 
 // This intersection method is more or less copied from "An Efficient Ray-Quadrilateral Intersection Test" by Lagae and Dutre
@@ -103,7 +221,6 @@ bool Mesh::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u,
 		n = nearest_n;
 
 		// Compute u,v coordinates
-		float u,v; //***These need to be returned with the function
 		float alpha_11, beta_11;
 		Vector E_01 = nearest_e_01;
 		Vector E_03 = nearest_e_03;

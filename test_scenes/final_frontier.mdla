@@ -1,0 +1,45 @@
+mdlflA20
+
+[ Assume units are metres ]
+cmr "the camera"
+    0.0 0.0 250.0		% Eye point
+    0.0 0.0 -1.0		% View direction
+    0.0 1.0 0.0			% Up
+    2.0					% Focal distance
+    4.0 3.0				% Width, height
+    0.0 0.0				% Center of image area
+    0.0					% Time
+end
+
+
+nmdTxtr "earth tex"
+	imgFl "..\\textures\\cloud_earth.jpg" "jpg" end
+end
+
+nmdMtrl "earth"
+	lmbrtn
+		%rgb 0.9 0.9 0.9 end
+		txtrMp "vrtxUV"
+			txtrNm "earth tex" end
+		end
+	end
+end
+
+
+
+
+
+[Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
+pntSrc ""
+	rgb 1.0 1.0 1.0 end
+	100.0 100.0 500.0
+end
+
+
+
+[ matte ball ]
+sphr ""
+	mtrlNm "earth" end
+	0.0 0.0 0.0
+	150.0
+end

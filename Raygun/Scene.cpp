@@ -295,12 +295,24 @@ Camera* Scene::loadMDL(char *filename)
 				// Grab the point (face) list for quadrilaterals
 				else if(msh_k == mdlKey("qdrltrl"))
 				{
-					// Tell the Mesh it's make of quads
-					msh->setVertsPerFace(4);
-					
+					// Convert the quad into two triangles and make a triangle mesh
+					msh->setVertsPerFace(3);
+					int a,b,c,d;
 					while(inp.NumRemain() > 0)
 					{
-						msh->addFacePoint(inp.ReadInt());
+						a = inp.ReadInt();
+						b = inp.ReadInt();
+						c = inp.ReadInt();
+						d = inp.ReadInt();
+
+						// First triangle
+						msh->addFacePoint(a);
+						msh->addFacePoint(b);
+						msh->addFacePoint(c);
+						// Second triangle
+						msh->addFacePoint(a);
+						msh->addFacePoint(c);
+						msh->addFacePoint(d);
 					}
 				}
 				// Or Grab the points (face) list for triangles

@@ -1,0 +1,307 @@
+mdlflA20
+
+cmr "the camera"
+    278.0 273.0 -800.0	% Eye point
+    0.0 0.0 1.0		% View direction
+    0.0 1.0 0.0		% Up
+    0.035		% Focal distance
+    0.025 0.025		% Width, height
+    0.0 0.0		% Center of image area
+    0.0			% Time
+end
+
+
+nmdMtrl "white"
+	lmbrtn
+		rgb 0.75 0.75 0.75 end
+	end
+end
+
+nmdMtrl "red"
+	lmbrtn
+		rgb 0.65 0.06 0.06 end
+	end
+end
+
+nmdMtrl "green"
+	lmbrtn
+		rgb 0.15 0.45 0.1 end
+	end
+end
+
+nmdMtrl "light"
+	lmbrtn
+		rgb 1.0 1.0 1.0 end
+	end
+end
+
+[
+nmdMtrl "light" pLmnr
+lmbrtn
+    spctrl
+    400.0 0.78
+    500.0 0.78
+    600.0 0.78
+    700.0 0.78
+    end
+end
+    spctrl
+    400.0  0.0
+    500.0  8.0
+    600.0 15.6
+    700.0 18.4
+    end
+    sclr 1.000000e+00 end
+end
+end
+]
+
+
+
+
+
+[Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
+pntSrc ""
+	rgb 1.0 1.0 1.0 end
+	278.0 525.0 270.0
+end
+
+
+
+
+
+[ floor ]
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		552.8 0.0   0.0
+		0.0   0.0   0.0
+		0.0   0.0 559.2
+		549.6 0.0 559.2
+
+		130.0 0.0  65.0
+		 82.0 0.0 225.0
+		240.0 0.0 272.0
+		290.0 0.0 114.0
+
+		423.0 0.0 247.0
+		265.0 0.0 296.0
+		314.0 0.0 456.0
+		472.0 0.0 406.0
+	end
+	qdrltrl
+		0 1 2 3
+		7 6 5 4
+		11 10 9 8
+	end
+end
+
+msh ""
+	mtrlNm "light" end
+	vrtxPstn
+		343.0 548.7 227.0
+		343.0 548.7 332.0
+		213.0 548.7 332.0
+		213.0 548.7 227.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+
+[ ceiling ]
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		556.0 548.8   0.0
+		556.0 548.8 559.2
+		  0.0 548.8 559.2
+		  0.0 548.8   0.0
+		343.0 548.8 227.0
+		343.0 548.8 332.0
+		213.0 548.8 332.0
+		213.0 548.8 227.0
+	end
+	qdrltrl
+		0 1 2 3 
+		7 6 5 4
+	end
+end
+
+
+[ back wall ]
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		549.6   0.0 559.2
+		  0.0   0.0 559.2
+		  0.0 548.8 559.2
+		556.0 548.8 559.2
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "green" end
+	vrtxPstn
+		0.0   0.0 559.2
+		0.0   0.0   0.0
+		0.0 548.8   0.0
+		0.0 548.8 559.2
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "red" end
+	vrtxPstn
+		552.8   0.0   0.0
+		549.6   0.0 559.2
+		556.0 548.8 559.2
+		556.0 548.8   0.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+
+[ short block ]
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		130.0 165.0  65.0
+		 82.0 165.0 225.0
+		240.0 165.0 272.0
+		290.0 165.0 114.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		290.0   0.0 114.0
+		290.0 165.0 114.0
+		240.0 165.0 272.0
+		240.0   0.0 272.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		130.0   0.0  65.0
+		130.0 165.0  65.0
+		290.0 165.0 114.0
+		290.0   0.0 114.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		 82.0   0.0 225.0
+		 82.0 165.0 225.0
+		130.0 165.0  65.0
+		130.0   0.0  65.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		240.0   0.0 272.0
+		240.0 165.0 272.0
+		 82.0 165.0 225.0
+		 82.0   0.0 225.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+[end short block]
+
+[ tall block ]
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		423.0 330.0 247.0
+		265.0 330.0 296.0
+		314.0 330.0 456.0
+		472.0 330.0 406.0
+	end
+	qdrltrl
+	   0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		423.0   0.0 247.0
+		423.0 330.0 247.0
+		472.0 330.0 406.0
+		472.0   0.0 406.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		472.0   0.0 406.0
+		472.0 330.0 406.0
+		314.0 330.0 456.0
+		314.0   0.0 456.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		314.0   0.0 456.0
+		314.0 330.0 456.0
+		265.0 330.0 296.0
+		265.0   0.0 296.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		265.0   0.0 296.0
+		265.0 330.0 296.0
+		423.0 330.0 247.0
+		423.0   0.0 247.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+[ end tall box ]

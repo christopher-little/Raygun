@@ -1,0 +1,102 @@
+mdlflA20
+
+[ Assume units are metres ]
+cmr "the camera"
+    0.0 0.0 10.0		% Eye point
+    0.0 0.0 -1.0		% View direction
+    0.0 1.0 0.0			% Up
+    5.0					% Focal distance
+    8.0 6.0				% Width, height
+    0.0 0.0				% Center of image area
+    0.0					% Time
+end
+
+nmdTxtr "tex"
+	imgFl "..\\textures\\cloud_earth.jpg" "jpg" end
+end
+
+nmdMtrl "green"
+	lmbrtn
+		[rgb 0.2 0.9 0.3 end]
+		txtrMp "vrtxUV"
+			txtrNm "tex" end
+		end
+	end
+end
+
+
+
+
+
+[Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
+pntSrc ""
+	rgb 1.0 1.0 1.0 end
+	0.0 0.0 10.0
+end
+
+
+[ triangle test ]
+[
+msh ""
+	mtrlNm "green" end
+	vrtxPstn
+		-2.0 5.0 0.0
+		-6.0 -5.0 0.0
+		2.0 -5.0 0.0
+	end
+	vrtxUV
+		0.5 1.0
+		0.2 0.0
+		0.8 0.0
+	end
+	trngl
+		0 1 2
+	end
+end
+]
+
+msh ""
+	mtrlNm "green" end
+	vrtxPstn
+		-2.0 5.0 0.0
+		-6.0 -5.0 0.0
+		2.0 -5.0 0.0
+		6.0 5.0 -3.0
+	end
+	vrtxUV
+		0.4 1.0
+		0.0 0.0
+		0.6 0.0
+		1.0 1.0
+	end
+	trngl
+		0 1 2
+		0 2 3
+	end
+end
+
+[quad test]
+msh ""
+	mtrlNm "green" end
+	vrtxPstn
+		2.0 5.0 0.0
+		-2.0 -5.0 0.0
+		6.0 -5.0 0.0
+		10.0 5.0 0.0
+	end
+	vrtxUV
+		0.4 1.0
+		0.0 0.0
+		0.6 0.0
+		1.0 1.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+sphr ""
+	mtrlNm "green" end
+	3.0 1.0 0.0
+	2.0
+end

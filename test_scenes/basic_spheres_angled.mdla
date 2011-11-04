@@ -1,0 +1,95 @@
+mdlflA20
+
+[ Assume units are metres ]
+cmr "the camera"
+    45.0 50.0 90.0	% Eye point
+    -0.5 -0.5 -1.0	% View direction
+    0.0 1.0 0.0		% Up
+    0.035			% Focal distance
+    0.025 0.025		% Width, height
+    0.0 0.0			% Center of image area
+    0.0				% Time
+end
+
+
+nmdMtrl "white"
+	lmbrtn
+		rgb 0.8 0.8 0.8 end
+	end
+end
+
+nmdMtrl "red"
+	lmbrtn
+		rgb 0.8 0.2 0.4 end
+	end
+end
+
+nmdMtrl "green"
+	lmbrtn
+		rgb 0.2 0.9 0.3 end
+	end
+end
+
+
+
+
+[Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
+pntSrc ""
+	rgb 1.0 1.0 1.0 end
+	0.0 25.0 50.0
+end
+
+
+
+
+[ bottom balls ]
+sphr ""
+	mtrlNm "red" end
+	0.0 10.0 17.332
+	10.0
+end
+
+sphr ""
+	mtrlNm "red" end
+	-10.0 10.0 0.0
+	10.0
+end
+
+sphr ""
+	mtrlNm "red" end
+	10.0 10.0 0.0
+	10.0
+end
+
+sphr ""
+	mtrlNm "red" end
+	0.0 27.332 8.661
+	10.0
+end
+
+[ floor and wall ]
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		-100.0 0.0 -100.0
+		-100.0 0.0 100.0
+		100.0 0.0 100.0
+		1000.0 0.0 -100.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+msh ""
+	mtrlNm "white" end
+	vrtxPstn
+		-100.0 0.0 -11.0
+		100.0 0.0 -11.0
+		100.0 100.0 -11.0
+		-100.0 100.0 -11.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end

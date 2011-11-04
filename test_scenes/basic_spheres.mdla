@@ -1,0 +1,175 @@
+mdlflA20
+
+[ Assume units are metres ]
+cmr "the camera"
+    25.0 25.0 75.0	% Eye point
+    0.0 0.0 -1.0	% View direction
+    0.0 1.0 0.0		% Up
+    0.035			% Focal distance
+    0.025 0.025		% Width, height
+    0.0 0.0			% Center of image area
+    0.0				% Time
+end
+
+
+nmdMtrl "whitewall"
+	[phng
+		rgb 0.75 0.75 0.75 end
+		rgb 0.9 0.9 0.9 end
+		sclr 256.0 end
+	end]
+	lmbrtn
+		rgb 0.75 0.75 0.75 end
+	end
+end
+
+nmdMtrl "red"
+	phng
+		rgb 0.8 0.2 0.4 end
+		rgb 0.8 0.5 0.6 end
+		sclr 64.0 end
+	end
+	[lmbrtn
+		rgb 0.8 0.2 0.4 end
+	end]
+end
+
+nmdMtrl "green"
+	[phng
+		rgb 0.2 0.9 0.3 end
+		rgb 0.6 0.6 0.6 end
+		sclr 64.0 end
+	end]
+	lmbrtn
+		rgb 0.2 0.9 0.3 end
+	end
+end
+
+nmdMtrl "mirror"
+	phng
+		rgb 0.0 0.0 0.0 end
+		rgb 1.0 1.0 1.0 end
+		sclr 64.0 end
+	end
+end
+
+nmdMtrl "glass"
+	pDlctrc
+		rgb 1.0 0.5 0.2 end
+		sclr 2.0 end
+		sclr 64.0 end
+	end
+end
+
+
+
+
+
+[Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
+pntSrc ""
+	rgb 1.0 1.0 1.0 end
+	10.0 40.0 -10.0
+end
+
+
+
+
+
+
+[ right ball ]
+sphr ""
+	mtrlNm "green" end
+	25.5 10.0 -10.0
+	7.5
+end
+
+[ left ball ]
+sphr ""
+	mtrlNm "red" end
+	15.0 10.0 -20.0
+	7.5
+end
+
+[ mirrorish ball ]
+sphr ""
+	mtrlNm "mirror" end
+	30.0 30.0 -35.0
+	10.0
+end
+
+[ glassish ball ]
+sphr ""
+	mtrlNm "glass" end
+	22.0 18.0 10.0
+	4.0
+end
+
+[ floor ]
+msh ""
+	mtrlNm "whitewall" end
+	vrtxPstn
+		0.0 0.0 0.0
+		50.0 0.0 0.0
+		50.0 0.0 -50.0
+		0.0 0.0 -50.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+[ ceiling ]
+msh ""
+	mtrlNm "whitewall" end
+	vrtxPstn
+		0.0 50.0 0.0
+		0.0 50.0 -50.0
+		50.0 50.0 -50.0
+		50.0 50.0 0.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+[ left wall ]
+msh ""
+	mtrlNm "whitewall" end
+	vrtxPstn
+		0.0 0.0 0.0
+		0.0 0.0 -50.0
+		0.0 50.0 -50.0
+		0.0 50.0 0.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+[ right wall ]
+msh ""
+	mtrlNm "whitewall" end
+	vrtxPstn
+		50.0 0.0 -50.0
+		50.0 0.0 0.0
+		50.0 50.0 0.0
+		50.0 50.0 -50.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end
+
+[ back wall ]
+msh ""
+	mtrlNm "whitewall" end
+	vrtxPstn
+		0.0 0.0 -50.0
+		50.0 0.0 -50.0
+		50.0 50.0 -50.0
+		0.0 50.0 -50.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
+end

@@ -118,7 +118,7 @@ Camera* Scene::loadMDL(char *filename)
 					// skip over texture map name
 					char *bwah = inp.ReadString();
 					
-					// Step into texture chunk (can be either txtrNm to ref named texture, or imgFl to directly load texture from image file)
+					// Step into texture chunk and retrieve texture reference from texture map list
 					mdlKey texKey = inp.BeginChunk();
 					if(texKey == mdlKey("txtrNm"))
 					{
@@ -129,6 +129,7 @@ Camera* Scene::loadMDL(char *filename)
 						std::map<std::string, ImageBuffer*>::iterator it = texMap.find(std::string(texMapName));
 						if(it != texMap.end())
 						{
+							// Set material texture reference
 							if(!surfaceMat->setTexture(it->second))
 								TRACE("Unable to assign texture: %s\n", texMapName);
 						}
@@ -145,12 +146,53 @@ Camera* Scene::loadMDL(char *filename)
 					surfaceMat->makeLambertian(Colour(0.0f,1.0f,1.0f));
 				}
 				inp.EndChunk();
-				//surfaceMat->makeLambertian(mdlRetrieveColour(&inp));
 			}
 			else if(mat == mdlKey("phng"))
 			{
+				// Retrieve the diffuse colour (this can be rgb or texture map)
+				Colour diff(1.0f, 1.0f, 1.0f);
+
+				mdlKey colourKey = inp.BeginChunk();
+				if(colourKey == mdlKey("rgb"))
+				{
+					x = inp.ReadFloat();
+					y = inp.ReadFloat();
+					z = inp.ReadFloat();
+					diff= Colour(x,y,z);
+				}
+				else if(colourKey == mdlKey("txtrMp"))
+				{
+					// skip over texture map name
+					char *bwah = inp.ReadString();
+					
+					// Step into texture chunk and retrieve texture reference from texture map list
+					mdlKey texKey = inp.BeginChunk();
+					if(texKey == mdlKey("txtrNm"))
+					{
+						char texMapName[256];
+						temp = inp.ReadString();
+						strcpy(texMapName, temp);
+
+						std::map<std::string, ImageBuffer*>::iterator it = texMap.find(std::string(texMapName));
+						if(it != texMap.end())
+						{
+							// Set material texture reference
+							if(!surfaceMat->setTexture(it->second))
+								TRACE("Unable to assign texture: %s\n", texMapName);
+						}
+						else
+							TRACE("Named texture, %s, could not be found in texture map list\n", texMapName);
+					}
+					else
+						TRACE("In txtrMp, currently not supporting chunk: %s\n", (char*)texKey);
+					
+					inp.EndChunk();
+				}
+				inp.EndChunk();
+
+
 				// Find a phong material (diffuse, specular and phong exponent
-				Colour diff = mdlRetrieveColour(&inp);
+				//Colour diff = mdlRetrieveColour(&inp);
 				Colour spec = mdlRetrieveColour(&inp);
 				// Retrieve scalar phong exponent
 				inp.BeginChunk(); // Step into sclr chunk
@@ -399,39 +441,6 @@ Colour mdlRetrieveColour(mdlInput *inp)
 		float z = inp->ReadFloat();
 		returnColour = Colour(x,y,z);
 	}
-
-	/*
-	// Find a texture map chunk
-	else if(colour == mdlKey("txtrMp"))
-	{
-		// Skip over nexture map name
-		inp->ReadString();
-
-		// Step into next either a imgFl chunk (where texture image file is located), or txtrNm chunk (where texture has already been loaded and stored using a nmdTxtr chunk)
-		mdlKey texType = inp->BeginChunk();
-		if(texType == mdlKey("imgFl"))
-		{
-			// Get texture file name and file type
-			std::string texFileName = inp->ReadString();
-			std::string texFileType = inp->ReadString();
-			if(texFileType.compare("jpeg") == 0 || texFileType.compare("jpg") == 0)
-			{
-				//***This is where you add texture map EXCEPT IT'S NOT A COLOUR OBJECT, SO THIS FUNCTION NEEDS TO BE RETHOUGHT
-			}
-			else
-			{
-				TRACE("Currently not supporting texture image files of type %s\n", texFileType.c_str());
-			}
-		}
-		else if(texType == mdlKey("txtrNm"))
-		{
-			TRACE("Currently not supporting chunk type txtrNm\n");
-		}
-
-		inp->EndChunk();
-	}
-	*/
-
 	else
 		TRACE("Found unsupported colour chunk: %s\n", colour);
 

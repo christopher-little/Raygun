@@ -393,7 +393,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	}
 
 	// Finalize the colour value and return
-	Colour returnColour =	ambient*mat->a() +
+	Colour returnColour =	ambient*mat->a()*texColour +
 							diffuseIllum*mat->d()*texColour +
 							specularIllum*mat->s() +
 							specularRefl*mat->s()*fresnelR +

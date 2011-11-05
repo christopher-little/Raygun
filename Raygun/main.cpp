@@ -15,8 +15,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 LPCWSTR szClassName = L"RayTracerDisplay"; // Make the class name into a global variable
 
-int defaultWidth = 800;		// Default image window width and height
-int defaultHeight = 600;
+int defaultWidth = 640;		// Default image window width and height
+int defaultHeight = 360;
 RayTracer *rt = NULL;		// Ray tracer object
 ImageBuffer *buf = NULL;	// Buffer for rendered image
 HDC memDC;					// Off screen window buffer, write imagebuffer here, then copy to display
@@ -93,6 +93,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	rt = new RayTracer();
 	buf = new ImageBuffer(defaultWidth, defaultHeight);
 	buf->rainbowStatic();
+	//rt->render(buf);
+	//writeJPG("..\\image.jpg", buf);
 
 
 
@@ -140,8 +142,6 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			RECT cr;
 			GetClientRect(hwnd, &cr);
 			buf = new ImageBuffer(cr.right-cr.left, cr.bottom-cr.top);
-			//***Dump a jpeg image to screen
-			//buf = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
 
 			// Ray trace an image!
 			rt->render(buf);

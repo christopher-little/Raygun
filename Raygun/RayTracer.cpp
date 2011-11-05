@@ -57,13 +57,21 @@ RayTracer::RayTracer()
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
 
-	
+	/*
 	skyBox[0] = readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg");
 	skyBox[1] = readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg");
 	skyBox[2] = readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg");
 	skyBox[3] = readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg");
 	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
 	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
+	*/
+	
+	skyBox[0] = readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg");
+	skyBox[1] = readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg");
+	skyBox[2] = readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg");
+	skyBox[3] = readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg");
+	skyBox[4] = readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg");
+	skyBox[5] = readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg");
 }
 
 RayTracer::~RayTracer()
@@ -77,6 +85,12 @@ void RayTracer::render(ImageBuffer *buf)
 {
 	// "Render" some random pixels
 	buf->rainbowStatic();
+
+	if(cam == NULL)
+	{
+		TRACE("Camera object has not been instantiated. Has a scene been loaded?\n");
+		return;
+	}
 
 	// u-v-w camera space coordinates
 	Vector w = cam->g() * -1.0;
@@ -180,18 +194,22 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			if(exit_face == 0 || exit_face == 1)
 			{
 				u = pSkyBox.z() / rtSkyBoxSize.z();
+				if(exit_face == 0)
+					u = 1.0f-u;
 				v = pSkyBox.y() / rtSkyBoxSize.y();
 			}
 			else if(exit_face == 2 || exit_face == 3)
 			{
 				u = pSkyBox.x() / rtSkyBoxSize.x();
 				v = pSkyBox.z() / rtSkyBoxSize.z();
+				if(exit_face == 2)
+					v=1.0f-v;
 			}
 			else if(exit_face == 4 || exit_face == 5)
 			{
 				u = pSkyBox.x() / rtSkyBoxSize.x();
 				if(exit_face == 5)
-					u = 1-u;
+					u = 1.0f-u;
 				v = pSkyBox.y() / rtSkyBoxSize.y();
 			}
 			else
@@ -202,9 +220,25 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			if(v >= 1.0f)
 				v = 1.0f-eps;
 			
-			int uI = u*(skyBox[exit_face]->width()-1);
-			int vI = v*(skyBox[exit_face]->height()-1);
-			return skyBox[exit_face]->getPixel(vI, uI);
+		// Compute texture position, texture texel position, and fractional distance inside texel
+			float uT = u*(skyBox[exit_face]->width()-1);
+			float vT = v*(skyBox[exit_face]->height()-1);
+			int uI = static_cast<int>(uT);
+			int vI = static_cast<int>(vT);
+			float uD = uT-uI;
+			float vD = vT-vI;
+
+			// Bilinear interpolation across the 4 nearest texels
+			Colour c0 = skyBox[exit_face]->getPixel(vI, uI);
+			Colour c1 = skyBox[exit_face]->getPixel(vI, uI+1);
+			Colour c2 = skyBox[exit_face]->getPixel(vI+1, uI);
+			Colour c3 = skyBox[exit_face]->getPixel(vI+1, uI+1);
+
+			Colour d0 = c0 + (c1*uD + c0*-uD);
+			Colour d1 = c2 + (c3*uD + c2*-uD);
+
+			Colour d3 = d0 + (d1*vD + d0*-vD);
+			return d3;
 		}
 		else
 		{

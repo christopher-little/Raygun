@@ -2,11 +2,11 @@ mdlflA20
 
 [ Assume units are metres ]
 cmr "the camera"
-    4.0 0.0 10.0		% Eye point
-    0.0 0.0 -1.0		% View direction
+    5.0 1.0 10.0		% Eye point
+    0.0 -0.1 -1.0		% View direction
     0.0 1.0 0.0			% Up
-    5.0					% Focal distance
-    8.0 6.0				% Width, height
+    2.0					% Focal distance
+    5.3 3.0				% Width, height
     0.0 0.0				% Center of image area
     0.0					% Time
 end
@@ -15,8 +15,8 @@ nmdTxtr "tex"
 	imgFl "..\\textures\\cloud_earth.jpg" "jpg" end
 end
 
-nmdTxtr "keyboard_tex"
-	imgFl "..\\textures\\keyboard.jpg" "jpg" end
+nmdTxtr "mars tex"
+	imgFl "..\\textures\\mars.jpg" "jpg" end
 end
 
 nmdMtrl "earth"
@@ -28,7 +28,15 @@ nmdMtrl "earth"
 	end
 end
 
-nmdMtrl "earth shine"
+nmdMtrl "mars"
+	lmbrtn
+		txtrMp "vrtxUV"
+			txtrNm "mars tex" end
+		end
+	end
+end
+
+nmdMtrl "shiny"
 	phng
 		txtrMp "vrtxUV"
 			txtrNm "tex" end
@@ -38,6 +46,31 @@ nmdMtrl "earth shine"
 	end
 end
 
+nmdMtrl "pink mirror"
+	phng
+		rgb 0.5 0.05 0.15 end
+		rgb 1.0 1.0 1.0 end
+		sclr 256.0 end
+	end
+end
+
+nmdMtrl "grey mirror"
+	phng
+		rgb 0.6 0.6 0.6 end
+		rgb 1.0 1.0 1.0 end
+		sclr 256.0 end
+	end
+end
+
+nmdMtrl "dark glass"
+	pDlctrc
+		rgb 0.8 0.8 0.8 end
+		sclr 2.0 end
+		sclr 64.0 end
+	end
+end
+
+
 
 
 
@@ -46,11 +79,11 @@ end
 [Point light source. Supposed to be using Radiance (W/m2/sr) which is upwards of 800, but that's bananas]
 pntSrc ""
 	rgb 1.0 1.0 1.0 end
-	-100.0 100.0 100.0
+	-100.0 50.0 100.0
 end
 pntSrc ""
 	rgb 1.0 1.0 1.0 end
-	100.0 100.0 100.0
+	100.0 150.0 100.0
 end
 
 
@@ -61,13 +94,45 @@ end
 msh ""
 	mtrlNm "earth" end
 	vrtxPstn
-		0.0 5.0 0.0
-		0.0 -5.0 0.0
-		-4.0 0.0 0.0
-		-4.0 0.0 0.0
-		4.0 0.0 0.0
-		0.0 0.0 4.0
-		0.0 0.0 -4.0
+		0.0 8.0 0.0
+		0.0 0.0 0.0
+		-2.0 4.0 0.0
+		-2.0 4.0 0.0
+		2.0 4.0 0.0
+		0.0 4.0 2.0
+		0.0 4.0 -2.0
+	end
+	vrtxUV
+		0.5 1.0
+		0.5 0.0
+		0.0 0.5
+		1.0 0.5
+		0.5 0.5
+		0.25 0.5
+		0.75 0.5
+	end
+	trngl
+		0 2 5
+		0 5 4
+		5 2 1
+		5 1 4
+		0 4 6
+		0 6 3
+		6 4 1
+		6 1 3
+	end
+end
+
+msh ""
+	mtrlNm "grey mirror" end
+	vrtxPstn
+		0.0 0.0 0.0
+		0.0 -8.0 0.0
+		-2.0 -4.0 0.0
+		-2.0 -4.0 0.0
+		2.0 -4.0 0.0
+		0.0 -4.0 2.0
+		0.0 -4.0 -2.0
 	end
 	vrtxUV
 		0.5 1.0
@@ -92,6 +157,7 @@ end
 
 
 [quad test]
+[
 msh ""
 	mtrlNm "earth" end
 	vrtxPstn
@@ -110,10 +176,48 @@ msh ""
 		0 1 2 3
 	end
 end
-
+]
 
 sphr ""
-	mtrlNm "earth shine" end
-	8.0 2.0 0.0
-	2.0
+	mtrlNm "earth" end
+	5.0 3.0 -4.0
+	3.0
+end
+
+sphr ""
+	mtrlNm "mars" end
+	5.0 -3.5 -4.0
+	3.0
+end
+
+sphr ""
+	mtrlNm "pink mirror" end
+	12.0 -2.5 -4.0
+	4.0
+end
+
+sphr ""
+	mtrlNm "dark glass" end
+	12.0 6.0 -6.0
+	4.0
+end
+
+
+msh ""
+	mtrlNm "earth" end
+	vrtxPstn
+		11.0 2.0 3.0
+		11.0 0.0 3.0
+		13.0 0.0 3.0
+		13.0 2.0 3.0
+	end
+	vrtxUV
+		0.0 1.0
+		0.0 0.0
+		1.0 0.0
+		1.0 1.0
+	end
+	qdrltrl
+		0 1 2 3
+	end
 end

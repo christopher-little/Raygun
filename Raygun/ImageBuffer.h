@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef IMAGE_BUFER
-#define IMAGE_BUFER
+#ifndef IMAGE_BUFFER
+#define IMAGE_BUFFER
 
 #include "Colour.h"
 #include "TRACE.h"

@@ -26,7 +26,6 @@ public:
 	void render(ImageBuffer *buf);
 
 private:
-	Camera *cam;	// Camera properties
 	Scene *scene;	// Scene to be ray traced
 
 	/**

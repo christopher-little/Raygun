@@ -11,13 +11,28 @@
 
 Scene::Scene()
 {
-	
+	// Ensure a clean Scene has all object members initialized to NULL
+
+	for(int i=0; i<6; i++)
+		_skyBox[i] = NULL;
+
+	_cam = NULL;
 }
 
 
 Scene::~Scene()
 {
-	//***Need to safely delete all materials in matMap, and all shapes and lights from shape and light lists
+	// Clear out all lists and objects
+
+	shapeList.clear();
+	lightList.clear();
+	texMap.clear();
+	matMap.clear();
+
+	for(int i=0; i<6; i++)
+		delete _skyBox[i];
+
+	delete _cam;
 }
 
 
@@ -25,13 +40,10 @@ Scene::~Scene()
 Colour mdlRetrieveColour(mdlInput *inp); // Retrieves a colour (ie rgb) from mdl file
 
 
-Camera* Scene::loadMDL(char *filename)
+void Scene::loadMDL(char *filename)
 {
 	FILE *inputSceneFile = fopen(filename,"r");
 	mdlInput inp(inputSceneFile);
-
-	// Camera object to return
-	Camera *cam = NULL;
 
 	// Parse all chunks in the mdl file
 	mdlKey k;
@@ -76,7 +88,7 @@ Camera* Scene::loadMDL(char *filename)
 			inp.ReadFloat();
 
 			// Create the camera object
-			cam = new Camera(e, g, t, N, w, h);
+			_cam = new Camera(e, g, t, N, w, h);
 
 			//***Consider when camera is not defined in the mdl file
 		}
@@ -419,8 +431,6 @@ Camera* Scene::loadMDL(char *filename)
 	}
 
 	fclose(inputSceneFile);
-
-	return cam;
 }
 
 

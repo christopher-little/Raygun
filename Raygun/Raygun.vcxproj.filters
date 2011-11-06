@@ -128,5 +128,8 @@
     <ClInclude Include="ImageIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="test_scenes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,8 @@
 #include "AABB.h"
 #include "Mesh.h"
 
+#include "test_scenes.h"
+
 #include "TRACE.h"
 
 // epsilon - allowable margin of error ( i.e. 0.9999 == 1.0 )
@@ -31,10 +33,9 @@ Vector	rtSkyBoxSize;				// Physical dimensions of the cube map sky box. Assumes 
 Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. For now these are in the ray tracer, but the textures themselves are in the Scene.
 
 
-//***Temp development variables
-ImageBuffer *skyBox[6];
 
 
+// Constructor
 RayTracer::RayTracer()
 {
 	// Warm up the number generator
@@ -42,14 +43,15 @@ RayTracer::RayTracer()
 
 	
 	// Pull in an MDL scene file
-	scene = new Scene();
+	//scene = new Scene();
 	//cam = scene->loadMDL("..\\test_scenes\\cornellbox.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
 	//cam = scene->loadMDL("..\\test_scenes\\final_frontier.mdla");
-	cam = scene->loadMDL("..\\test_scenes\\texturing.mdla");
+	//cam = scene->loadMDL("..\\test_scenes\\texturing.mdla");
+	//scene->loadMDL("..\\test_scenes\\texturing.mdla");
 
 
 	// Create a skybox
@@ -65,13 +67,18 @@ RayTracer::RayTracer()
 	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
 	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
 	*/
-	
-	skyBox[0] = readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg");
-	skyBox[1] = readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg");
-	skyBox[2] = readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg");
-	skyBox[3] = readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg");
-	skyBox[4] = readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg");
-	skyBox[5] = readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg");
+
+	/*
+	scene->setSkyBox(	readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
+										readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
+										readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
+										readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
+										readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
+										readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
+	*/
+
+
+	scene = testscene::test1();
 }
 
 RayTracer::~RayTracer()
@@ -85,16 +92,16 @@ void RayTracer::render(ImageBuffer *buf)
 {
 	// "Render" some random pixels
 	buf->rainbowStatic();
-
-	if(cam == NULL)
+	
+	if(scene->cam() == NULL)
 	{
 		TRACE("Camera object has not been instantiated. Has a scene been loaded?\n");
 		return;
 	}
 
 	// u-v-w camera space coordinates
-	Vector w = cam->g() * -1.0;
-	Vector u = cam->t().cross(w).normalized();
+	Vector w = scene->cam()->g() * -1.0;
+	Vector u = scene->cam()->t().cross(w).normalized();
 	Vector v = w.cross(u).normalized();
 
 	// Cast ray for each pixel
@@ -113,14 +120,14 @@ void RayTracer::render(ImageBuffer *buf)
 					offU = (float)rand()/(float)RAND_MAX;
 					offV = (float)rand()/(float)RAND_MAX;
 				}
-				float u_s = -0.5f*cam->w() + cam->w()*(((float)col+offU)/(float)buf->width());
-				float v_s = -0.5f*cam->h() + cam->h()*(((float)row+offV)/(float)buf->height());
+				float u_s = -0.5f*scene->cam()->w() + scene->cam()->w()*(((float)col+offU)/(float)buf->width());
+				float v_s = -0.5f*scene->cam()->h() + scene->cam()->h()*(((float)row+offV)/(float)buf->height());
 
 				// Convert u-v sample coords to x-y-z position (world space)
-				Vector s = cam->e() + u*u_s + v*v_s + w*-cam->N();
+				Vector s = scene->cam()->e() + u*u_s + v*v_s + w*-scene->cam()->N();
 
 				// Create the ray
-				Ray ray(cam->e(), (s-cam->e()).normalized());
+				Ray ray(scene->cam()->e(), (s-scene->cam()->e()).normalized());
 
 				if(row == 64 && col == 448)
 				{
@@ -180,7 +187,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	if(nearestShape < 0)
 	{
 		// Sample the skybox if it exists, otherwise use the default ray tracer colour
-		if(skyBox[0] != NULL)
+		if(scene->getSkyBox(0) != NULL)
 		{
 			int enter_face, exit_face;
 			float enter_t, exit_t;
@@ -221,18 +228,19 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 				v = 1.0f-eps;
 			
 		// Compute texture position, texture texel position, and fractional distance inside texel
-			float uT = u*(skyBox[exit_face]->width()-1);
-			float vT = v*(skyBox[exit_face]->height()-1);
+			ImageBuffer *skyTex = scene->getSkyBox(exit_face);
+			float uT = u*(skyTex->width()-1);
+			float vT = v*(skyTex->height()-1);
 			int uI = static_cast<int>(uT);
 			int vI = static_cast<int>(vT);
 			float uD = uT-uI;
 			float vD = vT-vI;
 
 			// Bilinear interpolation across the 4 nearest texels
-			Colour c0 = skyBox[exit_face]->getPixel(vI, uI);
-			Colour c1 = skyBox[exit_face]->getPixel(vI, uI+1);
-			Colour c2 = skyBox[exit_face]->getPixel(vI+1, uI);
-			Colour c3 = skyBox[exit_face]->getPixel(vI+1, uI+1);
+			Colour c0 = skyTex->getPixel(vI, uI);
+			Colour c1 = skyTex->getPixel(vI, uI+1);
+			Colour c2 = skyTex->getPixel(vI+1, uI);
+			Colour c3 = skyTex->getPixel(vI+1, uI+1);
 
 			Colour d0 = c0 + (c1*uD + c0*-uD);
 			Colour d1 = c2 + (c3*uD + c2*-uD);

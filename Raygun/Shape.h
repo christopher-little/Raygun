@@ -16,7 +16,6 @@ public:
 	inline Material* mat() const { return _mat; }
 	inline void setMat(Material *mat)
 	{
-		delete _mat;
 		_mat = mat;
 	}
 

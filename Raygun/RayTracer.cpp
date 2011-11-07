@@ -78,7 +78,8 @@ RayTracer::RayTracer()
 	*/
 
 
-	scene = testscene::test1();
+	//scene = testscene::test1();
+	scene = testscene::metaballtest();
 }
 
 RayTracer::~RayTracer()

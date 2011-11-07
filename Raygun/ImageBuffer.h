@@ -4,6 +4,7 @@
 #define IMAGE_BUFFER
 
 #include "Colour.h"
+#include "Perlin.h"
 #include "TRACE.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +116,20 @@ public:
 
 
 
+
+	// Generate perlin noise (black & white)
+	void generatePerlin(int octaves, int power)
+	{
+		Perlin p(octaves, power);
+		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
+		{
+			//float noise = 0.5f;
+			float noise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+			
+			// Remember:						 x,									 y      (not row,col)
+			setPixel(col, row, Colour(noise,noise,noise));
+		}
+	}
 
 	// Generate rainbow static
 	void rainbowStatic()

@@ -14,6 +14,7 @@ class Perlin
 public:
 	// Initialize the perlin noise generator with the given number of octaves/harmonics, and the power of 2 for the starting octave (with amplitude 1.0)
 	Perlin(int octaves, int power);
+	~Perlin();
 
 	// Grab a noise value (assumes x,y,z are in range [0.0..1.0]
 	float noise(float x, float y, float z);

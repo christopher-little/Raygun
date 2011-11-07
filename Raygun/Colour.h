@@ -43,6 +43,14 @@ public:
 	// Divide colour components by scalar
 	inline Colour operator/ (float m) const { if(m > 0.0f) { return Colour(_r/m, _g/m, _b/m); } else { return Colour(1.0,1.0,1.0); } }
 
+	// Invert the colour (1-colour)
+	inline void invert()
+	{
+		_r = 1.0f-_r;
+		_g = 1.0f-_g;
+		_b = 1.0f-_b;
+	}
+
 	// Clamp the components to 0.0 .. 1.0
 	inline Colour clamp() const
 	{

@@ -54,14 +54,15 @@ public:
 
 
 
-
-
-	// Directly set the image buffer to the supplied float array. rgbArray must be dynamically allocated
-	inline void setBuffer(float *rgbArray) { buffer = rgbArray; }
+	// Directly set the image buffer to the supplied float array. rgbArray must be dynamically allocated (i.e. new float[width*height*3])
+	inline void setBuffer(float *rgbArray)
+	{
+		// Free the current buffer (just in case), then assign the new buffer.
+		delete buffer;
+		buffer = rgbArray;
+	}
 	// Get a reference to the image buffer array. Note, modifying the returned array will permanently modify the image buffer contents
 	inline float *getBuffer() { return buffer; }
-	
-
 
 
 
@@ -86,74 +87,17 @@ public:
 
 
 
-	/*
-	// Flip the image buffer array vertically (upside down)
-	void flipV()
-	{
-		TRACE("%d %d\n", _width, _height);
-		// There are 3 "columns", one for each component
-		float temp;
-		for(int row=0; row<_height/2; row++) for(int col=0; col<_width; col++)
-		{
-			int i = (row*_width + col)*3;
-			int invi = ((_height-row-1)*_width + col)*3;
-			
-			temp = buffer[i];
-			buffer[i] = buffer[invi];
-			buffer[invi] = temp;
-			
-			temp = buffer[i+1];
-			buffer[i+1] = buffer[invi+1];
-			buffer[invi+1] = temp;
-			
-			temp = buffer[i+2];
-			buffer[i+2] = buffer[invi+2];
-			buffer[invi+2] = temp;
-		}
-	}
-	*/
-
-
-
-
-
 	// Generate perlin noise (black & white)
-	void generatePerlin(int octaves, int power)
-	{
-		Perlin p(octaves, power);
-		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
-		{
-			//float noise = 0.5f;
-			float noise = p.noise((float)col/_width, (float)row/_height, 0.0f);
-			
-			// Remember:						 x,									 y      (not row,col)
-			setPixel(col, row, Colour(noise,noise,noise));
-		}
-	}
+	void generatePerlin(Perlin &p);
+
+	// Warp the current contents of the Imagebuffer by randomized perlin noise
+	void warpPerlin(Perlin &p);
 
 	// Generate rainbow static
-	void rainbowStatic()
-	{
-		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
-		{
-			Colour out(	(float)rand()/(float)RAND_MAX,
-						(float)rand()/(float)RAND_MAX,
-						(float)rand()/(float)RAND_MAX);
-			setPixel(row, col, out);
-		}
-	}
+	void rainbowStatic();
 
 	// Generate gradient
-	void gradient()
-	{
-		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
-		{
-			Colour out(	((float)row/(float)_height)*1.0f,
-						0.0f,
-						((float)col/(float)_width)*1.0f);
-			setPixel(row, col, out);
-		}
-	}
+	void gradient();
 
 private:
 	float* buffer;

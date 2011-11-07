@@ -85,6 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ImageBuffer.cpp" />
     <ClCompile Include="ImageIO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MDL\mdlCompile.cpp" />

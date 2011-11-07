@@ -35,7 +35,24 @@ Perlin::Perlin(int octaves, int power)
 	}
 }
 
-// Grab a noise value
+
+
+
+
+Perlin::~Perlin()
+{
+	for(int i=0; i<_octaves.size(); i++)
+	{
+		_octaves[i].clear();
+	}
+
+	_octaves.clear();
+}
+
+
+
+
+
 float Perlin::noise(float x, float y, float z)
 {
 	float noiseValue = 0.0f;
@@ -108,13 +125,10 @@ float Perlin::noise(float x, float y, float z)
 		amp *= 0.5f;
 	}
 
-
-	// Shift the noise value range from [-1.0..1.0] to [0.0..1.0]
-	noiseValue += 1.0f;
-	noiseValue *= 0.5f;
-
 	if(noiseValue > 1.0f)
 		noiseValue = 1.0f;
+	else if(noiseValue < -1.0f)
+		noiseValue = -1.0f;
 	
 	return noiseValue;
 }

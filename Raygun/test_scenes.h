@@ -17,6 +17,9 @@ using namespace std;
 #include "Light.h"
 #include "PointLight.h"
 
+#include "Perlin.h"
+
+
 namespace testscene {
 
 static Scene *test1()
@@ -208,29 +211,67 @@ static Scene *metaballtest()
 
 
 	// Textures
-	ImageBuffer *tex = new ImageBuffer(256,256);
-	tex->generatePerlin(3,2);
-	scene->setTex("perlin tex", tex);
+	Perlin p(6,3);
+	ImageBuffer *tex = new ImageBuffer(1024,512);
+	tex->generatePerlin(p);
+	scene->setTex("perlin noise", tex);
+
+	tex = readJPG("..\\textures\\bricks_normal.jpg");
+	tex->warpPerlin(p);
+	scene->setTex("perlin warp", tex);
+
 
 	// Materials
+	// shiny pink
 	Material *mat = new Material();
 	mat->makePhongAmb(	Colour(0.1f,0.0f,0.0f),
 											Colour(0.8f,0.3f,0.5f),
 											Colour(0.6f,0.6f,0.6f),
 											256.0f);
 	scene->setMat(string("shiny pink"), mat);
+
+	// glossy white
 	mat = new Material();
 	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
 									Colour(0.3f,0.3f,0.3f),
 									256.0f);
 	scene->setMat(string("glossy white"), mat);
+
+	// regular perlin noise
 	mat = new Material();
 	mat->makePhongAmb( Colour(1.0f,1.0f,1.0f),
 										 Colour(),
 										 Colour(),
 										 256.0f);
-	mat->setTexture(scene->getTex("perlin tex"));
-	scene->setMat(string("perlin"), mat);
+	mat->setTexture(scene->getTex("perlin noise"));
+	scene->setMat(string("perlin noise"), mat);
+
+	// shiny perlin noise
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
+											Colour(0.8f,0.8f,0.8f),
+											Colour(0.2f,0.2f,0.2f),
+											256.0f);
+	mat->setTexture(scene->getTex("perlin noise"));
+	scene->setMat(string("shiny perlin noise"), mat);
+
+	// perlin warp
+	mat = new Material();
+	mat->makePhongAmb( Colour(1.0f,1.0f,1.0f),
+										 Colour(),
+										 Colour(),
+										 256.0f);
+	mat->setTexture(scene->getTex("perlin warp"));
+	scene->setMat(string("perlin warp"), mat);
+
+	// shiny perlin warp
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
+											Colour(0.8f,0.8f,0.8f),
+											Colour(0.2f,0.2f,0.2f),
+											256.0f);
+	mat->setTexture(scene->getTex("perlin warp"));
+	scene->setMat(string("shiny perlin warp"), mat);
 
 
 	
@@ -246,6 +287,7 @@ static Scene *metaballtest()
 
 	
 	// Shapes
+	//floor
 	Mesh *msh = new Mesh();
 	msh->addVertex(Vector(-40.0f,-20.0f,-40.0f));
 	msh->addVertex(Vector(-40.0f,-20.0f,40.0f));
@@ -269,12 +311,12 @@ static Scene *metaballtest()
 	msh->setMat(scene->getMat("glossy white"));
 	scene->addShape(msh);
 
-	
+	// left and right panels
 	msh = new Mesh();
-	msh->addVertex(Vector(-20.0f,20.0f,-30.0f));
-	msh->addVertex(Vector(-20.0f,-20.0f,-30.0f));
-	msh->addVertex(Vector(20.0f,-20.0f,-30.0f));
-	msh->addVertex(Vector(20.0f,20.0f,-30.0f));
+	msh->addVertex(Vector(-41.0f,20.0f,-30.0f));
+	msh->addVertex(Vector(-41.0f,-20.0f,-30.0f));
+	msh->addVertex(Vector(-1.0f,-20.0f,-30.0f));
+	msh->addVertex(Vector(-1.0f,20.0f,-30.0f));
 
 	msh->addUVCoord(0.0f,1.0f);
 	msh->addUVCoord(0.0f,0.0f);
@@ -290,15 +332,45 @@ static Scene *metaballtest()
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
-	msh->setMat(scene->getMat("perlin"));
+	msh->setMat(scene->getMat("perlin noise"));
 	scene->addShape(msh);
 
 
-	/*
-	Shape *shp = new Sphere(	Vector(0.0f,0.0f,0.0f), 5.0f );
-	shp->setMat(scene->getMat("shiny pink"));
+	
+	msh = new Mesh();
+	msh->addVertex(Vector(1.0f,20.0f,-30.0f));
+	msh->addVertex(Vector(1.0f,-20.0f,-30.0f));
+	msh->addVertex(Vector(41.0f,-20.0f,-30.0f));
+	msh->addVertex(Vector(41.0f,20.0f,-30.0f));
+
+	msh->addUVCoord(0.0f,1.0f);
+	msh->addUVCoord(0.0f,0.0f);
+	msh->addUVCoord(1.0f,0.0f);
+	msh->addUVCoord(1.0f,1.0f);
+
+	msh->setVertsPerFace(3);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(1);
+	msh->addFacePoint(2);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(2);
+	msh->addFacePoint(3);
+	msh->setMat(scene->getMat("perlin warp"));
+	scene->addShape(msh);
+
+
+	
+	Shape *shp = new Sphere(	Vector(-15.0f,-15.0f,-19.0f), 10.0f );
+	shp->setMat(scene->getMat("perlin noise"));
 	scene->addShape(shp);
-	*/
+
+	shp = new Sphere(	Vector(15.0f,-15.0f,-19.0f), 10.0f );
+	shp->setMat(scene->getMat("perlin warp"));
+	scene->addShape(shp);
+	
+
 
 	Metaballs *m = new Metaballs();
 	m->addSphere( Vector(0.0f,0.0f,0.0f), 5.0f );

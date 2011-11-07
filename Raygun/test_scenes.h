@@ -209,7 +209,7 @@ static Scene *metaballtest()
 
 	// Textures
 	ImageBuffer *tex = new ImageBuffer(256,256);
-	tex->generatePerlin(1,3);
+	tex->generatePerlin(3,2);
 	scene->setTex("perlin tex", tex);
 
 	// Materials

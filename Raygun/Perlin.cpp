@@ -27,8 +27,8 @@ Perlin::Perlin(int octaves, int power)
 		{
 			int j = x + y*exp + z*exp*exp;
 
-			float denom = 1.0f/((float)(RAND_MAX+1)*0.5f);
-			_octaves[i][j]   = Vector((float)rand() *denom, (float)rand() *denom, (float)rand() *denom);
+			float denom = 1.0f/((float)RAND_MAX*0.5f);
+			_octaves[i][j]   = Vector(((float)rand() *denom)-1.0f, ((float)rand() *denom)-1.0f, ((float)rand() *denom)-1.0f);
 		}
 		// Double the gradient grid density and half the amplitude for the next octave
 		exp = exp << 1;

@@ -4,12 +4,16 @@ Currently, Raygun is a basic toy ray tracer project.
 
 Features:
 -Win32 window (controls are non-existent at the moment)
+	-Planning to move to QT or other cross platform GUI framework.
 -loads MDL files (i.e. Cornell box scene)
--Meshes (quads, triangles coming soon), spheres
+	-Planning to remove this since provided implementation is older than most trees.
+-Meshes (triangles, and quads "tesselated" into triangles), spheres
 -Point lights
 -Direct diffuse, specular lighting
 -Specular reflection
 -Transmission/refraction (only for spheres at the moment)
+-Basic u,v mapping and texture support
+-Perlin Noise generation; used to make basic noisey textures or to modify existing textures (i.e. warping)
 
 Planned features:
 -Diffuse reflection
@@ -19,3 +23,4 @@ Planned features:
 -Motion blur
 -BVH (i.e. octrees)
 -GUI (scene and object loading, write image to jpg/png, etc)
+-Additional shapes: cylinders, perhaps cones, metaballs (blobs)

@@ -53,9 +53,10 @@ Perlin::~Perlin()
 
 
 
-float Perlin::noise(float x, float y, float z)
+vector<float> *Perlin::noise(float x, float y, float z)
 {
 	float noiseValue = 0.0f;
+	vector<float> *noiseValues = new vector<float>(_octaves.size());
 	
 	// Dimension size for current octave
 	int dim = 1 << _basePower;
@@ -120,6 +121,7 @@ float Perlin::noise(float x, float y, float z)
 		float za = ya + sz*(yb-ya);
 
 		noiseValue += za*amp;
+		noiseValues->push_back(za*amp);
 
 		dim = dim << 1;
 		amp *= 0.5f;
@@ -130,5 +132,6 @@ float Perlin::noise(float x, float y, float z)
 	else if(noiseValue < -1.0f)
 		noiseValue = -1.0f;
 	
-	return noiseValue;
+	//return noiseValue;
+	return noiseValues;
 }

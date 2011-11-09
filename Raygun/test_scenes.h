@@ -30,9 +30,9 @@ static Scene *test1()
 	Vector e(1.0f,14.0f,10.0f);
 	Vector g = Vector(0.2f,-0.3f,-1.0f).normalized();
 	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
-	float N = 2.2;
-	float w = 5.3;
-	float h = 3.0;
+	float N = 2.2f;
+	float w = 5.3f;
+	float h = 3.0f;
 	scene->setCam( new Camera(e, g, t, N, w, h) );
 
 
@@ -211,7 +211,7 @@ static Scene *metaballtest()
 
 
 	// Textures
-	Perlin p(6,3);
+	Perlin p(2,2);
 	ImageBuffer *tex = new ImageBuffer(1024,512);
 	tex->generatePerlin(p);
 	scene->setTex("perlin noise", tex);
@@ -249,8 +249,8 @@ static Scene *metaballtest()
 	// shiny perlin noise
 	mat = new Material();
 	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
-											Colour(0.8f,0.8f,0.8f),
-											Colour(0.2f,0.2f,0.2f),
+											Colour(0.9f,0.9f,0.9f),
+											Colour(0.1f,0.1f,0.1f),
 											256.0f);
 	mat->setTexture(scene->getTex("perlin noise"));
 	scene->setMat(string("shiny perlin noise"), mat);
@@ -267,8 +267,8 @@ static Scene *metaballtest()
 	// shiny perlin warp
 	mat = new Material();
 	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
-											Colour(0.8f,0.8f,0.8f),
-											Colour(0.2f,0.2f,0.2f),
+											Colour(0.9f,0.9f,0.9f),
+											Colour(0.1f,0.1f,0.1f),
 											256.0f);
 	mat->setTexture(scene->getTex("perlin warp"));
 	scene->setMat(string("shiny perlin warp"), mat);
@@ -362,12 +362,12 @@ static Scene *metaballtest()
 
 
 	
-	Shape *shp = new Sphere(	Vector(-15.0f,-15.0f,-19.0f), 10.0f );
-	shp->setMat(scene->getMat("perlin noise"));
+	Shape *shp = new Sphere(	Vector(-15.0f,-12.0f,-19.0f), 8.0f );
+	shp->setMat(scene->getMat("shiny perlin noise"));
 	scene->addShape(shp);
 
-	shp = new Sphere(	Vector(15.0f,-15.0f,-19.0f), 10.0f );
-	shp->setMat(scene->getMat("perlin warp"));
+	shp = new Sphere(	Vector(15.0f,-12.0f,-19.0f), 8.0f );
+	shp->setMat(scene->getMat("shiny perlin warp"));
 	scene->addShape(shp);
 	
 

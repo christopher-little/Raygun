@@ -315,8 +315,9 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			}
 		}
 
-		diffuseIllum = diffuseIllum + sampleDiffuseIllum/lightPoints.size();
-		specularIllum = specularIllum + sampleSpecularIllum/lightPoints.size();
+		// Average the light value received from each light sample
+		diffuseIllum = diffuseIllum + sampleDiffuseIllum/static_cast<float>(lightPoints.size());
+		specularIllum = specularIllum + sampleSpecularIllum/static_cast<float>(lightPoints.size());
 	}
 	// Clamp the resulting illumination values
 	ambient = ambient.clamp();
@@ -357,7 +358,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 		// Schlick approximation to Fresnel equation
 		float R0 = (mat->n() - rtRefrIndex)/(mat->n() + rtRefrIndex);
 		R0 = R0*R0;
-		fresnelR =	R0 + (1-R0)*pow(1.0 - cosThetaInc, 5);
+		fresnelR =	R0 + (1-R0)*pow(1.0f - cosThetaInc, 5.0f);
 
 		// Find where refracted ray exits
 		float exit_t;

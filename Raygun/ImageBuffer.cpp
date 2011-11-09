@@ -9,7 +9,18 @@ void ImageBuffer::generatePerlin(Perlin &p)
 	for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
 	{
 		// Grab a noise value for the pixel and shift range from [-1..1] to [0..1]
-		float noise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+		//float noise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+		float noise = 0.0f;
+
+		vector<float> *octavesNoise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+		vector<float>::iterator i = octavesNoise->begin();
+		while(i != octavesNoise->end())
+		{
+			noise += *i;
+			i++;
+		}
+		delete octavesNoise;
+
 		noise = (noise+1.0f)*0.5f;
 			
 		// Remember:						 x,									 y      (not row,col)
@@ -30,7 +41,18 @@ void ImageBuffer::warpPerlin(Perlin &p)
 		float x = (float)col/_width;
 		float y = (float)row/_height;
 
-		float noise = p.noise(x,y,0.0f)*0.13f;
+		//float noise = p.noise(x,y,0.0f)*0.13f;
+		float noise = 0.0f;
+		vector<float> *octavesNoise = p.noise(x,y,0.0f);
+		vector<float>::iterator i = octavesNoise->begin();
+		while(i != octavesNoise->end())
+		{
+			noise += *i;
+			i++;
+		}
+		delete octavesNoise;
+
+		noise *= 0.13f;
 
 		// Find noisey pixel position. If noise pushes pixel position beyond image dimension, wrap around.
 		int noiseCol = static_cast<int>(col + _width*noise);

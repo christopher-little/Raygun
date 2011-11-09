@@ -17,7 +17,7 @@ public:
 	~Perlin();
 
 	// Grab a noise value (assumes x,y,z are in range [0.0..1.0]
-	float noise(float x, float y, float z);
+	vector<float> *noise(float x, float y, float z);
 private:
 	int _w,_h,_d;	// Width height and depth of 3D grid of gradient vectors
 	vector<vector<Vector>> _octaves; // List of harmonics. Each harmonic/octave contains a 3D grid of 3D gradient vectors

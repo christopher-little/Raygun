@@ -35,7 +35,7 @@ public:
 	// Create a "lambertian" diffuse only material
 	void makeLambertian(Colour &d)
 	{
-		_a = Colour(0.1, 0.1, 0.1);
+		_a = Colour(0.1f, 0.1f, 0.1f);
 		_d = d;
 		_s = Colour();
 		_p = 1.0;

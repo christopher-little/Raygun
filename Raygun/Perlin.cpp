@@ -12,6 +12,7 @@
 
 Perlin::Perlin(int octaves, int power)
 {
+	srand((unsigned int)time(NULL));
 	// Each octave is a gradient grid with a different density and amplitude
 	_octaves.resize(octaves);
 

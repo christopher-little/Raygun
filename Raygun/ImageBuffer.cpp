@@ -9,7 +9,6 @@ void ImageBuffer::generatePerlin(Perlin &p)
 	for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
 	{
 		// Grab a noise value for the pixel and shift range from [-1..1] to [0..1]
-		//float noise = p.noise((float)col/_width, (float)row/_height, 0.0f);
 		float noise = 0.0f;
 
 		vector<float> *octavesNoise = p.noise((float)col/_width, (float)row/_height, 0.0f);
@@ -27,6 +26,59 @@ void ImageBuffer::generatePerlin(Perlin &p)
 		setPixel(row, col, Colour(noise,noise,noise));
 	}
 }
+
+
+
+void ImageBuffer::generatePerlinFlame(Perlin &p)
+{
+	for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
+	{
+		// Grab an absolute noise value [0..1], then invert
+		float noise = 0.0f;
+
+		vector<float> *octavesNoise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+		vector<float>::iterator i = octavesNoise->begin();
+		while(i != octavesNoise->end())
+		{
+			noise += abs(*i);
+			i++;
+		}
+		delete octavesNoise;
+
+		// Invert
+		noise = 1.0f - noise;
+		noise = noise*noise;
+			
+		// Remember:						 x,									 y      (not row,col)
+		setPixel(row, col, Colour(noise,noise,noise));
+	}
+}
+
+
+
+void ImageBuffer::generatePerlinWood(Perlin &p)
+{
+	for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
+	{
+		float noise = 0.0f;
+
+		vector<float> *octavesNoise = p.noise((float)col/_width, (float)row/_height, 0.0f);
+		vector<float>::iterator i = octavesNoise->begin();
+		while(i != octavesNoise->end())
+		{
+			noise += *i;
+			i++;
+		}
+		delete octavesNoise;
+
+		noise = (noise+1.0f)*7.0f;
+		noise = noise - static_cast<int>(noise);
+			
+		// Remember:						 x,									 y      (not row,col)
+		setPixel(row, col, Colour(noise,noise,noise));
+	}
+}
+
 
 
 void ImageBuffer::warpPerlin(Perlin &p)

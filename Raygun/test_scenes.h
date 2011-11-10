@@ -189,7 +189,7 @@ static Scene *test1()
 
 
 
-static Scene *metaballtest()
+static Scene *perlinTexturing()
 {
 	Scene *scene = new Scene();
 	
@@ -211,9 +211,12 @@ static Scene *metaballtest()
 
 
 	// Textures
-	Perlin p(2,2);
-	ImageBuffer *tex = new ImageBuffer(1024,512);
-	tex->generatePerlin(p);
+	Perlin p(1,2);
+	ImageBuffer *tex = new ImageBuffer(256,256);
+	//tex->generatePerlin(p);
+	//tex->generatePerlinFlame(p);
+	tex->generatePerlinWood(p);
+	writeJPG("..\\perlin.jpg", tex);
 	scene->setTex("perlin noise", tex);
 
 	tex = readJPG("..\\textures\\bricks_normal.jpg");
@@ -246,14 +249,14 @@ static Scene *metaballtest()
 	mat->setTexture(scene->getTex("perlin noise"));
 	scene->setMat(string("perlin noise"), mat);
 
-	// shiny perlin noise
+	// coloured perlin noise
 	mat = new Material();
-	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
-											Colour(0.9f,0.9f,0.9f),
-											Colour(0.1f,0.1f,0.1f),
+	mat->makePhongAmb(	Colour(0.51f,0.31f,0.26f),
+											Colour(),//0.9f,0.5f,0.1f),
+											Colour(),//0.1f,0.1f,0.1f),
 											256.0f);
 	mat->setTexture(scene->getTex("perlin noise"));
-	scene->setMat(string("shiny perlin noise"), mat);
+	scene->setMat(string("coloured perlin noise"), mat);
 
 	// perlin warp
 	mat = new Material();
@@ -363,14 +366,36 @@ static Scene *metaballtest()
 
 	
 	Shape *shp = new Sphere(	Vector(-15.0f,-12.0f,-19.0f), 8.0f );
-	shp->setMat(scene->getMat("shiny perlin noise"));
+	shp->setMat(scene->getMat("coloured perlin noise"));
 	scene->addShape(shp);
 
 	shp = new Sphere(	Vector(15.0f,-12.0f,-19.0f), 8.0f );
 	shp->setMat(scene->getMat("shiny perlin warp"));
 	scene->addShape(shp);
-	
 
+	return scene;
+}
+
+
+
+void Scene::metaballScene()
+{
+	Scene *scene = new Scene();
+	
+	// Camera
+	Vector e(0.0f,0.0f,20.0f);
+	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
+	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
+	float N = 8.0f;
+	float w = 16.0f;
+	float h = 9.0f;
+	scene->setCam( new Camera(e, g, t, N, w, h) );
+
+
+	
+	// Lights
+	scene->addLight(	new PointLight(	Vector(15.0f,100.0f,0.0f),
+																		Colour(1.0f,1.0f,1.0f) ) );
 
 	Metaballs *m = new Metaballs();
 	m->addSphere( Vector(0.0f,0.0f,0.0f), 5.0f );

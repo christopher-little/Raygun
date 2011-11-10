@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "AABB.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 #include "test_scenes.h"
 
@@ -55,31 +56,14 @@ RayTracer::RayTracer()
 
 
 	// Create a skybox
-	rtSkyBoxSize = Vector(20.0, 20.0, 20.0);
+	rtSkyBoxSize = Vector(100.0, 100.0, 100.0);
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
 
-	/*
-	skyBox[0] = readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg");
-	skyBox[1] = readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg");
-	skyBox[2] = readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg");
-	skyBox[3] = readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg");
-	skyBox[4] = readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg");
-	skyBox[5] = readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg");
-	*/
-
-	/*
-	scene->setSkyBox(	readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
-	*/
-
 
 	//scene = testscene::test1();
-	scene = testscene::metaballtest();
+	scene = testscene::perlinTexturing();
+	//scene = testscene::metaballScene();
 }
 
 RayTracer::~RayTracer()
@@ -430,6 +414,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 
 
 	// Sample the material texture (if present)
+	/*
 	Colour texColour(1.0f,1.0f,1.0f);
 	if(mat->hasTexture())
 	{
@@ -443,6 +428,8 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 							specularRefl*mat->s()*fresnelR +
 							specularRefr*mat->s()*(1-fresnelR);
 	return returnColour.clamp() * ambientOcclusion;
+	*/
+	return Shader::phong(mat, ambient, diffuseIllum, specularIllum, specularRefl, specularRefr, fresnelR, ambientOcclusion, nearest_p, nearest_n, nearest_u, nearest_v);
 }
 
 

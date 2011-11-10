@@ -87,8 +87,12 @@ public:
 
 
 
-	// Generate perlin noise (black & white)
+	// Generate classic perlin noise (black & white)
 	void generatePerlin(Perlin &p);
+	// Generate perlin noise flame/electricity-like texture (black & white)
+	void generatePerlinFlame(Perlin &p);
+	// Generate perlin noise wood-grain type texture (black & white)
+	void generatePerlinWood(Perlin &p);
 
 	// Warp the current contents of the Imagebuffer by randomized perlin noise
 	void warpPerlin(Perlin &p);

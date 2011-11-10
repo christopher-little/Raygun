@@ -1,9 +1,13 @@
 Reminders
 
 -Scene.cpp has pretty janky texture reading shoved into "lmbrtn" chunk, needs revising
+	-Plan to remove/replace MDL loading
 -Scene.h has function to retrieve Materials from matMap, this shouldn't be needed
-
--RayTracer.cpp skybox is still set within the ray tracer rather than the scene
-	-Still need to decide, should skybox be considered strictly part of the scene? (probably)
+	-This is now being used in test_scenes.h to retrieve materials by name that have already been stored in the scene object
 
 -Mesh.cpp uv coordinates for quadrilateral intersection don't appear to be correct
+	-For now this has been replaced with tesselation into triangle mesh
+
+
+-Confusion between top-to-bottom vs bottom-to-top when referring to ImageBuffer or image place, i.e. ImageBuffer::getPixel() reads top-to-bottom, while ImageBuffer::setPixel() goes bottom-to-top.
+-This affects ImageIO, texture reading and assigning image pixels in ray tracer.

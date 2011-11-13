@@ -62,8 +62,9 @@ RayTracer::RayTracer()
 
 
 	//scene = testscene::test1();
-	scene = testscene::perlinTexturing();
+	//scene = testscene::perlinTexturing();
 	//scene = testscene::metaballScene();
+	scene = testscene::translationScene();
 }
 
 RayTracer::~RayTracer()

@@ -17,6 +17,8 @@ using namespace std;
 #include "Light.h"
 #include "PointLight.h"
 
+#include "Matrix.h"
+
 #include "Perlin.h"
 
 
@@ -378,7 +380,122 @@ static Scene *perlinTexturing()
 
 
 
-void Scene::metaballScene()
+
+static Scene *translationScene()
+{
+	Scene *scene = new Scene();
+	
+	// Camera
+	Vector e(0.0f,0.0f,20.0f);
+	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
+	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
+	float N = 8.0f;
+	float w = 16.0f;
+	float h = 9.0f;
+	scene->setCam( new Camera(e, g, t, N, w, h) );
+
+
+
+	
+	scene->addLight(	new PointLight(	Vector(-100.0f,50.0f,100.0f),
+																		Colour(1.0f,0.3f,1.0f) ) );
+	scene->addLight(	new PointLight(	Vector(100.0f,-50.0f,100.0f),
+																		Colour(1.0f,1.0f,0.3f) ) );
+
+
+
+	
+	Material *mat = new Material();
+	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
+									Colour(0.3f,0.3f,0.3f),
+									256.0f);
+	//mat->setTexture(readJPG("..\\textures\\cloud_earth.jpg"));
+	scene->setMat(string("glossy white"), mat);
+
+
+
+
+	// Diamond (or just a cube balanced on a vertex)
+	Matrix transform;
+	transform.translate(3.0f,-1.0f,5.0f);
+	transform.scale(1.0f,3.0f,1.0f);
+	transform.rotate(Vector(0.0f,1.0f,0.0f), 30.0f);
+	transform.rotate(Vector(0.0f,0.0f,1.0f), 80.0f);
+
+	Mesh *msh = new Mesh();
+	msh->addVertex(Vector(0.0f,1.0f,0.0f));
+	msh->addVertex(Vector(0.0f,-1.0f,0.0f));
+	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(0.0f,0.0f,1.0f));
+	msh->addVertex(Vector(0.0f,0.0f,-1.0f));
+
+	msh->addUVCoord(0.5f,1.0f);
+	msh->addUVCoord(0.5f,0.0f);
+	msh->addUVCoord(0.0f,0.5f);
+	msh->addUVCoord(1.0f,0.5f);
+	msh->addUVCoord(0.5f,0.5f);
+	msh->addUVCoord(0.25f,0.5f);
+	msh->addUVCoord(0.75f,0.5f);
+
+	msh->setVertsPerFace(3);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(2);
+	msh->addFacePoint(5);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(5);
+	msh->addFacePoint(4);
+	
+	msh->addFacePoint(5);
+	msh->addFacePoint(2);
+	msh->addFacePoint(1);
+	
+	msh->addFacePoint(5);
+	msh->addFacePoint(1);
+	msh->addFacePoint(4);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(4);
+	msh->addFacePoint(6);
+	
+	msh->addFacePoint(0);
+	msh->addFacePoint(6);
+	msh->addFacePoint(3);
+	
+	msh->addFacePoint(6);
+	msh->addFacePoint(4);
+	msh->addFacePoint(1);
+	
+	msh->addFacePoint(6);
+	msh->addFacePoint(1);
+	msh->addFacePoint(3);
+	msh->setMat(scene->getMat("glossy white"));
+
+	msh->transform(transform);
+	scene->addShape(msh);
+
+
+	// A sphere too
+	transform.makeIdentity();
+	transform.translate(0.0f,3.0f,10.0f);
+	transform.scale(2.0f,1.0f,1.0f);
+
+	Sphere *sphere = new Sphere(Vector(0.0f,0.0f,0.0f), 1.0f);
+	sphere->setMat(scene->getMat("glossy white"));
+	sphere->transform(transform);
+	scene->addShape(sphere);
+	
+
+	return scene;
+}
+
+
+
+
+static Scene *metaballScene()
 {
 	Scene *scene = new Scene();
 	

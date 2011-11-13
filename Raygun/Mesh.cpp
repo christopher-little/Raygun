@@ -30,6 +30,9 @@ bool Mesh::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, flo
 
 bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
+	// Transform the ray for the local transformation matrix
+	Ray rt = _transform.inverse() * Ray(r);
+
 	Vector A, B, C;
 	float nearest_t = -1.0f, temp_t;
 	Vector nearest_n;
@@ -42,7 +45,7 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 		C = vertices[faces[faceI+2]];
 
 		// Skip face if triangle plane and ray are parallel
-		float temp = ((B-A).cross(C-A)).dot(r.d());
+		float temp = ((B-A).cross(C-A)).dot(rt.d());
 		if(temp < eps && temp > -eps)
 			continue;
 		else
@@ -53,12 +56,12 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 			double d = A.x() - C.x();
 			double e = A.y() - C.y();
 			double f = A.z() - C.z();
-			double g = r.d().x();
-			double h = r.d().y();
-			double i = r.d().z();
-			double j = A.x() - r.e().x();
-			double k = A.y() - r.e().y();
-			double l = A.z() - r.e().z();
+			double g = rt.d().x();
+			double h = rt.d().y();
+			double i = rt.d().z();
+			double j = A.x() - rt.e().x();
+			double k = A.y() - rt.e().y();
+			double l = A.z() - rt.e().z();
 
 			double eiSubhf = e*i - h*f;
 			double gfSubdi = g*f - d*i;
@@ -106,11 +109,12 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 		C = vertices[faces[face_index+2]];
 
 		// Compute flat face normal
-		n = (B-A).cross(C-A).normalized();
+		n = _transform.inverse().transpose().mult((B-A).cross(C-A).normalized()).normalized();
 
+		Vector pLocal = rt.e() + rt.d()*t;
 		Vector v0 = C - A;
 		Vector v1 = B - A;
-		Vector v2 = p - A;
+		Vector v2 = pLocal - A;
 		float dot00 = v0.dot(v0);
 		float dot01 = v0.dot(v1);
 		float dot02 = v0.dot(v2);

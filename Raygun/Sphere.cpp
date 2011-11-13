@@ -17,9 +17,12 @@ const float pi = 3.14159;
 
 bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
-	Vector e_c = r.e() - _c;
-	float A = r.d().dot(r.d());
-	float B = r.d().dot(e_c);
+	// Transform the ray to the local transformation
+	Ray rt = _transform.inverse() * Ray(r);
+
+	Vector e_c = rt.e() - _c;
+	float A = rt.d().dot(rt.d());
+	float B = rt.d().dot(e_c);
 	float C = e_c.dot(e_c) - _r*_r;
 
 	// If discriminant is negative, no intersection!
@@ -42,15 +45,20 @@ bool Sphere::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, f
 		else
 			return false;
 	}
-	
-	p = r.e() + r.d()*t;
+
+	// Find the local intersection and normal with the sphere
+	p = rt.e() + rt.d()*t;
 	n = (p-_c).normalized();
 
+	// u,v coordinates
 	float ph = acos(-(p.y() - _c.y()) / _r);
 	float th = atan2(-(p.z() - _c.z()), p.x() - _c.x());
-
 	u = 0.5*(th/pi) + 0.5;
 	v = ph/pi;
+
+	// Transform intersection point and normal to world space
+	p = _transform.mult(p,1.0f);
+	n = _transform.inverse().transpose().mult(n).normalized();
 
 	return true;
 }

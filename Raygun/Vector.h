@@ -15,8 +15,8 @@ class Vector
 {
 public:
 	// Constructors
-	Vector() : _x(0.0), _y(0.0), _z(0.0), _w(1.0) {}
-	Vector(float inx, float iny, float inz) : _x(inx), _y(iny), _z(inz), _w(1.0) {}
+	Vector() : _x(0.0f), _y(0.0f), _z(0.0f), _w(0.0f) {}
+	Vector(float inx, float iny, float inz, float inw=0.0f) : _x(inx), _y(iny), _z(inz), _w(inw) {}
 
 	// Return respective component
 	inline float x() const { return _x; }

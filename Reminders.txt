@@ -11,3 +11,5 @@ Reminders
 
 -Confusion between top-to-bottom vs bottom-to-top when referring to ImageBuffer or image place, i.e. ImageBuffer::getPixel() reads top-to-bottom, while ImageBuffer::setPixel() goes bottom-to-top.
 -This affects ImageIO, texture reading and assigning image pixels in ray tracer.
+
+-Vector has w component (point: w=1, direction: w=0), but isn't used (and somewhat replaced) by Matrix

@@ -110,6 +110,7 @@
     <ClInclude Include="ImageIO.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MDL\mdl.H" />
     <ClInclude Include="MDL\mdlScan.H" />
     <ClInclude Include="Mesh.h" />

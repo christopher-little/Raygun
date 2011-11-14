@@ -25,7 +25,7 @@ public:
 	inline void setVertsPerFace(int c) { vertsPerFace = c; }
 	
 	// Append a vertex to the vertices list
-	inline void addVertex(Vector &v) { vertices.push_back(v); }
+	inline void addVertex(const Vector &v) { vertices.push_back(v); }
 	// Append a face vertex index
 	inline void addFacePoint(int i) { faces.push_back(i); }
 	// Append a vertex uv coordinate

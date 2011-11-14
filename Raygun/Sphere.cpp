@@ -2,7 +2,7 @@
 
 const float eps = 0.0001f;
 
-Sphere::Sphere(Vector &c, float r)
+Sphere::Sphere(const Vector &c, float r)
 {
 	_c = c;
 	_r = r;

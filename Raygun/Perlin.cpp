@@ -6,8 +6,6 @@
 
 #include "Vector.h"
 
-#include "TRACE.h"
-
 
 
 Perlin::Perlin(int octaves, int power)

@@ -8,7 +8,7 @@
 class Sphere : public Shape
 {
 public:
-	Sphere(Vector &c, float r);
+	Sphere(const Vector &c, float r);
 	~Sphere();
 
 	bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);

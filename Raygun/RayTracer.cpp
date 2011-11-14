@@ -1,6 +1,10 @@
 #include "RayTracer.h"
 
+#include <cstdlib>
 #include <ctime>
+#include <iostream>
+
+using namespace std;
 
 #include "ImageIO.h"
 #include "Light.h"
@@ -9,8 +13,6 @@
 #include "Shader.h"
 
 #include "test_scenes.h"
-
-#include "TRACE.h"
 
 // epsilon - allowable margin of error ( i.e. 0.9999 == 1.0 )
 const float eps = 0.001f;
@@ -81,7 +83,7 @@ void RayTracer::render(ImageBuffer *buf)
 	
 	if(scene->cam() == NULL)
 	{
-		TRACE("Camera object has not been instantiated. Has a scene been loaded?\n");
+		cout << "Camera object has not been instantiated. Has a scene been loaded?" << endl;
 		return;
 	}
 
@@ -117,7 +119,7 @@ void RayTracer::render(ImageBuffer *buf)
 
 				if(row == 64 && col == 448)
 				{
-					//***Spot for instrumentation TRACE("THING %s\n", ray);
+					//***Spot for instrumentation
 				}
 
 				// Trace the ray
@@ -141,14 +143,14 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 {
 	// Check each shape for an intersection
 	int nearestShape = -1;
-	float nearest_t = -1.0;
+	float nearest_t=-1.0f;
 	Vector nearest_p;
 	Vector nearest_n;
-	float nearest_u, nearest_v;
-	float nearest_t_temp;
+	float nearest_u=0.0f, nearest_v=0.0f;
+	float nearest_t_temp=-1.0f;
 	Vector nearest_p_temp;
 	Vector nearest_n_temp;
-	float nearest_u_temp, nearest_v_temp;
+	float nearest_u_temp=0.0f, nearest_v_temp=0.0f;
 	
 	int nShapes = scene->nShapes();
 	for(int i=0; i<nShapes; i++)
@@ -175,15 +177,15 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 		// Sample the skybox if it exists, otherwise use the default ray tracer colour
 		if(scene->getSkyBox(0) != NULL)
 		{
-			int enter_face, exit_face;
-			float enter_t, exit_t;
+			int enter_face=-1, exit_face=-1;
+			float enter_t=-1.0f, exit_t=-1.0f;
 			// Assume ray starting from 0,0,0 will always intersect the skybox, unless it's malformed and doesn't surround 0,0,0; in which case it needs to be fixed.
 			if(!rayBoxIntersect(Vector(0.0,0.0,0.0), ray.d(), _rtSkyBoxMin, _rtSkyBoxMax, enter_face, exit_face, enter_t, exit_t))
-				TRACE("Sky box is not properly placed around the origin (0,0,0)\n");
+				cout << "Sky box is not properly placed around the origin (0,0,0)" << endl;
 
 			// Calculate skybox AABB intersection position
 			Vector pSkyBox = (Vector(0.0,0.0,0.0) + ray.d()*(exit_t-eps) - _rtSkyBoxMin);
-			float u, v;
+			float u=0.0f, v=0.0f;
 			if(exit_face == 0 || exit_face == 1)
 			{
 				u = pSkyBox.z() / rtSkyBoxSize.z();
@@ -206,7 +208,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 				v = pSkyBox.y() / rtSkyBoxSize.y();
 			}
 			else
-				TRACE("ANOTHER PROBLEM\n");
+				cout << "ANOTHER PROBLEM" << endl;
 
 			if(u >= 1.0f)
 				u = 1.0f-eps;

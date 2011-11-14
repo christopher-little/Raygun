@@ -1,6 +1,10 @@
+#include <iostream>
+
 #include "ImageIO.h"
 
-ImageBuffer *readJPG(char *filename)
+using namespace std;
+
+ImageBuffer *readJPG(string filename)
 {
 	ImageBuffer *returnBuffer;
 
@@ -10,8 +14,9 @@ ImageBuffer *readJPG(char *filename)
 	jpeg_create_decompress(&imgInfo);
 
 	FILE *imgfile;
-	if((imgfile = fopen(filename, "rb")) == NULL)
+	if((imgfile = fopen(filename.c_str(), "rb")) == NULL)
 	{
+		cout << "ImageIO:Error: Could not read file " << filename << endl;
 		return NULL;
 	}
 	jpeg_stdio_src(&imgInfo, imgfile);
@@ -32,7 +37,7 @@ ImageBuffer *readJPG(char *filename)
 	while(imgInfo.output_scanline < imgInfo.image_height)
 	{
 		jpeg_read_scanlines(&imgInfo, &raw_row, 1);
-		for(int i=0; i<imgInfo.output_width*imgInfo.num_components; i++)
+		for(unsigned int i=0; i<imgInfo.output_width*imgInfo.num_components; i++)
 			raw_image[location++] = raw_row[i]/255.0f;
 	}
 
@@ -49,7 +54,7 @@ ImageBuffer *readJPG(char *filename)
 
 
 
-void writeJPG(char *filename, ImageBuffer *buf)
+void writeJPG(string filename, ImageBuffer *buf)
 {
 	struct jpeg_compress_struct imgInfo;
 	struct jpeg_error_mgr imgErr;
@@ -58,10 +63,10 @@ void writeJPG(char *filename, ImageBuffer *buf)
 
 	//char filename[64];
 	//sprintf(filename, "results/image%d.jpg", runID);
-	FILE *imgFile = fopen(filename, "wb");
+	FILE *imgFile = fopen(filename.c_str(), "wb");
 	if(imgFile == NULL)
 	{
-		TRACE("Error: Could not open image output file for %s", filename);
+		cout << "ImageIO:Error: Could not open image output file for " << filename << endl;
 		return;
 	}
 	jpeg_stdio_dest(&imgInfo, imgFile);
@@ -75,12 +80,11 @@ void writeJPG(char *filename, ImageBuffer *buf)
 	jpeg_start_compress(&imgInfo, TRUE);
 
 	JSAMPLE *raw_row = new JSAMPLE[imgInfo.image_width * 3];
-	int location = 0;
 	while(imgInfo.next_scanline < imgInfo.image_height)
 	{
 		int rowIndex = (imgInfo.image_height-1-imgInfo.next_scanline) * imgInfo.image_width * 3;
 		float *bufferRow = &buf->getBuffer()[rowIndex];
-		for(int i=0; i<imgInfo.image_width*3; i++)
+		for(unsigned int i=0; i<imgInfo.image_width*3; i++)
 			raw_row[i] = bufferRow[i] * 255;
 		jpeg_write_scanlines(&imgInfo, &raw_row, 1);
 	}

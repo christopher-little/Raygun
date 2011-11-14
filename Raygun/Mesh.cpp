@@ -37,8 +37,7 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 	float nearest_t = -1.0f, temp_t;
 	Vector nearest_n;
 	int face_index = -1; // Index of intersected face
-	int temp_index;
-	for(int faceI=0; faceI<faces.size(); faceI+=3)
+	for(unsigned int faceI=0; faceI<faces.size(); faceI+=3)
 	{
 		A = vertices[faces[faceI]];
 		B = vertices[faces[faceI+1]];

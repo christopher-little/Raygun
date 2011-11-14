@@ -292,9 +292,9 @@ inline bool rayBoxIntersect(const Vector &e, const Vector &d,
 	float tZMin = 0;
 	float tZMax = 0;
 	// Check if any of the intervals are guaranteed not to overlap the volume ie [-inf,-inf] or [+inf,+inf]
-	if(d.x() == 0 && (min.x() > 0 && max.x() > 0 || min.x() < 0 && max.x() < 0) ||
-		d.y() == 0 && (min.y() > 0 && max.y() > 0 || min.y() < 0 && max.y() < 0) ||
-		d.z() == 0 && (min.z() > 0 && max.z() > 0 || min.z() < 0 && max.z() < 0))
+	if(	(d.x() == 0 && ((min.x() > 0 && max.x() > 0) || (min.x() < 0 && max.x() < 0))) ||
+		(d.y() == 0 && ((min.y() > 0 && max.y() > 0) || (min.y() < 0 && max.y() < 0))) ||
+		(d.z() == 0 && ((min.z() > 0 && max.z() > 0) || (min.z() < 0 && max.z() < 0))))
 	{
 		return false;
 	}

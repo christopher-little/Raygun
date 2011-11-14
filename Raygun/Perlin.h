@@ -20,7 +20,7 @@ public:
 	vector<float> *noise(float x, float y, float z);
 private:
 	int _w,_h,_d;	// Width height and depth of 3D grid of gradient vectors
-	vector<vector<Vector>> _octaves; // List of harmonics. Each harmonic/octave contains a 3D grid of 3D gradient vectors
+	vector< vector<Vector> > _octaves; // List of harmonics. Each harmonic/octave contains a 3D grid of 3D gradient vectors
 	int _basePower;	// Starting power of 2 for the dimension size of the gradient grid
 };
 

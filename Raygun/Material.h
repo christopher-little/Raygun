@@ -33,7 +33,7 @@ public:
 
 
 	// Create a "lambertian" diffuse only material
-	void makeLambertian(Colour &d)
+	void makeLambertian(const Colour &d)
 	{
 		_a = Colour(0.1f, 0.1f, 0.1f);
 		_d = d;
@@ -42,7 +42,7 @@ public:
 	}
 
 	// Create a "Phong" material
-	void makePhong(Colour &d, Colour &s, float p)
+	void makePhong(const Colour &d, const Colour &s, float p)
 	{
 		_a = Colour();
 		_d = d;
@@ -50,13 +50,13 @@ public:
 		_p = p;
 	}
 	// Create a "Phong" material with an ambient term
-	void makePhongAmb(Colour &a, Colour &d, Colour &s, float p)
+	void makePhongAmb(const Colour &a, const Colour &d, const Colour &s, float p)
 	{
 		makePhong(d, s, p);
 		_a = a;
 	}
 	// Create a Phong dielectric material (no ambient or diffuse, just specular reflection and transmission)
-	void makePhongDielectric(Colour &s, float p, float n)
+	void makePhongDielectric(const Colour &s, float p, float n)
 	{
 		// In this case, 's' is meant to be "transmittance per metre" rather than direct colour, thus thinner object results in less intense colour.
 		makePhong(Colour(), s, p);

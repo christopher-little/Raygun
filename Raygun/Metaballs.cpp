@@ -11,7 +11,7 @@ bool Metaballs::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u
 {
 	vector<Vector> points;
 
-	for(int i=0; i<balls.size(); i++)
+	for(unsigned int i=0; i<balls.size(); i++)
 	{
 		Vector e_c = r.e() - balls[i].first;
 		float A = r.d().dot(r.d());

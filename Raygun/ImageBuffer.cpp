@@ -1,5 +1,8 @@
 #include "ImageBuffer.h"
 
+#include <cstring>
+#include <cstdlib>
+
 #include "ImageIO.h"
 #include "Colour.h"
 

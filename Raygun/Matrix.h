@@ -3,13 +3,14 @@
 #ifndef MATRIX
 #define MATRIX
 
+#include <iostream>
 #include <cstring>
 #include <cmath>
 
 #include "Vector.h"
 #include "Ray.h"
 
-#include "TRACE.h"
+using namespace std;
 
 
 // A class for a 4x4 matrix.
@@ -71,7 +72,7 @@ public:
 		_m[11] = z;
 	}
 	// Make a rotation matrix for rotation of theta redians around an arbitrary axis
-	void makeRotate(Vector &rotAxis, float theta)
+	void makeRotate(const Vector &rotAxis, float theta)
 	{
 		makeIdentity();
 		float c = cos(theta);
@@ -147,7 +148,7 @@ public:
 		det = _m[0]*inv[0] + _m[1]*inv[4] + _m[2]*inv[8] + _m[3]*inv[12];
 		if (det == 0)
 		{
-			TRACE("Matrix: Warning: determinant = 0, returning identity matrix\n");
+			cout << "Matrix: Warning: determinant = 0, returning identity matrix" << endl;
 			return Matrix();
 		}
 
@@ -196,7 +197,7 @@ public:
 
 	
 	// Multiply Matrix by ray (two column vectors; point and direction)
-	Ray operator *(Ray &r)
+	Ray operator *(const Ray &r)
 	{
 		float e[4],d[4];
 		for(int row=0; row<4; row++)
@@ -218,7 +219,7 @@ public:
 
 	// Multiply Matrix by column vector, w=0.0 for direction vector, w=1.0 for point (i.e. intersection point)
 	//*** Need to replace w with w component of Vector class
-	Vector mult(Vector &v, float w=0.0f)
+	Vector mult(const Vector &v, float w=0.0f)
 	{
 		float out[4];
 		for(int row=0; row<4; row++)
@@ -245,7 +246,7 @@ public:
 	}
 
 	// Rotate theta degrees around the axis rotAxis
-	void rotate(Vector &rotAxis, float theta)
+	void rotate(const Vector &rotAxis, float theta)
 	{
 		Matrix rot;
 		// Make sure the rotation axis is normalized and theta is converted to radians
@@ -259,17 +260,6 @@ public:
 		Matrix sc;
 		sc.makeScale(x,y,z);
 		(*this) *= sc;
-	}
-
-
-
-	// Dump the matrix as text
-	void print()
-	{
-		TRACE("-------\n");
-		for(int row=0; row<4; row++)
-			TRACE("%f %f %f %f\n", _m[row*4], _m[row*4+1], _m[row*4+2], _m[row*4+3]);
-		TRACE("-------\n");
 	}
 
 

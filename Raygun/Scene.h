@@ -6,8 +6,8 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 
-#include "MDL\mdl.H"
 #include "ImageBuffer.h"
 #include "Vector.h"
 #include "Colour.h"
@@ -16,7 +16,8 @@
 #include "Camera.h"
 #include "Material.h"
 
-#include "TRACE.h"
+using namespace std;
+
 
 class Scene
 {
@@ -39,58 +40,58 @@ public:
 
 
 	// Get/search the for a material
-	inline Material *getMat(std::string mtrlName)
+	inline Material *getMat(string mtrlName)
 	{
-		std::map<std::string, Material*>::iterator it = matMap.find(mtrlName);
+		map<string, Material*>::iterator it = matMap.find(mtrlName);
 		if(it != matMap.end())
 			return it->second;
 		else
 		{
-			TRACE("Scene: Warning: Material with name \"%s\" could not be found.\n", mtrlName.c_str());
+			cout << "Scene: Warning: Material with name \""<< mtrlName << "\" could not be found." << endl;
 			return NULL;
 		}
 	}
 	// Map a material name to a material
-	inline bool setMat(std::string mtrlName, Material *mat)
+	inline bool setMat(string mtrlName, Material *mat)
 	{
-		std::map<std::string, Material*>::iterator it = matMap.find(mtrlName);
+		map<string, Material*>::iterator it = matMap.find(mtrlName);
 		if(it == matMap.end())
 		{
-			matMap.insert(std::pair<std::string,Material*>(mtrlName,mat));
+			matMap.insert(pair<string,Material*>(mtrlName,mat));
 			return true;
 		}
 		else
 		{
-			TRACE("Scene: Warning: Material with name \"%s\" already exists. Proceeding with previous material.\n", mtrlName.c_str());
+			cout << "Scene: Warning: Material with name \"" << mtrlName << "\" already exists. Proceeding with previous material." << endl;
 			return false;
 		}
 	}
 
 	
 	// Get/search the for a texture
-	inline ImageBuffer *getTex(std::string txtrName)
+	inline ImageBuffer *getTex(string txtrName)
 	{
-		std::map<std::string, ImageBuffer*>::iterator it = texMap.find(txtrName);
+		map<string, ImageBuffer*>::iterator it = texMap.find(txtrName);
 		if(it != texMap.end())
 			return it->second;
 		else
 		{
-			TRACE("Scene: Warning: Texture with name \"%s\" could not be found.\n", txtrName.c_str());
+			cout << "Scene: Warning: Texture with name \"" << txtrName << "\" could not be found." << endl;
 			return NULL;
 		}
 	}
 	// Map a material name to a material
-	inline bool setTex(std::string txtrName, ImageBuffer *tex)
+	inline bool setTex(string txtrName, ImageBuffer *tex)
 	{
-		std::map<std::string, ImageBuffer*>::iterator it = texMap.find(txtrName);
+		map<string, ImageBuffer*>::iterator it = texMap.find(txtrName);
 		if(it == texMap.end())
 		{
-			texMap.insert(std::pair<std::string,ImageBuffer*>(txtrName,tex));
+			texMap.insert(pair<string,ImageBuffer*>(txtrName,tex));
 			return true;
 		}
 		else
 		{
-			TRACE("Scene: Warning: Texture with name \"%s\" already exists. Proceeding with previous material.\n", txtrName.c_str());
+			cout << "Scene: Warning: Texture with name \"" << txtrName << "\" already exists. Proceeding with previous material." << endl;
 			return false;
 		}
 	}
@@ -105,7 +106,7 @@ public:
 	{
 		if( _cam != NULL )
 		{
-			TRACE("Scene: Warning: Camera object already exists; replacing with new camera.\n");
+			cout << "Scene: Warning: Camera object already exists; replacing with new camera." << endl;
 			delete _cam;
 		}
 		_cam = cam;
@@ -128,7 +129,7 @@ public:
 
 		if( x0==NULL || x1==NULL || y0==NULL || y1==NULL || z0==NULL || z1==NULL )
 		{
-			TRACE("Scene: Warning: A skybox ImageBuffer is NULL, this will likely cause a crash\n");
+			cout << "Scene: Warning: A skybox ImageBuffer is NULL, this will likely cause a crash." << endl;
 			return false;
 		}
 
@@ -138,19 +139,13 @@ public:
 	inline ImageBuffer *getSkyBox(int i) { return _skyBox[i]; }
 
 
-	
-
-	// Build a scene and return the Camera object to the ray tracer
-	void loadMDL(char *filename);
-
-
 
 private:
-	std::vector<Shape*> shapeList;	// List of shapes to render
-	std::vector<Light*> lightList;	// List of light sources (these can correspond to a shape object)
+	vector<Shape*> shapeList;	// List of shapes to render
+	vector<Light*> lightList;	// List of light sources (these can correspond to a shape object)
 
-	std::map<std::string,Material*> matMap; // Map material name to Material object
-	std::map<std::string,ImageBuffer*> texMap; // Map texture name to ImageBuffer object containing the texture
+	map<string,Material*> matMap; // Map material name to Material object
+	map<string,ImageBuffer*> texMap; // Map texture name to ImageBuffer object containing the texture
 
 	ImageBuffer *_skyBox[6];				// Six skybox textures (-x, +x, -y, +y, -z, +z)
 

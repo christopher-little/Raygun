@@ -31,7 +31,7 @@ public:
 	bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 
 private:
-	vector<pair<Vector,float>> balls;	// Set of spheres defining the "blobs" of the metaballs shape
+	vector< pair<Vector,float> > balls;	// Set of spheres defining the "blobs" of the metaballs shape
 };
 
 #endif

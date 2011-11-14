@@ -14,7 +14,7 @@ using namespace std;
 class PointLight : public Light
 {
 public:
-	PointLight(Vector &p, Colour &c)
+	PointLight(const Vector &p, const Colour &c)
 	{
 		_p = p;
 		_c = c;

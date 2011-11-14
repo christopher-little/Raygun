@@ -44,20 +44,8 @@ RayTracer::RayTracer()
 	// Warm up the number generator
 	srand((unsigned)time(0));
 
-	
-	// Pull in an MDL scene file
-	//scene = new Scene();
-	//cam = scene->loadMDL("..\\test_scenes\\cornellbox.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\cornellboxRGB.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\basic_spheres_angled.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\skybox_platform.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\final_frontier.mdla");
-	//cam = scene->loadMDL("..\\test_scenes\\texturing.mdla");
-	//scene->loadMDL("..\\test_scenes\\texturing.mdla");
 
-
-	// Create a skybox
+	// Set the skybox AABB properties
 	rtSkyBoxSize = Vector(100.0, 100.0, 100.0);
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
@@ -71,7 +59,7 @@ RayTracer::RayTracer()
 
 RayTracer::~RayTracer()
 {
-    delete scene;
+	delete scene;
 }
 
 
@@ -80,7 +68,7 @@ void RayTracer::render(ImageBuffer *buf)
 {
 	// "Render" some random pixels
 	buf->rainbowStatic();
-	
+
 	if(scene->cam() == NULL)
 	{
 		cout << "Camera object has not been instantiated. Has a scene been loaded?" << endl;
@@ -151,7 +139,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	Vector nearest_p_temp;
 	Vector nearest_n_temp;
 	float nearest_u_temp=0.0f, nearest_v_temp=0.0f;
-	
+
 	int nShapes = scene->nShapes();
 	for(int i=0; i<nShapes; i++)
 	{
@@ -169,7 +157,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			}
 		}
 	}
-	
+
 
 	// When there is no intersection, sample an environment map or return a default colour
 	if(nearestShape < 0)
@@ -214,7 +202,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 				u = 1.0f-eps;
 			if(v >= 1.0f)
 				v = 1.0f-eps;
-			
+
 		// Compute texture position, texture texel position, and fractional distance inside texel
 			ImageBuffer *skyTex = scene->getSkyBox(exit_face);
 			float uT = u*(skyTex->width()-1);
@@ -381,7 +369,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			if(ambDir.dot(nearest_n)  > 0.1f)
 				if(sampleTrace(Ray(nearest_p, ambDir), 0.01f, 5.0f))
 					ambientSample += 1.0f;
-		
+
 			/*
 			float u1 = (float)rand()/(float)RAND_MAX;
 			float u2 = (float)rand()/(float)RAND_MAX;

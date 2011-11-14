@@ -20,7 +20,7 @@ class Colour
 public:
 	Colour() : _r(0.0), _g(0.0), _b(0.0) {}
 	Colour(float inr, float ing, float inb) : _r(inr), _g(ing), _b(inb) {}
-	~Colour(void) {}
+	~Colour() {}
 
 	// Return float value of component
 	inline float r() const { return _r; }
@@ -34,7 +34,7 @@ public:
 	// Return a COLORREF RGB value for windows
 	inline COLORREF getWinRGB() const { return RGB(r_int(),g_int(),b_int()); }
 #endif
-	
+
 	// Sum colour components
 	inline Colour operator+ (Colour c) const { return Colour(_r+c._r, _g+c._g, _b+c._b); }
 	// Multiply colour components by scalar
@@ -83,15 +83,6 @@ public:
 			return true;
 
 		return false;
-	}
-
-
-	// Convert Vector to char* for printing, etc.
-	operator char *() const
-	{
-		char *vecString = new char[128];
-		sprintf(vecString,"(%f, %f, %f)", _r, _g, _b);
-		return vecString;
 	}
 private:
 	float _r,_g,_b;	// red, green and blue colour components

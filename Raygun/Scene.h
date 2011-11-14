@@ -67,7 +67,7 @@ public:
 		}
 	}
 
-	
+
 	// Get/search the for a texture
 	inline ImageBuffer *getTex(string txtrName)
 	{
@@ -97,7 +97,7 @@ public:
 	}
 
 
-	
+
 
 	// Retrieve the camera object
 	inline Camera *cam() { return _cam; }
@@ -141,13 +141,13 @@ public:
 
 
 private:
-	vector<Shape*> shapeList;	// List of shapes to render
-	vector<Light*> lightList;	// List of light sources (these can correspond to a shape object)
+	vector<Shape*> shapeList; // List of shapes to render
+	vector<Light*> lightList; // List of light sources (these can correspond to a shape object)
 
 	map<string,Material*> matMap; // Map material name to Material object
 	map<string,ImageBuffer*> texMap; // Map texture name to ImageBuffer object containing the texture
 
-	ImageBuffer *_skyBox[6];				// Six skybox textures (-x, +x, -y, +y, -z, +z)
+	ImageBuffer *_skyBox[6]; // Six skybox textures (-x, +x, -y, +y, -z, +z)
 
 	Camera *_cam;
 };

@@ -118,6 +118,7 @@ private:
 	float  _n; // Index of refraction
 
 	ImageBuffer *_texture; // Pointer to image buffer that contains a texture for the material. When a texture is present, _d diffuse colour becomes modifier for texture colour
+	// Note: _texture is assumed to be managed externally to the Material object, thus is not deleted by Material deconstructor.
 };
 
 #endif

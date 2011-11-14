@@ -29,7 +29,8 @@ HEADERS += Raygun/AABB.h \
            Raygun/Shape.h \
            Raygun/Sphere.h \
            Raygun/test_scenes.h \
-           Raygun/Vector.h
+           Raygun/Vector.h \
+    Raygun/GUI/mainwindow.h
 SOURCES += Raygun/ImageBuffer.cpp \
            Raygun/ImageIO.cpp \
            Raygun/main.cpp \
@@ -39,4 +40,5 @@ SOURCES += Raygun/ImageBuffer.cpp \
            Raygun/PointLight.cpp \
            Raygun/RayTracer.cpp \
            Raygun/Scene.cpp \
-           Raygun/Sphere.cpp
+           Raygun/Sphere.cpp \
+    Raygun/GUI/mainwindow.cpp

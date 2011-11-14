@@ -83,6 +83,24 @@ public:
 
 		return charBuffer;
 	}
+	// This returns 32bit colour values stored in unsigned char array (mainly used for QT conversion to QImage)
+	unsigned char *getUCharArray()
+	{
+		unsigned char *charBuffer = new unsigned char[_width*_height*4];
+
+		for(int row=0; row<_height; row++) for(int col=0; col<_width; col++)
+		{
+			int iBuf = (row*_width + col)*3;
+			int iOut = ((_height-1-row)*_width + col)*4;
+
+			charBuffer[iOut] = static_cast<unsigned int>(buffer[iBuf+2]*255);
+			charBuffer[iOut+1] = static_cast<unsigned int>(buffer[iBuf+1]*255);
+			charBuffer[iOut+2] = static_cast<unsigned int>(buffer[iBuf]*255);
+			charBuffer[iOut+3] = static_cast<unsigned int>(255);
+		}
+
+		return charBuffer;
+	}
 
 
 

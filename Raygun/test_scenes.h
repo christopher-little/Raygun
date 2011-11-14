@@ -397,10 +397,8 @@ static Scene *transformScene()
 
 
 	
-	scene->addLight(	new PointLight(	Vector(-100.0f,50.0f,100.0f),
-																		Colour(1.0f,0.3f,1.0f) ) );
-	scene->addLight(	new PointLight(	Vector(100.0f,-50.0f,100.0f),
-																		Colour(1.0f,1.0f,0.3f) ) );
+	scene->addLight( new PointLight( Vector(-100.0f,50.0f,100.0f), Colour(1.0f,0.3f,1.0f) ) );
+	scene->addLight( new PointLight( Vector(100.0f,-50.0f,100.0f), Colour(1.0f,1.0f,0.3f) ) );
 
 
 

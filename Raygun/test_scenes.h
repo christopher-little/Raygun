@@ -381,7 +381,7 @@ static Scene *perlinTexturing()
 
 
 
-static Scene *translationScene()
+static Scene *transformScene()
 {
 	Scene *scene = new Scene();
 	

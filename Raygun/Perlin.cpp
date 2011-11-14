@@ -40,7 +40,7 @@ Perlin::Perlin(int octaves, int power)
 
 Perlin::~Perlin()
 {
-	for(int i=0; i<_octaves.size(); i++)
+	for(unsigned int i=0; i<_octaves.size(); i++)
 	{
 		_octaves[i].clear();
 	}
@@ -61,7 +61,7 @@ vector<float> *Perlin::noise(float x, float y, float z)
 	int dim = 1 << _basePower;
 	// Amplitude for current octave
 	float amp = 1.0f;
-	for(int i=0; i<_octaves.size(); i++)
+	for(unsigned int i=0; i<_octaves.size(); i++)
 	{
 		// Calculate position in gradient grid
 		Vector p(x*dim, y*dim, z*dim);

@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+	setWindowTitle("Raygun");
+
+	// Create and connect all "file menu" actions
 	openAction = new QAction("&Open", this);
 	saveAction = new QAction("&Save", this);
 	quitAction = new QAction("E&xit", this);
@@ -17,11 +19,48 @@ MainWindow::MainWindow(QWidget *parent) :
 	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
-	textEdit = new QTextEdit;
-	setCentralWidget(textEdit);
 
-	setWindowTitle("Raygun");
+
+	mainWidget = new QWidget();
+	textEdit = new QTextEdit;
+	renderbtn = new QPushButton("Render");
+
+	mainWidget->setLayout(new QVBoxLayout());
+	mainWidget->layout()->addWidget(textEdit);
+	mainWidget->layout()->addWidget(renderbtn);
+	setCentralWidget(mainWidget);
+
+
+	image = new ImageBuffer(960,540);
+	rtthread = new RTThread(image);
+	connect(renderbtn, SIGNAL(clicked()), rtthread, SLOT(start()));
+	connect(rtthread, SIGNAL(finished()), this, SLOT(displayImage()));
 }
+
+
+void MainWindow::displayImage()
+{
+	unsigned char *buf = image->getUCharArray();
+	QImage i(buf, image->width(), image->height(), QImage::Format_RGB32);
+	QPixmap p;
+	p.convertFromImage(i);
+	delete buf;
+
+	QGraphicsScene *scene = new QGraphicsScene();
+	scene->addPixmap(p);
+	QGraphicsView *view = new QGraphicsView(scene);
+	connect(this, SIGNAL(destroyed()), view, SLOT(close()));
+	view->move(frameGeometry().topRight() + QPoint(100,0));
+	view->show();
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	// Make sure the app quits when this main window is closed
+	qApp->quit();
+}
+
 
 void MainWindow::open()
 {
@@ -40,6 +79,7 @@ void MainWindow::open()
 		file.close();
 	}
 }
+
 
 void MainWindow::save()
 {

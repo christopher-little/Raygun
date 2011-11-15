@@ -4,6 +4,7 @@
 #define _TEST_SCENES_
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -24,10 +25,33 @@ using namespace std;
 
 namespace testscene {
 
+
+/*static Scene *scenePicker(string name)
+{
+	switch(name)
+	{
+	case "test1":
+		return test1();
+		break;
+	case "perlinTexturing":
+		return perlinTexturing();
+		break;
+	case "transformScene":
+		return transformScene();
+		break;
+	case "metaballScene":
+		return metaballScene();
+		break;
+	default:
+		cout << "No scene named " << name << " found, defaulting to transformScene." << endl;
+	}
+}*/
+
+
 static Scene *test1()
 {
 	Scene *scene = new Scene();
-	
+
 	// Create the camera object
 	Vector e(1.0f,14.0f,10.0f);
 	Vector g = Vector(0.2f,-0.3f,-1.0f).normalized();
@@ -101,11 +125,11 @@ static Scene *test1()
 	msh->addUVCoord(1.0f,1.0f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(1);
 	msh->addFacePoint(2);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
@@ -131,35 +155,35 @@ static Scene *test1()
 	msh->addUVCoord(0.75f,0.5f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(5);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(5);
 	msh->addFacePoint(4);
-	
+
 	msh->addFacePoint(5);
 	msh->addFacePoint(2);
 	msh->addFacePoint(1);
-	
+
 	msh->addFacePoint(5);
 	msh->addFacePoint(1);
 	msh->addFacePoint(4);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(4);
 	msh->addFacePoint(6);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(6);
 	msh->addFacePoint(3);
-	
+
 	msh->addFacePoint(6);
 	msh->addFacePoint(4);
 	msh->addFacePoint(1);
-	
+
 	msh->addFacePoint(6);
 	msh->addFacePoint(1);
 	msh->addFacePoint(3);
@@ -168,12 +192,12 @@ static Scene *test1()
 
 
 
-	
+
 
 	Shape *shp = new Sphere(	Vector(5.0f,3.5f,-6.0f), 3.0f );
 	shp->setMat(scene->getMat("orange glass"));
 	scene->addShape(shp);
-	
+
 	shp = new Sphere(	Vector(14.0f,3.0f,-4.0f), 3.0f );
 	shp->setMat(scene->getMat("light white"));
 	scene->addShape(shp);
@@ -194,7 +218,7 @@ static Scene *test1()
 static Scene *perlinTexturing()
 {
 	Scene *scene = new Scene();
-	
+
 	// Camera
 	Vector e(0.0f,0.0f,20.0f);
 	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
@@ -205,7 +229,7 @@ static Scene *perlinTexturing()
 	scene->setCam( new Camera(e, g, t, N, w, h) );
 
 
-	
+
 	// Lights
 	scene->addLight(	new PointLight(	Vector(15.0f,100.0f,0.0f),
 																		Colour(1.0f,1.0f,1.0f) ) );
@@ -279,7 +303,7 @@ static Scene *perlinTexturing()
 	scene->setMat(string("shiny perlin warp"), mat);
 
 
-	
+
 	// Skybox
 	scene->setSkyBox(	readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg"),
 										readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg"),
@@ -290,7 +314,7 @@ static Scene *perlinTexturing()
 
 
 
-	
+
 	// Shapes
 	//floor
 	Mesh *msh = new Mesh();
@@ -305,11 +329,11 @@ static Scene *perlinTexturing()
 	msh->addUVCoord(1.0f,1.0f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(1);
 	msh->addFacePoint(2);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
@@ -329,11 +353,11 @@ static Scene *perlinTexturing()
 	msh->addUVCoord(1.0f,1.0f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(1);
 	msh->addFacePoint(2);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
@@ -341,7 +365,7 @@ static Scene *perlinTexturing()
 	scene->addShape(msh);
 
 
-	
+
 	msh = new Mesh();
 	msh->addVertex(Vector(1.0f,20.0f,-30.0f));
 	msh->addVertex(Vector(1.0f,-20.0f,-30.0f));
@@ -354,11 +378,11 @@ static Scene *perlinTexturing()
 	msh->addUVCoord(1.0f,1.0f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(1);
 	msh->addFacePoint(2);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
@@ -366,7 +390,7 @@ static Scene *perlinTexturing()
 	scene->addShape(msh);
 
 
-	
+
 	Shape *shp = new Sphere(	Vector(-15.0f,-12.0f,-19.0f), 8.0f );
 	shp->setMat(scene->getMat("coloured perlin noise"));
 	scene->addShape(shp);
@@ -384,7 +408,7 @@ static Scene *perlinTexturing()
 static Scene *transformScene()
 {
 	Scene *scene = new Scene();
-	
+
 	// Camera
 	Vector e(0.0f,0.0f,20.0f);
 	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
@@ -396,13 +420,13 @@ static Scene *transformScene()
 
 
 
-	
+
 	scene->addLight( new PointLight( Vector(-100.0f,50.0f,100.0f), Colour(1.0f,0.3f,1.0f) ) );
 	scene->addLight( new PointLight( Vector(100.0f,-50.0f,100.0f), Colour(1.0f,1.0f,0.3f) ) );
 
 
 
-	
+
 	Material *mat = new Material();
 	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
 									Colour(0.3f,0.3f,0.3f),
@@ -438,35 +462,35 @@ static Scene *transformScene()
 	msh->addUVCoord(0.75f,0.5f);
 
 	msh->setVertsPerFace(3);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(5);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(5);
 	msh->addFacePoint(4);
-	
+
 	msh->addFacePoint(5);
 	msh->addFacePoint(2);
 	msh->addFacePoint(1);
-	
+
 	msh->addFacePoint(5);
 	msh->addFacePoint(1);
 	msh->addFacePoint(4);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(4);
 	msh->addFacePoint(6);
-	
+
 	msh->addFacePoint(0);
 	msh->addFacePoint(6);
 	msh->addFacePoint(3);
-	
+
 	msh->addFacePoint(6);
 	msh->addFacePoint(4);
 	msh->addFacePoint(1);
-	
+
 	msh->addFacePoint(6);
 	msh->addFacePoint(1);
 	msh->addFacePoint(3);
@@ -485,7 +509,7 @@ static Scene *transformScene()
 	sphere->setMat(scene->getMat("glossy white"));
 	sphere->transform(transform);
 	scene->addShape(sphere);
-	
+
 
 	return scene;
 }
@@ -496,7 +520,7 @@ static Scene *transformScene()
 static Scene *metaballScene()
 {
 	Scene *scene = new Scene();
-	
+
 	// Camera
 	Vector e(0.0f,0.0f,20.0f);
 	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
@@ -507,7 +531,7 @@ static Scene *metaballScene()
 	scene->setCam( new Camera(e, g, t, N, w, h) );
 
 
-	
+
 	// Lights
 	scene->addLight(	new PointLight(	Vector(15.0f,100.0f,0.0f),
 																		Colour(1.0f,1.0f,1.0f) ) );

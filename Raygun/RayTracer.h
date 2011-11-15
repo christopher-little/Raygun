@@ -16,7 +16,7 @@
 class RayTracer
 {
 public:
-	RayTracer();
+	RayTracer(Scene *s);
 	~RayTracer();
 
 

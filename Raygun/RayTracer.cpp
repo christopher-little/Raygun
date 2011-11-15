@@ -12,8 +12,6 @@ using namespace std;
 #include "Mesh.h"
 #include "Shader.h"
 
-#include "test_scenes.h"
-
 // epsilon - allowable margin of error ( i.e. 0.9999 == 1.0 )
 const float eps = 0.001f;
 // value of pi
@@ -39,7 +37,7 @@ Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. Fo
 
 
 // Constructor
-RayTracer::RayTracer()
+RayTracer::RayTracer(Scene *s)
 {
 	// Warm up the number generator
 	srand((unsigned)time(0));
@@ -50,11 +48,7 @@ RayTracer::RayTracer()
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
 
-
-	//scene = testscene::test1();
-	//scene = testscene::perlinTexturing();
-	//scene = testscene::metaballScene();
-	scene = testscene::transformScene();
+	scene = s;
 }
 
 RayTracer::~RayTracer()

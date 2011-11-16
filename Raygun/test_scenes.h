@@ -88,7 +88,7 @@ static Scene *test1()
 
 
 	// Square platform
-	Mesh *msh = new Mesh();
+	MeshShape *msh = new MeshShape();
 	msh->addVertex(Vector(-20.0f,0.0f,-50.0f));
 	msh->addVertex(Vector(-20.0f,0.0f,0.0f));
 	msh->addVertex(Vector(30.0f,0.0f,0.0f));
@@ -112,7 +112,7 @@ static Scene *test1()
 	scene->addShape(msh);
 
 	// Diamond
-	msh = new Mesh();
+	msh = new MeshShape();
 	msh->addVertex(Vector(-3.0f,14.0f,-4.0f));
 	msh->addVertex(Vector(-3.0f,0.0f,-4.0f));
 	msh->addVertex(Vector(-6.0f,7.0f,-4.0f));
@@ -291,7 +291,7 @@ static Scene *perlinTexturing()
 
 	// Shapes
 	//floor
-	Mesh *msh = new Mesh();
+	MeshShape *msh = new MeshShape();
 	msh->addVertex(Vector(-40.0f,-20.0f,-40.0f));
 	msh->addVertex(Vector(-40.0f,-20.0f,40.0f));
 	msh->addVertex(Vector(40.0f,-20.0f,40.0f));
@@ -315,7 +315,7 @@ static Scene *perlinTexturing()
 	scene->addShape(msh);
 
 	// left and right panels
-	msh = new Mesh();
+	msh = new MeshShape();
 	msh->addVertex(Vector(-41.0f,20.0f,-30.0f));
 	msh->addVertex(Vector(-41.0f,-20.0f,-30.0f));
 	msh->addVertex(Vector(-1.0f,-20.0f,-30.0f));
@@ -340,7 +340,7 @@ static Scene *perlinTexturing()
 
 
 
-	msh = new Mesh();
+	msh = new MeshShape();
 	msh->addVertex(Vector(1.0f,20.0f,-30.0f));
 	msh->addVertex(Vector(1.0f,-20.0f,-30.0f));
 	msh->addVertex(Vector(41.0f,-20.0f,-30.0f));
@@ -417,7 +417,7 @@ static Scene *transformScene()
 	transform.rotate(Vector(0.0f,1.0f,0.0f), 30.0f);
 	transform.rotate(Vector(0.0f,0.0f,1.0f), 80.0f);
 
-	Mesh *msh = new Mesh();
+	MeshShape *msh = new MeshShape();
 	msh->addVertex(Vector(0.0f,1.0f,0.0f));
 	msh->addVertex(Vector(0.0f,-1.0f,0.0f));
 	msh->addVertex(Vector(-1.0f,0.0f,0.0f));

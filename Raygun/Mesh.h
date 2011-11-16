@@ -10,20 +10,20 @@
 #include "Ray.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// class Mesh
+// class MeshShape
 //
-// Container for triangle or quad list mesh
+// Shape container for triangle or quad list mesh
 ////////////////////////////////////////////////////////////////////////////////
-class Mesh : public Shape
+class MeshShape : public Shape
 {
 public:
-	Mesh();
-	~Mesh();
-	
+	MeshShape();
+	~MeshShape();
+
 
 	// Set the number of vertices per face
 	inline void setVertsPerFace(int c) { vertsPerFace = c; }
-	
+
 	// Append a vertex to the vertices list
 	inline void addVertex(const Vector &v) { vertices.push_back(v); }
 	// Append a face vertex index
@@ -31,7 +31,7 @@ public:
 	// Append a vertex uv coordinate
 	inline void addUVCoord(float u, float v) { uvList.push_back(u); uvList.push_back(v); }
 
-	
+
 	bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 
 private:
@@ -40,8 +40,8 @@ private:
 	std::vector<int> faces; // List of faces (number of components depends on tri vs quad
 	std::vector<float> uvList; // List of uv coordinates for each vertex
 
-	//***This needs list of normals and u,v coordinates
-	
+	//***This needs list of normals
+
 	// Specialized intersection methods for triangles and quads
 	bool intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 	bool intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);

@@ -25,7 +25,6 @@ HEADERS += Raygun/AABB.h \
            Raygun/Light.h \
            Raygun/Material.h \
            Raygun/Matrix.h \
-           Raygun/Mesh.h \
            Raygun/Metaballs.h \
            Raygun/Perlin.h \
            Raygun/PointLight.h \
@@ -38,7 +37,8 @@ HEADERS += Raygun/AABB.h \
            Raygun/test_scenes.h \
            Raygun/Vector.h \
     Raygun/GUI/mainwindow.h \
-    Raygun/GUI/rtthread.h
+    Raygun/GUI/rtthread.h \
+    Raygun/Mesh.h
 SOURCES += Raygun/ImageBuffer.cpp \
            Raygun/ImageIO.cpp \
            Raygun/main.cpp \
@@ -51,6 +51,10 @@ SOURCES += Raygun/ImageBuffer.cpp \
            Raygun/Sphere.cpp \
     Raygun/GUI/mainwindow.cpp \
     Raygun/GUI/rtthread.cpp
+
+
+
+
 
 
 

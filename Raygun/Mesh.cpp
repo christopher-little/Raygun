@@ -3,19 +3,19 @@
 // epsilon - allowable margin of error ( 0.999999 == 1.0 )
 static float eps = 0.0001f;
 
-Mesh::Mesh()
+MeshShape::MeshShape()
 {
 	vertsPerFace = -1;
 }
 
-Mesh::~Mesh()
+MeshShape::~MeshShape()
 {
 
 }
 
 
 
-bool Mesh::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
+bool MeshShape::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
 	// Call intersection method for triangles or quads
 	if(vertsPerFace == 3)
@@ -28,7 +28,7 @@ bool Mesh::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, flo
 
 
 
-bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
+bool MeshShape::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
 	// Transform the ray for the local transformation matrix
 	Ray rt = _transform.inverse() * Ray(r);
@@ -122,7 +122,7 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 		float invDenom = 1.0f / (dot00*dot11 - dot01*dot01);
 		float local_u = (dot11*dot02 - dot01*dot12) * invDenom;
 		float local_v = (dot00*dot12 - dot01*dot02) * invDenom;
-		
+
 		// Recall faces[face_index] is the index for the vertex, faces[face_index]*2 then maps to the correct u,v position in the uvList since uvList=(u0,v0,u1,v1,...)
 		int uv_index = faces[face_index]*2;
 		float u_0 = uvList[uv_index];
@@ -152,7 +152,7 @@ bool Mesh::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float &u, 
 
 
 // This intersection method is more or less copied from "An Efficient Ray-Quadrilateral Intersection Test" by Lagae and Dutre
-bool Mesh::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
+bool MeshShape::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
 	// Check each face for intersection
 	// -Recall faces[0-3] make up the 4 vertices of the first face, listed counter-clockwise
@@ -160,7 +160,6 @@ bool Mesh::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u,
 	float nearest_t = -1.0;
 	Vector nearest_n;
 	float nearest_t_temp;
-	Vector nearest_n_temp;
 	// Store some extra information needed to calculate u,v coordinates
 	float nearest_alpha, nearest_beta;
 	Vector nearest_e_01, nearest_e_03;
@@ -268,7 +267,7 @@ bool Mesh::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u,
 			u = Q / A;
 			if ((u < 0.0f) || (u > 1.0f))
 				u = C / Q;
-			v = nearest_beta / ((u * (beta_11 - 1.0f)) + 1.0f); 
+			v = nearest_beta / ((u * (beta_11 - 1.0f)) + 1.0f);
 		}
 
 		return true;

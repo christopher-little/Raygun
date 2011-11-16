@@ -26,28 +26,6 @@ using namespace std;
 namespace testscene {
 
 
-/*static Scene *scenePicker(string name)
-{
-	switch(name)
-	{
-	case "test1":
-		return test1();
-		break;
-	case "perlinTexturing":
-		return perlinTexturing();
-		break;
-	case "transformScene":
-		return transformScene();
-		break;
-	case "metaballScene":
-		return metaballScene();
-		break;
-	default:
-		cout << "No scene named " << name << " found, defaulting to transformScene." << endl;
-	}
-}*/
-
-
 static Scene *test1()
 {
 	Scene *scene = new Scene();
@@ -64,10 +42,8 @@ static Scene *test1()
 
 
 	// Add some illumination to the situation
-	scene->addLight(	new PointLight(	Vector(-100.0f,50.0f,100.0f),
-																		Colour(1.0f,1.0f,1.0f) ) );
-	scene->addLight(	new PointLight(	Vector(100.0f,150.0f,100.0f),
-																		Colour(1.0f,1.0f,1.0f) ) );
+	scene->addLight( new PointLight( Vector(-100.0f,50.0f,100.0f), Colour(1.0f,1.0f,1.0f) ) );
+	scene->addLight( new PointLight( Vector(100.0f,150.0f,100.0f), Colour(1.0f,1.0f,1.0f) ) );
 
 
 
@@ -79,19 +55,18 @@ static Scene *test1()
 	// White, slightly reflective
 	Material *mat = new Material();
 	mat->makePhong(	Colour(0.7f,0.7f,0.7f),
-									Colour(0.9f,0.9f,0.9f),
-									256.0f);
+					Colour(0.9f,0.9f,0.9f),
+					256.0f);
 	scene->setMat(string("light white"), mat);
 	// Less intense reflective white material
 	mat = new Material();
 	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
-									Colour(0.3f,0.3f,0.3f),
-									256.0f);
+					Colour(0.3f,0.3f,0.3f),
+					256.0f);
 	scene->setMat(string("glossy white"), mat);
 	// Orange dielectric
 	mat = new Material();
-	mat->makePhongDielectric(	Colour(1.0f,0.5f,0.2f),
-														256.0f, 2.0f );
+	mat->makePhongDielectric( Colour(1.0f,0.5f,0.2f), 256.0f, 2.0f );
 	scene->setMat(string("orange glass"), mat);
 	// earth material
 	mat = new Material();
@@ -102,12 +77,12 @@ static Scene *test1()
 
 
 	// Set a sky box
-	scene->setSkyBox(	readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
-										readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
+	scene->setSkyBox( readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
+					  readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
+					  readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
+					  readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
+					  readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
+					  readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
 
 
 
@@ -194,16 +169,16 @@ static Scene *test1()
 
 
 
-	Shape *shp = new Sphere(	Vector(5.0f,3.5f,-6.0f), 3.0f );
+	Shape *shp = new Sphere( Vector(5.0f,3.5f,-6.0f), 3.0f );
 	shp->setMat(scene->getMat("orange glass"));
 	scene->addShape(shp);
 
-	shp = new Sphere(	Vector(14.0f,3.0f,-4.0f), 3.0f );
+	shp = new Sphere( Vector(14.0f,3.0f,-4.0f), 3.0f );
 	shp->setMat(scene->getMat("light white"));
 	scene->addShape(shp);
 
 
-	shp = new Sphere(	Vector(20.0f,15.0f,-25.0f), 10.0f );
+	shp = new Sphere( Vector(20.0f,15.0f,-25.0f), 10.0f );
 	shp->setMat(scene->getMat("earth"));
 	scene->addShape(shp);
 
@@ -231,8 +206,7 @@ static Scene *perlinTexturing()
 
 
 	// Lights
-	scene->addLight(	new PointLight(	Vector(15.0f,100.0f,0.0f),
-																		Colour(1.0f,1.0f,1.0f) ) );
+	scene->addLight( new PointLight( Vector(15.0f,100.0f,0.0f), Colour(1.0f,1.0f,1.0f) ) );
 
 
 
@@ -254,51 +228,51 @@ static Scene *perlinTexturing()
 	// shiny pink
 	Material *mat = new Material();
 	mat->makePhongAmb(	Colour(0.1f,0.0f,0.0f),
-											Colour(0.8f,0.3f,0.5f),
-											Colour(0.6f,0.6f,0.6f),
-											256.0f);
+						Colour(0.8f,0.3f,0.5f),
+						Colour(0.6f,0.6f,0.6f),
+						256.0f);
 	scene->setMat(string("shiny pink"), mat);
 
 	// glossy white
 	mat = new Material();
 	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
-									Colour(0.3f,0.3f,0.3f),
-									256.0f);
+					Colour(0.3f,0.3f,0.3f),
+					256.0f);
 	scene->setMat(string("glossy white"), mat);
 
 	// regular perlin noise
 	mat = new Material();
 	mat->makePhongAmb( Colour(1.0f,1.0f,1.0f),
-										 Colour(),
-										 Colour(),
-										 256.0f);
+					   Colour(),
+					   Colour(),
+					   256.0f);
 	mat->setTexture(scene->getTex("perlin noise"));
 	scene->setMat(string("perlin noise"), mat);
 
 	// coloured perlin noise
 	mat = new Material();
 	mat->makePhongAmb(	Colour(0.51f,0.31f,0.26f),
-											Colour(),//0.9f,0.5f,0.1f),
-											Colour(),//0.1f,0.1f,0.1f),
-											256.0f);
+						Colour(),//0.9f,0.5f,0.1f),
+						Colour(),//0.1f,0.1f,0.1f),
+						256.0f);
 	mat->setTexture(scene->getTex("perlin noise"));
 	scene->setMat(string("coloured perlin noise"), mat);
 
 	// perlin warp
 	mat = new Material();
 	mat->makePhongAmb( Colour(1.0f,1.0f,1.0f),
-										 Colour(),
-										 Colour(),
-										 256.0f);
+					   Colour(),
+					   Colour(),
+					   256.0f);
 	mat->setTexture(scene->getTex("perlin warp"));
 	scene->setMat(string("perlin warp"), mat);
 
 	// shiny perlin warp
 	mat = new Material();
 	mat->makePhongAmb(	Colour(0.1f,0.1f,0.1f),
-											Colour(0.9f,0.9f,0.9f),
-											Colour(0.1f,0.1f,0.1f),
-											256.0f);
+						Colour(0.9f,0.9f,0.9f),
+						Colour(0.1f,0.1f,0.1f),
+						256.0f);
 	mat->setTexture(scene->getTex("perlin warp"));
 	scene->setMat(string("shiny perlin warp"), mat);
 
@@ -306,11 +280,11 @@ static Scene *perlinTexturing()
 
 	// Skybox
 	scene->setSkyBox(	readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg"),
-										readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg"),
-										readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg"),
-										readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg") );
+						readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg"),
+						readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg"),
+						readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg"),
+						readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg"),
+						readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg") );
 
 
 
@@ -429,9 +403,8 @@ static Scene *transformScene()
 
 	Material *mat = new Material();
 	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
-									Colour(0.3f,0.3f,0.3f),
-									256.0f);
-	//mat->setTexture(readJPG("..\\textures\\cloud_earth.jpg"));
+					Colour(0.3f,0.3f,0.3f),
+					256.0f);
 	scene->setMat(string("glossy white"), mat);
 
 

@@ -10,15 +10,17 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	explicit MainWindow(QWidget *parent = 0);
+	explicit MainWindow(bool testModeFlag, QWidget *parent = 0);
 
 signals:
 
 public slots:
 
 private slots:
+	// Displays the rendered image buffer to the display window (assumes rtthread has completed safely)
 	void displayImage();
 
+	// File menu action slots
 	void open();
 	void save();
 
@@ -26,18 +28,23 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private:
+	// File menu and associate actions
 	QMenu *fileMenu;
 
 	QAction *openAction;
 	QAction *saveAction;
 	QAction *quitAction;
 
-	QWidget *mainWidget;
-	QTextEdit *textEdit;
-	QPushButton *renderbtn;
+	QWidget *mainWidget;	// Main window display area
+	QTextEdit *textEdit;	// Text editor (***will be used for modifying scene)
+	QPushButton *renderbtn;	// Big render button
 
-	ImageBuffer *image;
-	RTThread *rtthread;
+	ImageBuffer *image;	// buffer where rtthread renders image to
+	QMutex *rtLock;
+	RTThread *rtthread;	// Thread object to run renderer in a background thread
+	QLabel *displayWindow;	// Window which opens when a rendered image is ready for display
+							// Note: this widget is NOT destroyed when it is closed, thus the
+							//	window can be closed by user and shown again (using show()) safely.
 };
 
 #endif // MAINWINDOW_H

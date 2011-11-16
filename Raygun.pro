@@ -51,3 +51,7 @@ SOURCES += Raygun/ImageBuffer.cpp \
            Raygun/Sphere.cpp \
     Raygun/GUI/mainwindow.cpp \
     Raygun/GUI/rtthread.cpp
+
+
+
+

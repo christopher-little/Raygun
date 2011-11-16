@@ -2,7 +2,7 @@
 
 #include "Colour.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(bool testModeFlag, QWidget *parent) : QMainWindow(parent)
 {
 	setWindowTitle("Raygun");
 
@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 
 	mainWidget = new QWidget();
-	textEdit = new QTextEdit;
-	renderbtn = new QPushButton("Render");
+	textEdit = new QTextEdit(mainWidget);
+	renderbtn = new QPushButton("Render", mainWidget);
 
 	mainWidget->setLayout(new QVBoxLayout());
 	mainWidget->layout()->addWidget(textEdit);
@@ -33,32 +33,39 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	setCentralWidget(mainWidget);
 
 
+	// Initialize the image buffer, ray tracer thread and display window
 	image = new ImageBuffer(960,540);
-	rtthread = new RTThread(image);
+	rtLock = new QMutex();
+	rtthread = new RTThread(image, rtLock);
+	displayWindow = new QLabel();
 	connect(renderbtn, SIGNAL(clicked()), rtthread, SLOT(start()));
 	connect(rtthread, SIGNAL(finished()), this, SLOT(displayImage()));
+
+	// Render default scene immediately if the testFlag is set
+	if(testModeFlag)
+		rtthread->start();
 }
 
 
 void MainWindow::displayImage()
 {
-	QImage *i = new QImage(image->width(), image->height(), QImage::Format_RGB32);
+	// Copy the rendered image buffer to a QImage
+	QImage i(image->width(), image->height(), QImage::Format_RGB32);
 	for(int row=0; row<image->height(); row++) for(int col=0; col<image->width(); col++)
 	{
 		Colour c = image->getPixel(row,col);
 		QColor qc(static_cast<int>(c.r()*255), static_cast<int>(c.g()*255), static_cast<int>(c.b()*255));
-		i->setPixel(col,row,qc.rgb());
+		i.setPixel(col,row,qc.rgb());
 	}
 
-	QPixmap p;
-	p.convertFromImage(*i);
-	delete i;
+	rtLock->unlock();
 
-	QGraphicsScene *scene = new QGraphicsScene();
-	scene->addPixmap(p);
-	QGraphicsView *view = new QGraphicsView(scene);
-	view->move(frameGeometry().topRight() + QPoint(100,0));
-	view->show();
+	// Assign the image to a Pixmap and display in a QLabel window
+	if(displayWindow->isVisible())
+		displayWindow->hide();
+	displayWindow->setPixmap(QPixmap::fromImage(i));
+	displayWindow->move(geometry().topRight() + QPoint(100,0));
+	displayWindow->show();
 }
 
 

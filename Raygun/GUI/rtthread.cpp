@@ -1,16 +1,15 @@
 #include "rtthread.h"
 
-#include <QImage>
-#include <QPixmap>
-#include <QGraphicsScene>
-#include <QGraphicsView>
+#include <iostream>
 
-#include "ImageBuffer.h"
 #include "test_scenes.h"
 
-RTThread::RTThread(ImageBuffer *i, QWidget *parent) : QThread(parent)
+using namespace std;
+
+RTThread::RTThread(ImageBuffer *i, QMutex *m, QObject *parent) : QThread(parent)
 {
 	image = i;
+	rtLock = m;
 	scene = testscene::transformScene();
 	rt = new RayTracer(scene);
 }
@@ -24,5 +23,12 @@ RTThread::~RTThread()
 
 void RTThread::run()
 {
-	rt->render(image);
+	if(rtLock->tryLock())
+	{
+		rt->render(image);
+	}
+	else
+	{
+		cout << "RTThread could not obtain lock, there must be a render thread in progress." << endl;
+	}
 }

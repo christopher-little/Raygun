@@ -7,7 +7,14 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . Raygun
 INCLUDEPATH += . Raygun
-LIBS += -ljpeg
+win32 {
+    #This requires precompiled clan-lib jpeg library (should replace with qt imaging library)
+    INCLUDEPATH += C:\MinGW-nuwen\include
+    LIBS += C:\MinGW-nuwen\lib\libjpeg.a
+}
+unix {
+	LIBS += -ljpeg
+}
 
 # Input
 HEADERS += Raygun/AABB.h \

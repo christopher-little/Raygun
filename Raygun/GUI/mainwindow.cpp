@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "Colour.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	setWindowTitle("Raygun");
@@ -40,16 +42,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void MainWindow::displayImage()
 {
-	unsigned char *buf = image->getUCharArray();
-	QImage i(buf, image->width(), image->height(), QImage::Format_RGB32);
+	QImage *i = new QImage(image->width(), image->height(), QImage::Format_RGB32);
+	for(int row=0; row<image->height(); row++) for(int col=0; col<image->width(); col++)
+	{
+		Colour c = image->getPixel(row,col);
+		QColor qc(static_cast<int>(c.r()*255), static_cast<int>(c.g()*255), static_cast<int>(c.b()*255));
+		i->setPixel(col,row,qc.rgb());
+	}
+
 	QPixmap p;
-	p.convertFromImage(i);
-	delete buf;
+	p.convertFromImage(*i);
+	delete i;
 
 	QGraphicsScene *scene = new QGraphicsScene();
 	scene->addPixmap(p);
 	QGraphicsView *view = new QGraphicsView(scene);
-	connect(this, SIGNAL(destroyed()), view, SLOT(close()));
 	view->move(frameGeometry().topRight() + QPoint(100,0));
 	view->show();
 }

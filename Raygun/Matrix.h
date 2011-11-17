@@ -261,6 +261,12 @@ public:
 		sc.makeScale(x,y,z);
 		(*this) *= sc;
 	}
+	void scale(float s)
+	{
+		Matrix sc;
+		sc.makeScale(s,s,s);
+		(*this) *= sc;
+	}
 
 
 

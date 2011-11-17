@@ -37,7 +37,7 @@ MainWindow::MainWindow(bool testModeFlag, QWidget *parent) : QMainWindow(parent)
 	image = new ImageBuffer(960,540);
 	rtLock = new QMutex();
 	rtthread = new RTThread(image, rtLock);
-	displayWindow = new QLabel();
+	displayWindow = new QLabel(this, Qt::Window);
 	connect(renderbtn, SIGNAL(clicked()), rtthread, SLOT(start()));
 	connect(rtthread, SIGNAL(finished()), this, SLOT(displayImage()));
 
@@ -60,11 +60,14 @@ void MainWindow::displayImage()
 
 	rtLock->unlock();
 
-	// Assign the image to a Pixmap and display in a QLabel window
+	// Briefly hide the window while the image is swapped
 	if(displayWindow->isVisible())
 		displayWindow->hide();
+	// Move the window next to the main window if it hasn't been displayed yet
+	else
+		displayWindow->move(frameGeometry().topRight() + QPoint(200,0));
+	// Assign the image to a Pixmap and display in a QLabel window
 	displayWindow->setPixmap(QPixmap::fromImage(i));
-	displayWindow->move(geometry().topRight() + QPoint(100,0));
 	displayWindow->show();
 }
 

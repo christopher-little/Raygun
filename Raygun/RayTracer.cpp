@@ -22,7 +22,7 @@ Colour	rtDefaultColour;			// Default background colour (is set to black by defau
 float	rtClipNear = eps;			// Near and far ray clipping distance
 float	rtClipFar = 5000.0f;
 float	rtRefrIndex = 1.0f;			// Refractive index of "air" (empty space of the scene)
-int		rtDepthMax = 3;				// Maximum recursion count, i.e. maximum number of reflections
+int		rtDepthMax = 5;				// Maximum recursion count, i.e. maximum number of reflections
 int		rtPixelSampleCount = 1;		// Number of samples per pixel
 bool	rtCastShadows = true;		// Cast shadow rays
 bool	rtCastAmbient = false;		// Cast ambient rays

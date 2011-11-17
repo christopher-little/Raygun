@@ -375,36 +375,101 @@ static Scene *transformScene()
 	Scene *scene = new Scene();
 
 	// Camera
-	Vector e(-50.0f,50.0f,50.0f);
-	Vector g = Vector(1.0f,-0.75f,-1.0f).normalized();
-	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
-	float N = 16.0f;
-	float w = 16.0f;
-	float h = 9.0f;
+	Vector e(-30.0,30.0,60.0);
+	Vector g = Vector(0.6,-0.5,-1.0).normalized();
+	Vector t = Vector(0.0,1.0,0.0).normalized();
+	float N = 16.0;
+	float w = 16.0;
+	float h = 9.0;
 	scene->setCam( new Camera(e, g, t, N, w, h) );
 
 
 
-
-	scene->addLight( new PointLight( Vector(-100.0f,100.0f,100.0f), Colour(1.0f,0.3f,1.0f) ) );
-	scene->addLight( new PointLight( Vector(100.0f,20.0f,100.0f), Colour(1.0f,1.0f,0.3f) ) );
-
-
+	// Lights
+	//scene->addLight( new PointLight( Vector(-100.0f,100.0f,0.0f), Colour(1.0f,0.7f,0.7f) ) );
+	scene->addLight( new PointLight( Vector(0.0f,100.0f,100.0f), Colour(1.0f,1.0f,1.0f) ) );
 
 
-	Material *mat = new Material();
-	mat->makePhong(	Colour(0.6f,0.6f,0.6f),
-					Colour(0.3f,0.3f,0.3f),
-					256.0f);
+
+	// Textures
+	ImageBuffer *tex = readJPG("../textures/cloud_earth.jpg");
+	scene->setTex("earth", tex);
+
+
+	// Materials
+	Material *mat;
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.1,0.1,0.1),
+						Colour(0.6,0.6,0.6),
+						Colour(0.3,0.3,0.3),
+						256.0);
 	scene->setMat(string("glossy white"), mat);
 
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.1,0.1,0.1),
+						Colour(0.7,0.7,0.7),
+						Colour(0.0,0.0,0.0),
+						256.0);
+	scene->setMat(string("flat white"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(),
+						Colour(0.3,0.0,0.0),
+						Colour(0.8,0.3,0.3),
+						256.0);
+	scene->setMat(string("shiny red"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(),
+						Colour(0.8,0.0,0.0),
+						Colour(),
+						1.0);
+	scene->setMat(string("flat red"), mat);
+
+	mat = new Material();
+	mat->makePhongDielectric(	Colour(0.8,0.1,0.1),
+								256.0,
+								2.0);
+	scene->setMat(string("dielectric red"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(),
+						Colour(0.0,0.0,0.3),
+						Colour(0.3,0.3,0.8),
+						256.0);
+	scene->setMat(string("shiny blue"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(),
+						Colour(0.0,0.0,0.8),
+						Colour(),
+						1.0);
+	scene->setMat(string("flat blue"), mat);
+
+	mat = new Material();
+	mat->makePhongDielectric(	Colour(0.3,0.3,1.0),
+								256.0,
+								2.0);
+	scene->setMat(string("dielectric blue"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.1,0.1,0.1),
+						Colour(1.0,1.0,1.0),
+						Colour(),
+						1.0);
+	mat->setTexture(scene->getTex("earth"));
+	scene->setMat(string("earth"), mat);
 
 
 
+
+
+	// Objects
 	Matrix transform;
 	Shape *shape;
 
 	Mesh *squareMesh = Mesh::square();
+	Mesh *diamondMesh = Mesh::diamond();
 
 	// Floor
 	transform.makeIdentity();
@@ -413,7 +478,7 @@ static Scene *transformScene()
 	transform.scale(30.0,30.0,1.0);
 
 	shape = new MeshShape(squareMesh);
-	shape->setMat(scene->getMat("glossy white"));
+	shape->setMat(scene->getMat("flat white"));
 	shape->transform(transform);
 	scene->addShape(shape);
 
@@ -439,27 +504,97 @@ static Scene *transformScene()
 
 	// Diamond
 	transform.makeIdentity();
-	transform.translate(3.0f,-1.0f,5.0f);
-	transform.scale(1.0f,3.0f,1.0f);
-	transform.rotate(Vector(0.0f,1.0f,0.0f), 30.0f);
-	transform.rotate(Vector(0.0f,0.0f,1.0f), 80.0f);
+	transform.translate(-20.0,10.0,0.0);
+	transform.scale(5.0,10.0,5.0);
+	transform.rotate(Vector(0.0,1.0,0.0), 180.0);
+	shape = new MeshShape(diamondMesh);
+	shape->setMat(scene->getMat("earth"));
+	shape->transform(transform);
+	scene->addShape(shape);
 
-	Mesh *msh = Mesh::diamond();
-	MeshShape *mshShape = new MeshShape(msh);
-	mshShape->setMat(scene->getMat("glossy white"));
-	mshShape->transform(transform);
-	scene->addShape(mshShape);
-
-
-	// A sphere too
+	// earth
 	transform.makeIdentity();
-	transform.translate(0.0f,3.0f,10.0f);
-	transform.scale(2.0f,1.0f,1.0f);
+	transform.translate(-20.0, 5.0, 10.0);
+	transform.scale(4.0);
+	transform.rotate(Vector(0.0,1.0,0.0), 180.0);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("earth"));
+	shape->transform(transform);
+	scene->addShape(shape);
 
-	Sphere *sphere = new Sphere(Vector(0.0f,0.0f,0.0f), 1.0f);
-	sphere->setMat(scene->getMat("glossy white"));
-	sphere->transform(transform);
-	scene->addShape(sphere);
+
+	// spheres
+	transform.makeIdentity();
+	transform.translate(-8.0, 4.0, -15.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("flat red"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(6.0,4.0,-15.0);
+	transform.scale(8.0,3.9,4.0);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("flat blue"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(20.0, 4.0, -15.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("flat red"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(-8.0, 4.0, 0.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("shiny red"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(6.0,4.0,0.0);
+	transform.scale(8.0,3.9,4.0);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("shiny blue"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(20.0, 4.0, 0.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("shiny red"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(-8.0, 4.0, 15.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("dielectric red"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(6.0,4.0,15.0);
+	transform.scale(8.0,3.9,4.0);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("dielectric blue"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(20.0, 4.0, 15.0);
+	transform.scale(3.9);
+	shape = new Sphere(Vector(0.0,0.0,0.0), 1.0);
+	shape->setMat(scene->getMat("dielectric red"));
+	shape->transform(transform);
+	scene->addShape(shape);
 
 
 	return scene;

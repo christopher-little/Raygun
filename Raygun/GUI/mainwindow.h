@@ -17,12 +17,14 @@ signals:
 public slots:
 
 private slots:
-	// Displays the rendered image buffer to the display window (assumes rtthread has completed safely)
-	void displayImage();
-
 	// File menu action slots
 	void open();
 	void save();
+
+	// Displays the rendered image buffer to the display window (assumes rtthread has completed safely)
+	void displayImage();
+
+	void saveImage();
 
 protected:
 	void closeEvent(QCloseEvent *event);
@@ -45,6 +47,8 @@ private:
 	QLabel *displayWindow;	// Window which opens when a rendered image is ready for display
 							// Note: this widget is NOT destroyed when it is closed, thus the
 							//	window can be closed by user and shown again (using show()) safely.
+
+	QAction *saveImageAction;	// Action to save the image buffer
 };
 
 #endif // MAINWINDOW_H

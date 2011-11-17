@@ -9,15 +9,19 @@ MainWindow::MainWindow(bool testModeFlag, QWidget *parent) : QMainWindow(parent)
 	// Create and connect all "file menu" actions
 	openAction = new QAction("&Open", this);
 	saveAction = new QAction("&Save", this);
+	saveImageAction = new QAction("Save &Image", this);
 	quitAction = new QAction("E&xit", this);
 
 	connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 	connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+	connect(saveImageAction, SIGNAL(triggered()), this, SLOT(saveImage()));
 	connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	fileMenu = menuBar()->addMenu("&File");
 	fileMenu->addAction(openAction);
 	fileMenu->addAction(saveAction);
+	fileMenu->addSeparator();
+	fileMenu->addAction(saveImageAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(quitAction);
 
@@ -69,6 +73,27 @@ void MainWindow::displayImage()
 	// Assign the image to a Pixmap and display in a QLabel window
 	displayWindow->setPixmap(QPixmap::fromImage(i));
 	displayWindow->show();
+}
+
+void MainWindow::saveImage()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", "Jpeg (*.jpg *.jpeg);;PNG (*.png)");
+
+	if(fileName != "")
+	{
+		rtLock->lock();
+		// Copy the rendered image buffer to a QImage
+		QImage i(image->width(), image->height(), QImage::Format_RGB32);
+		for(int row=0; row<image->height(); row++) for(int col=0; col<image->width(); col++)
+		{
+			Colour c = image->getPixel(row,col);
+			QColor qc(static_cast<int>(c.r()*255), static_cast<int>(c.g()*255), static_cast<int>(c.b()*255));
+			i.setPixel(col,row,qc.rgb());
+		}
+		rtLock->unlock();
+
+		i.save(fileName, 0, 100);
+	}
 }
 
 

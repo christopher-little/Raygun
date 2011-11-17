@@ -9,20 +9,30 @@
 #include "Vector.h"
 #include "Ray.h"
 
+
 ////////////////////////////////////////////////////////////////////////////////
-// class MeshShape
+// class Mesh
 //
-// Shape container for triangle or quad list mesh
+// Container for triangle mesh data (vertices, faces, normals and vertex uv coordinates)
 ////////////////////////////////////////////////////////////////////////////////
-class MeshShape : public Shape
+class Mesh
 {
 public:
-	MeshShape();
-	~MeshShape();
+	Mesh(){}
+	~Mesh()
+	{
+		vertices.clear();
+		faces.clear();
+		uvList.clear();
+		//normals.clear();
+	}
 
 
-	// Set the number of vertices per face
-	inline void setVertsPerFace(int c) { vertsPerFace = c; }
+	// Create a square mesh
+	static Mesh *square();
+	// Create a diamond mesh
+	static Mesh *diamond();
+
 
 	// Append a vertex to the vertices list
 	inline void addVertex(const Vector &v) { vertices.push_back(v); }
@@ -32,13 +42,34 @@ public:
 	inline void addUVCoord(float u, float v) { uvList.push_back(u); uvList.push_back(v); }
 
 
+	std::vector<Vector> vertices;
+	std::vector<int> faces;
+	std::vector<float> uvList;
+	//std::vector<Vector> normals;
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// class MeshShape
+//
+// Shape container ray tracing the contained triangle mesh
+////////////////////////////////////////////////////////////////////////////////
+class MeshShape : public Shape
+{
+public:
+	MeshShape(Mesh *m);
+	~MeshShape();
+
 	bool intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v);
 
 private:
 	int vertsPerFace; // 3 for triangle mesh, 4 for quad mesh
-	std::vector<Vector> vertices; // List of vertices
-	std::vector<int> faces; // List of faces (number of components depends on tri vs quad
-	std::vector<float> uvList; // List of uv coordinates for each vertex
+//	std::vector<Vector> vertices; // List of vertices
+//	std::vector<int> faces; // List of faces (number of components depends on tri vs quad
+//	std::vector<float> uvList; // List of uv coordinates for each vertex
+
+	Mesh *mesh;
 
 	//***This needs list of normals
 

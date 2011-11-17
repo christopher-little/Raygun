@@ -3,9 +3,11 @@
 // epsilon - allowable margin of error ( 0.999999 == 1.0 )
 static float eps = 0.0001f;
 
-MeshShape::MeshShape()
+
+MeshShape::MeshShape(Mesh *m)
 {
 	vertsPerFace = -1;
+	mesh = m;
 }
 
 MeshShape::~MeshShape()
@@ -17,12 +19,14 @@ MeshShape::~MeshShape()
 
 bool MeshShape::intersect(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
+	return intersectTri(r, t, p, n, u, v);
+
 	// Call intersection method for triangles or quads
-	if(vertsPerFace == 3)
-		return intersectTri(r, t, p, n, u, v);
-	else if(vertsPerFace == 4)
-		return intersectQuad(r, t, p, n, u, v);
-	return false;
+//	if(vertsPerFace == 3)
+//		return intersectTri(r, t, p, n, u, v);
+//	else if(vertsPerFace == 4)
+//		return intersectQuad(r, t, p, n, u, v);
+//	return false;
 }
 
 
@@ -35,13 +39,12 @@ bool MeshShape::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float
 
 	Vector A, B, C;
 	float nearest_t = -1.0f, temp_t;
-	Vector nearest_n;
 	int face_index = -1; // Index of intersected face
-	for(unsigned int faceI=0; faceI<faces.size(); faceI+=3)
+	for(unsigned int faceI=0; faceI<mesh->faces.size(); faceI+=3)
 	{
-		A = vertices[faces[faceI]];
-		B = vertices[faces[faceI+1]];
-		C = vertices[faces[faceI+2]];
+		A = mesh->vertices[mesh->faces[faceI]];
+		B = mesh->vertices[mesh->faces[faceI+1]];
+		C = mesh->vertices[mesh->faces[faceI+2]];
 
 		// Skip face if triangle plane and ray are parallel
 		float temp = ((B-A).cross(C-A)).dot(rt.d());
@@ -103,9 +106,9 @@ bool MeshShape::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float
 		p = r.e() + r.d()*t;
 
 		// Get the intersected triangle vertices
-		A = vertices[faces[face_index]];
-		B = vertices[faces[face_index+1]];
-		C = vertices[faces[face_index+2]];
+		A = mesh->vertices[mesh->faces[face_index]];
+		B = mesh->vertices[mesh->faces[face_index+1]];
+		C = mesh->vertices[mesh->faces[face_index+2]];
 
 		// Compute flat face normal
 		n = _transform.inverse().transpose().mult((B-A).cross(C-A).normalized()).normalized();
@@ -124,15 +127,15 @@ bool MeshShape::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float
 		float local_v = (dot00*dot12 - dot01*dot02) * invDenom;
 
 		// Recall faces[face_index] is the index for the vertex, faces[face_index]*2 then maps to the correct u,v position in the uvList since uvList=(u0,v0,u1,v1,...)
-		int uv_index = faces[face_index]*2;
-		float u_0 = uvList[uv_index];
-		float v_0 = uvList[uv_index+1];
-		uv_index = faces[face_index+1]*2;
-		float u_1 = uvList[uv_index];
-		float v_1 = uvList[uv_index+1];
-		uv_index = faces[face_index+2]*2;
-		float u_2 = uvList[uv_index];
-		float v_2 = uvList[uv_index+1];
+		int uv_index = mesh->faces[face_index]*2;
+		float u_0 = mesh->uvList[uv_index];
+		float v_0 = mesh->uvList[uv_index+1];
+		uv_index = mesh->faces[face_index+1]*2;
+		float u_1 = mesh->uvList[uv_index];
+		float v_1 = mesh->uvList[uv_index+1];
+		uv_index = mesh->faces[face_index+2]*2;
+		float u_2 = mesh->uvList[uv_index];
+		float v_2 = mesh->uvList[uv_index+1];
 
 		float tu1 = u_1 - u_0;
 		float tv1 = v_1 - v_0;
@@ -150,7 +153,7 @@ bool MeshShape::intersectTri(const Ray &r, float &t, Vector &p, Vector &n, float
 
 
 
-
+/*
 // This intersection method is more or less copied from "An Efficient Ray-Quadrilateral Intersection Test" by Lagae and Dutre
 bool MeshShape::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, float &u, float &v)
 {
@@ -274,4 +277,77 @@ bool MeshShape::intersectQuad(const Ray &r, float &t, Vector &p, Vector &n, floa
 	}
 	else
 		return false;
+}
+*/
+
+
+
+
+
+Mesh *Mesh::square()
+{
+	Mesh *msh = new Mesh();
+
+	msh->addVertex(Vector(-1.0,1.0,0.0));
+	msh->addVertex(Vector(-1.0,-1.0,0.0));
+	msh->addVertex(Vector(1.0,-1.0,0.0));
+	msh->addVertex(Vector(1.0,1.0,0.0));
+	msh->addUVCoord(0.0,1.0);
+	msh->addUVCoord(0.0,0.0);
+	msh->addUVCoord(1.0,0.0);
+	msh->addUVCoord(1.0,1.0);
+	msh->addFacePoint(0);
+	msh->addFacePoint(1);
+	msh->addFacePoint(2);
+	msh->addFacePoint(0);
+	msh->addFacePoint(2);
+	msh->addFacePoint(3);
+
+	return msh;
+}
+
+
+Mesh *Mesh::diamond()
+{
+	Mesh *msh = new Mesh();
+	msh->addVertex(Vector(0.0f,1.0f,0.0f));
+	msh->addVertex(Vector(0.0f,-1.0f,0.0f));
+	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(1.0f,0.0f,0.0f));
+	msh->addVertex(Vector(0.0f,0.0f,1.0f));
+	msh->addVertex(Vector(0.0f,0.0f,-1.0f));
+	msh->addUVCoord(0.5f,1.0f);
+	msh->addUVCoord(0.5f,0.0f);
+	msh->addUVCoord(0.0f,0.5f);
+	msh->addUVCoord(1.0f,0.5f);
+	msh->addUVCoord(0.5f,0.5f);
+	msh->addUVCoord(0.25f,0.5f);
+	msh->addUVCoord(0.75f,0.5f);
+	msh->addFacePoint(0);
+	msh->addFacePoint(2);
+	msh->addFacePoint(5);
+	msh->addFacePoint(0);
+	msh->addFacePoint(5);
+	msh->addFacePoint(4);
+	msh->addFacePoint(5);
+	msh->addFacePoint(2);
+	msh->addFacePoint(1);
+	msh->addFacePoint(5);
+	msh->addFacePoint(1);
+	msh->addFacePoint(4);
+	msh->addFacePoint(0);
+	msh->addFacePoint(4);
+	msh->addFacePoint(6);
+	msh->addFacePoint(0);
+	msh->addFacePoint(6);
+	msh->addFacePoint(3);
+	msh->addFacePoint(6);
+	msh->addFacePoint(4);
+	msh->addFacePoint(1);
+	msh->addFacePoint(6);
+	msh->addFacePoint(1);
+	msh->addFacePoint(3);
+
+	return msh;
 }

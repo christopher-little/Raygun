@@ -87,32 +87,31 @@ static Scene *test1()
 
 
 
+	Mesh *msh;
+	MeshShape *mshShape;
 	// Square platform
-	MeshShape *msh = new MeshShape();
+	msh = new Mesh();
 	msh->addVertex(Vector(-20.0f,0.0f,-50.0f));
 	msh->addVertex(Vector(-20.0f,0.0f,0.0f));
 	msh->addVertex(Vector(30.0f,0.0f,0.0f));
 	msh->addVertex(Vector(30.0f,0.0f,-50.0f));
-
 	msh->addUVCoord(0.0f,1.0f);
 	msh->addUVCoord(0.0f,0.0f);
 	msh->addUVCoord(1.0f,0.0f);
 	msh->addUVCoord(1.0f,1.0f);
-
-	msh->setVertsPerFace(3);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(1);
 	msh->addFacePoint(2);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(3);
-	msh->setMat(scene->getMat("glossy white"));
-	scene->addShape(msh);
+
+	mshShape = new MeshShape(msh);
+	mshShape->setMat(scene->getMat("glossy white"));
+	scene->addShape(mshShape);
 
 	// Diamond
-	msh = new MeshShape();
+	msh = new Mesh();
 	msh->addVertex(Vector(-3.0f,14.0f,-4.0f));
 	msh->addVertex(Vector(-3.0f,0.0f,-4.0f));
 	msh->addVertex(Vector(-6.0f,7.0f,-4.0f));
@@ -120,7 +119,6 @@ static Scene *test1()
 	msh->addVertex(Vector(0.0f,7.0f,-4.0f));
 	msh->addVertex(Vector(-3.0f,7.0f,-1.0f));
 	msh->addVertex(Vector(-3.0f,7.0f,-7.0f));
-
 	msh->addUVCoord(0.5f,1.0f);
 	msh->addUVCoord(0.5f,0.0f);
 	msh->addUVCoord(0.0f,0.5f);
@@ -128,42 +126,34 @@ static Scene *test1()
 	msh->addUVCoord(0.5f,0.5f);
 	msh->addUVCoord(0.25f,0.5f);
 	msh->addUVCoord(0.75f,0.5f);
-
-	msh->setVertsPerFace(3);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(2);
 	msh->addFacePoint(5);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(5);
 	msh->addFacePoint(4);
-
 	msh->addFacePoint(5);
 	msh->addFacePoint(2);
 	msh->addFacePoint(1);
-
 	msh->addFacePoint(5);
 	msh->addFacePoint(1);
 	msh->addFacePoint(4);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(4);
 	msh->addFacePoint(6);
-
 	msh->addFacePoint(0);
 	msh->addFacePoint(6);
 	msh->addFacePoint(3);
-
 	msh->addFacePoint(6);
 	msh->addFacePoint(4);
 	msh->addFacePoint(1);
-
 	msh->addFacePoint(6);
 	msh->addFacePoint(1);
 	msh->addFacePoint(3);
-	msh->setMat(scene->getMat("glossy white"));
-	scene->addShape(msh);
+
+	mshShape = new MeshShape(msh);
+	mshShape->setMat(scene->getMat("glossy white"));
+	scene->addShape(mshShape);
 
 
 
@@ -290,6 +280,7 @@ static Scene *perlinTexturing()
 
 
 	// Shapes
+	/*
 	//floor
 	MeshShape *msh = new MeshShape();
 	msh->addVertex(Vector(-40.0f,-20.0f,-40.0f));
@@ -362,7 +353,7 @@ static Scene *perlinTexturing()
 	msh->addFacePoint(3);
 	msh->setMat(scene->getMat("perlin warp"));
 	scene->addShape(msh);
-
+	*/
 
 
 	Shape *shp = new Sphere(	Vector(-15.0f,-12.0f,-19.0f), 8.0f );
@@ -384,10 +375,10 @@ static Scene *transformScene()
 	Scene *scene = new Scene();
 
 	// Camera
-	Vector e(0.0f,0.0f,20.0f);
-	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
+	Vector e(-50.0f,50.0f,50.0f);
+	Vector g = Vector(1.0f,-0.75f,-1.0f).normalized();
 	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
-	float N = 8.0f;
+	float N = 16.0f;
 	float w = 16.0f;
 	float h = 9.0f;
 	scene->setCam( new Camera(e, g, t, N, w, h) );
@@ -395,8 +386,8 @@ static Scene *transformScene()
 
 
 
-	scene->addLight( new PointLight( Vector(-100.0f,50.0f,100.0f), Colour(1.0f,0.3f,1.0f) ) );
-	scene->addLight( new PointLight( Vector(100.0f,-50.0f,100.0f), Colour(1.0f,1.0f,0.3f) ) );
+	scene->addLight( new PointLight( Vector(-100.0f,100.0f,100.0f), Colour(1.0f,0.3f,1.0f) ) );
+	scene->addLight( new PointLight( Vector(100.0f,20.0f,100.0f), Colour(1.0f,1.0f,0.3f) ) );
 
 
 
@@ -410,67 +401,54 @@ static Scene *transformScene()
 
 
 
-	// Diamond (or just a cube balanced on a vertex)
 	Matrix transform;
+	Shape *shape;
+
+	Mesh *squareMesh = Mesh::square();
+
+	// Floor
+	transform.makeIdentity();
+	transform.translate(0.0,0.0,0.0);
+	transform.rotate(Vector(1.0,0.0,0.0), 90.0);
+	transform.scale(30.0,30.0,1.0);
+
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("glossy white"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	// Walls
+	transform.makeIdentity();
+	transform.translate(30.0,30.0,0.0);
+	transform.rotate(Vector(0.0,1.0,0.0), 90.0);
+	transform.scale(30.0,30.0,1.0);
+
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("glossy white"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(0.0,30.0,-30.0);
+	transform.scale(30.0,30.0,1.0);
+
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("glossy white"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	// Diamond
+	transform.makeIdentity();
 	transform.translate(3.0f,-1.0f,5.0f);
 	transform.scale(1.0f,3.0f,1.0f);
 	transform.rotate(Vector(0.0f,1.0f,0.0f), 30.0f);
 	transform.rotate(Vector(0.0f,0.0f,1.0f), 80.0f);
 
-	MeshShape *msh = new MeshShape();
-	msh->addVertex(Vector(0.0f,1.0f,0.0f));
-	msh->addVertex(Vector(0.0f,-1.0f,0.0f));
-	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
-	msh->addVertex(Vector(-1.0f,0.0f,0.0f));
-	msh->addVertex(Vector(1.0f,0.0f,0.0f));
-	msh->addVertex(Vector(0.0f,0.0f,1.0f));
-	msh->addVertex(Vector(0.0f,0.0f,-1.0f));
-
-	msh->addUVCoord(0.5f,1.0f);
-	msh->addUVCoord(0.5f,0.0f);
-	msh->addUVCoord(0.0f,0.5f);
-	msh->addUVCoord(1.0f,0.5f);
-	msh->addUVCoord(0.5f,0.5f);
-	msh->addUVCoord(0.25f,0.5f);
-	msh->addUVCoord(0.75f,0.5f);
-
-	msh->setVertsPerFace(3);
-
-	msh->addFacePoint(0);
-	msh->addFacePoint(2);
-	msh->addFacePoint(5);
-
-	msh->addFacePoint(0);
-	msh->addFacePoint(5);
-	msh->addFacePoint(4);
-
-	msh->addFacePoint(5);
-	msh->addFacePoint(2);
-	msh->addFacePoint(1);
-
-	msh->addFacePoint(5);
-	msh->addFacePoint(1);
-	msh->addFacePoint(4);
-
-	msh->addFacePoint(0);
-	msh->addFacePoint(4);
-	msh->addFacePoint(6);
-
-	msh->addFacePoint(0);
-	msh->addFacePoint(6);
-	msh->addFacePoint(3);
-
-	msh->addFacePoint(6);
-	msh->addFacePoint(4);
-	msh->addFacePoint(1);
-
-	msh->addFacePoint(6);
-	msh->addFacePoint(1);
-	msh->addFacePoint(3);
-	msh->setMat(scene->getMat("glossy white"));
-
-	msh->transform(transform);
-	scene->addShape(msh);
+	Mesh *msh = Mesh::diamond();
+	MeshShape *mshShape = new MeshShape(msh);
+	mshShape->setMat(scene->getMat("glossy white"));
+	mshShape->transform(transform);
+	scene->addShape(mshShape);
 
 
 	// A sphere too

@@ -71,7 +71,7 @@ public:
 		_m[7] = y;
 		_m[11] = z;
 	}
-	// Make a rotation matrix for rotation of theta redians around an arbitrary axis
+	// Make matrix for rotation by theta degrees around normalized rotation axis vector
 	void makeRotate(const Vector &rotAxis, float theta)
 	{
 		makeIdentity();
@@ -81,11 +81,11 @@ public:
 		float x = rotAxis.x();
 		float y = rotAxis.y();
 		float z = rotAxis.z();
-		
+
 		_m[0] = t*x*x + c;
 		_m[1] = t*x*y - s*z;
 		_m[2] = t*x*z + s*y;
-		
+
 		_m[4] = t*x*y + s*z;
 		_m[5] = t*y*y + c;
 		_m[6] = t*y*z - s*x;
@@ -103,7 +103,7 @@ public:
 		_m[10] = z;
 	}
 
-	
+
 
 
 	// Return the inverse matrix
@@ -195,7 +195,7 @@ public:
 		return *this;
 	}
 
-	
+
 	// Multiply Matrix by ray (two column vectors; point and direction)
 	Ray operator *(const Ray &r)
 	{

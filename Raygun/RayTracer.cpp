@@ -296,6 +296,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 
 
 	// Fresnel reflection, R is proportion reflected, 1-R is proportion refracted (when material is dielectric)
+	// ***This needs to be replaced with proper modelling
 	float fresnelR = 1.0f;
 
 	// Specular reflection
@@ -312,10 +313,15 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 	// Specular refraction / transmission
 	if(mat->isDielectric())
 	{
+		// Fresnel factor
+		// ***This needs to be replaced with proper modelling
+		fresnelR = 0.2f;
+
+
 		// Refract the ray entering the shape
 		float refrRatio = rtRefrIndex/mat->n();
-		float cosThetaInc = nearest_n.dot(ray.d()*-1);
-		float cosThetaTrans = sqrt(1 - (refrRatio*refrRatio)*(1 - cosThetaInc*cosThetaInc));
+		float cosThetaInc = nearest_n.dot(ray.d()*-1.0f);
+		float cosThetaTrans = sqrt(1.0f - (refrRatio*refrRatio)*(1.0f - cosThetaInc*cosThetaInc));
 		Vector refrDir;
 		if(cosThetaInc >= eps)
 			refrDir = ray.d()*refrRatio + nearest_n*(refrRatio*cosThetaInc - cosThetaTrans);
@@ -323,11 +329,6 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 			refrDir = ray.d()*refrRatio + nearest_n*(-refrRatio*cosThetaInc + cosThetaTrans);
 		refrDir = refrDir.normalized();
 		Ray refrRay(nearest_p + nearest_n*-eps, refrDir);
-
-		// Schlick approximation to Fresnel equation
-		float R0 = (mat->n() - rtRefrIndex)/(mat->n() + rtRefrIndex);
-		R0 = R0*R0;
-		fresnelR =	R0 + (1-R0)*pow(1.0f - cosThetaInc, 5.0f);
 
 		// Find where refracted ray exits
 		float exit_t;
@@ -338,10 +339,9 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
 
 		// Refract the ray again and trace further
 		refrRatio = mat->n()/rtRefrIndex;
-		cosThetaInc = exit_n.dot(refrRay.d()*-1);
-		//float temp = 1 - (refrRatio*refrRatio)*(1 - cosThetaInc*cosThetaInc);
-		cosThetaTrans = sqrt(1 - (refrRatio*refrRatio)*(1 - cosThetaInc*cosThetaInc));
-		if(cosThetaInc >= 0.0f)
+		cosThetaInc = exit_n.dot(refrRay.d());
+		cosThetaTrans = sqrt(1.0f - (refrRatio*refrRatio)*(1.0f - cosThetaInc*cosThetaInc));
+		if(cosThetaInc >= eps)
 			refrDir = refrRay.d()*refrRatio + exit_n*(refrRatio*cosThetaInc - cosThetaTrans);
 		else
 			refrDir = refrRay.d()*refrRatio + exit_n*(-refrRatio*cosThetaInc + cosThetaTrans);

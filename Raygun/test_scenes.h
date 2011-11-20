@@ -395,6 +395,9 @@ static Scene *transformScene()
 	ImageBuffer *tex = readJPG("../textures/cloud_earth.jpg");
 	scene->setTex("earth", tex);
 
+	tex = readJPG("../textures/stone_path.jpg");
+	scene->setTex("stone path", tex);
+
 
 	// Materials
 	Material *mat;
@@ -408,9 +411,17 @@ static Scene *transformScene()
 	mat = new Material();
 	mat->makePhongAmb(	Colour(0.1,0.1,0.1),
 						Colour(0.7,0.7,0.7),
-						Colour(0.0,0.0,0.0),
-						256.0);
+						Colour(),
+						1.0);
 	scene->setMat(string("flat white"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(0.15,0.15,0.15),
+						Colour(0.9,0.9,0.9),
+						Colour(),
+						256.0);
+	mat->setTexture(scene->getTex("stone path"));
+	scene->setMat(string("ground"), mat);
 
 	mat = new Material();
 	mat->makePhongAmb(	Colour(),
@@ -429,7 +440,7 @@ static Scene *transformScene()
 	mat = new Material();
 	mat->makePhongDielectric(	Colour(0.8,0.1,0.1),
 								256.0,
-								2.0);
+								1.2);
 	scene->setMat(string("dielectric red"), mat);
 
 	mat = new Material();
@@ -449,7 +460,7 @@ static Scene *transformScene()
 	mat = new Material();
 	mat->makePhongDielectric(	Colour(0.3,0.3,1.0),
 								256.0,
-								2.0);
+								1.2);
 	scene->setMat(string("dielectric blue"), mat);
 
 	mat = new Material();
@@ -478,7 +489,7 @@ static Scene *transformScene()
 	transform.scale(30.0,30.0,1.0);
 
 	shape = new MeshShape(squareMesh);
-	shape->setMat(scene->getMat("flat white"));
+	shape->setMat(scene->getMat("ground"));
 	shape->transform(transform);
 	scene->addShape(shape);
 

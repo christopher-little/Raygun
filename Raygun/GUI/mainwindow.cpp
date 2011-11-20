@@ -38,7 +38,7 @@ MainWindow::MainWindow(bool testModeFlag, QWidget *parent) : QMainWindow(parent)
 
 
 	// Initialize the image buffer, ray tracer thread and display window
-	image = new ImageBuffer(960,540);
+	image = new ImageBuffer(1280,720);
 	rtLock = new QMutex();
 	rtthread = new RTThread(image, rtLock);
 	displayWindow = new QLabel(this, Qt::Window);
@@ -69,7 +69,7 @@ void MainWindow::displayImage()
 		displayWindow->hide();
 	// Move the window next to the main window if it hasn't been displayed yet
 	else
-		displayWindow->move(frameGeometry().topRight() + QPoint(200,0));
+		displayWindow->move(frameGeometry().topRight() + QPoint(100,0));
 	// Assign the image to a Pixmap and display in a QLabel window
 	displayWindow->setPixmap(QPixmap::fromImage(i));
 	displayWindow->show();

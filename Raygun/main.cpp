@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
 	// Start up the main window
 	MainWindow *mainWindow = new MainWindow(testModeFlag);
-	mainWindow->move(QPoint(300,300));
+	mainWindow->move(QPoint(100,150));
 	mainWindow->show();
 
 	int ret = app.exec();

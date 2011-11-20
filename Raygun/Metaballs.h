@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef _METABALLS_
-#define _METABALLS
+#ifndef METABALLS
+#define METABALLS
 
 #include "Shape.h"
 

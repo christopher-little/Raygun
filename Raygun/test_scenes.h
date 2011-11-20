@@ -471,6 +471,13 @@ static Scene *transformScene()
 	mat->setTexture(scene->getTex("earth"));
 	scene->setMat(string("earth"), mat);
 
+	mat = new Material();
+	mat->makePhongAmb(	Colour(),
+						Colour(0.2,0.9,0.2),
+						Colour(0.2,0.2,0.2),
+						256.0);
+	scene->setMat(string("metaball mat"), mat);
+
 
 
 
@@ -606,6 +613,17 @@ static Scene *transformScene()
 	shape->setMat(scene->getMat("dielectric red"));
 	shape->transform(transform);
 	scene->addShape(shape);
+
+
+	// Metaballs
+	transform.makeIdentity();
+	transform.translate(0.0,15.0,0.0);
+	Metaballs *balls = new Metaballs();
+	balls->addSphere(Vector(0.0,0.0,0.0), 2.0);
+	balls->addSphere(Vector(2.0,0.0,0.0), 2.0);
+	balls->setMat(scene->getMat("metaball mat"));
+	balls->transform(transform);
+	scene->addShape(balls);
 
 
 	return scene;

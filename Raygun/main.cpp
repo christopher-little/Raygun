@@ -28,8 +28,5 @@ int main(int argc, char **argv)
 	mainWindow->move(QPoint(100,150));
 	mainWindow->show();
 
-	int ret = app.exec();
-	cout << "app.exec() returned: " << ret << endl;
-
-	return 0;
+	return app.exec();
 }

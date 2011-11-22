@@ -395,7 +395,7 @@ static Scene *transformScene()
 	ImageBuffer *tex = readJPG("../textures/cloud_earth.jpg");
 	scene->setTex("earth", tex);
 
-	tex = readJPG("../textures/stone_path.jpg");
+	tex = readJPG("../textures/cracked_earth.jpg");
 	scene->setTex("stone path", tex);
 
 
@@ -473,8 +473,8 @@ static Scene *transformScene()
 
 	mat = new Material();
 	mat->makePhongAmb(	Colour(),
-						Colour(0.2,0.9,0.2),
-						Colour(0.2,0.2,0.2),
+						Colour(0.1,0.4,0.1),
+						Colour(0.3,0.9,0.3),
 						256.0);
 	scene->setMat(string("metaball mat"), mat);
 
@@ -618,9 +618,11 @@ static Scene *transformScene()
 	// Metaballs
 	transform.makeIdentity();
 	transform.translate(0.0,15.0,0.0);
+	transform.scale(3.0);
 	Metaballs *balls = new Metaballs();
-	balls->addSphere(Vector(0.0,0.0,0.0), 2.0);
-	balls->addSphere(Vector(2.0,0.0,0.0), 2.0);
+	balls->addSphere(Vector(0.0,0.0,0.0), 1.0);
+	balls->addSphere(Vector(0.0,1.0,0.0), 1.0);
+	balls->addSphere(Vector(0.7,1.7,0.0), 1.0);
 	balls->setMat(scene->getMat("metaball mat"));
 	balls->transform(transform);
 	scene->addShape(balls);

@@ -14,7 +14,7 @@ using namespace std;
 class Metaballs : public Shape
 {
 public:
-	Metaballs() {}
+	Metaballs() { outputed = false; }
 	~Metaballs()
 	{
 		balls.clear();
@@ -32,6 +32,10 @@ public:
 
 private:
 	vector< pair<Vector,float> > balls;	// Set of spheres defining the "blobs" of the metaballs shape
+
+	Vector normal(const Vector &p);
+
+	bool outputed;
 };
 
 #endif

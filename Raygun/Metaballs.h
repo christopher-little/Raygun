@@ -14,14 +14,14 @@ using namespace std;
 class Metaballs : public Shape
 {
 public:
-	Metaballs() { outputed = false; }
+	Metaballs(float threshold) { _threshold = threshold; }
 	~Metaballs()
 	{
 		balls.clear();
 	}
 
 	// Add a sphere (given as point and radius) to the set of metaballs
-	void addSphere(const Vector &c, float r)
+	inline void addSphere(const Vector &c, float r)
 	{
 		balls.push_back(pair<Vector,float>(c,r));
 	}
@@ -33,9 +33,11 @@ public:
 private:
 	vector< pair<Vector,float> > balls;	// Set of spheres defining the "blobs" of the metaballs shape
 
-	Vector normal(const Vector &p);
+	float _threshold;	// Energy threshold of iso-surface
 
-	bool outputed;
+
+	// Return the normal vector (gradient) at point p
+	Vector normal(const Vector &p);
 };
 
 #endif

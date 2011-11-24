@@ -1,7 +1,5 @@
 Reminders
 
--Scene.cpp has pretty janky texture reading shoved into "lmbrtn" chunk, needs revising
-	-Plan to remove/replace MDL loading
 -Scene.h has function to retrieve Materials from matMap, this shouldn't be needed
 	-This is now being used in test_scenes.h to retrieve materials by name that have already been stored in the scene object
 

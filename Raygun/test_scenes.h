@@ -473,10 +473,17 @@ static Scene *transformScene()
 
 	mat = new Material();
 	mat->makePhongAmb(	Colour(),
-						Colour(0.1,0.4,0.1),
-						Colour(0.3,0.9,0.3),
+						Colour(0.2,0.9,0.2),
+						Colour(0.1,0.2,0.1),
 						256.0);
 	scene->setMat(string("metaball mat"), mat);
+
+	mat = new Material();
+	mat->makePhongAmb(	Colour(1.0,1.0,1.0),
+						Colour(),
+						Colour(),
+						1.0);
+	scene->setMat(string("light mat"), mat);
 
 
 
@@ -505,7 +512,6 @@ static Scene *transformScene()
 	transform.translate(30.0,30.0,0.0);
 	transform.rotate(Vector(0.0,1.0,0.0), 90.0);
 	transform.scale(30.0,30.0,1.0);
-
 	shape = new MeshShape(squareMesh);
 	shape->setMat(scene->getMat("glossy white"));
 	shape->transform(transform);
@@ -514,9 +520,46 @@ static Scene *transformScene()
 	transform.makeIdentity();
 	transform.translate(0.0,30.0,-30.0);
 	transform.scale(30.0,30.0,1.0);
-
 	shape = new MeshShape(squareMesh);
 	shape->setMat(scene->getMat("glossy white"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	// Ceiling lights
+	Matrix lightOrient;
+	lightOrient.makeIdentity();
+	lightOrient.rotate(Vector(1.0,0.0,0.0), -90.0);
+	lightOrient.scale(8.0,8.0,1.0);
+
+	transform.makeIdentity();
+	transform.translate(-11.0,60.0,-11.0);
+	transform *= lightOrient;
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("light mat"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(11.0,60.0,-11.0);
+	transform *= lightOrient;
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("light mat"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(-11.0,60.0,11.0);
+	transform *= lightOrient;
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("light mat"));
+	shape->transform(transform);
+	scene->addShape(shape);
+
+	transform.makeIdentity();
+	transform.translate(11.0,60.0,11.0);
+	transform *= lightOrient;
+	shape = new MeshShape(squareMesh);
+	shape->setMat(scene->getMat("light mat"));
 	shape->transform(transform);
 	scene->addShape(shape);
 
@@ -617,47 +660,19 @@ static Scene *transformScene()
 
 	// Metaballs
 	transform.makeIdentity();
-	transform.translate(0.0,15.0,0.0);
-	transform.scale(3.0);
-	Metaballs *balls = new Metaballs();
-	balls->addSphere(Vector(0.0,0.0,0.0), 1.0);
-	balls->addSphere(Vector(0.0,1.0,0.0), 1.0);
-	balls->addSphere(Vector(0.7,1.7,0.0), 1.0);
+	transform.translate(14.0,5.0,27.0);
+	transform.rotate(Vector(0.0,1.0,0.0), 35.0);
+	transform.scale(2.0);
+	Metaballs *balls = new Metaballs(0.5);
+	balls->addSphere(Vector(0.0,0.0,0.0), 3.0);
+	balls->addSphere(Vector(0.0,2.0,0.0), 2.0);
+	balls->addSphere(Vector(0.0,3.5,0.0), 1.5);
+	balls->addSphere(Vector(-1.0,4.0,0.5), 1.0);
+	balls->addSphere(Vector(1.0,4.0,0.5), 1.0);
 	balls->setMat(scene->getMat("metaball mat"));
 	balls->transform(transform);
 	scene->addShape(balls);
 
-
-	return scene;
-}
-
-
-
-
-static Scene *metaballScene()
-{
-	Scene *scene = new Scene();
-
-	// Camera
-	Vector e(0.0f,0.0f,20.0f);
-	Vector g = Vector(0.0f,0.0f,-1.0f).normalized();
-	Vector t = Vector(0.0f,1.0f,0.0f).normalized();
-	float N = 8.0f;
-	float w = 16.0f;
-	float h = 9.0f;
-	scene->setCam( new Camera(e, g, t, N, w, h) );
-
-
-
-	// Lights
-	scene->addLight(	new PointLight(	Vector(15.0f,100.0f,0.0f),
-																		Colour(1.0f,1.0f,1.0f) ) );
-
-	Metaballs *m = new Metaballs();
-	m->addSphere( Vector(0.0f,0.0f,0.0f), 5.0f );
-	m->addSphere( Vector(8.0f,0.0f,0.0f), 5.0f );
-	m->setMat(scene->getMat("shiny pink"));
-	scene->addShape(m);
 
 	return scene;
 }

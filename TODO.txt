@@ -1,12 +1,12 @@
 TODO
 
+-Volumetric shader/volume rendering
 -Phong dielectric, transmittance per metre
 -Adaptive sub sampling
 -Hemisphere sampling (better than current crap implementation)
 -soft shadows
 -diffuse reflection
 -GUI interface for loading scenes
--Intersect Triangles later
 -Implement light emitting objects
 -Area lights
 -spotlights
@@ -15,3 +15,9 @@ TODO
 -sub-surface scattering
 -toon shading + sobel filter outlines
 -surface of rotation: wine-glasses, torus, etc.
+-motion blur
+-Glossy reflections (phong lobe), sample cone rather than single reflection ray.
+	-cone changes radius based on shininess (phong exponent)
+	-if a ray diverges from specular reflection direction, colour contribution drops sharply
+-Shadow attenuation through transparent objects
+	-etched glass and textures

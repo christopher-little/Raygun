@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . gui rt rt\lights rt\shapes
-INCLUDEPATH += .
+INCLUDEPATH += . gui rt rt\lights rt\shapes
 win32 {
     INCLUDEPATH += C:\MinGW-nuwen\include
     LIBS += C:\MinGW-nuwen\lib\libjpeg.a

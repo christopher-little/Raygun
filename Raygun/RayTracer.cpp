@@ -12,21 +12,13 @@ using namespace std;
 #include "Mesh.h"
 #include "Shader.h"
 
+
 // epsilon - allowable margin of error ( i.e. 0.9999 == 1.0 )
 const float eps = 0.001f;
 // value of pi
 const float pi = 3.141592f;
 
-// Rendering parameters (static)
-Colour	rtDefaultColour;			// Default background colour (is set to black by default)
-float	rtClipNear = eps;			// Near and far ray clipping distance
-float	rtClipFar = 5000.0f;
-float	rtRefrIndex = 1.0f;			// Refractive index of "air" (empty space of the scene)
-int		rtDepthMax = 5;				// Maximum recursion count, i.e. maximum number of reflections
-int		rtPixelSampleCount = 1;		// Number of samples per pixel
-bool	rtCastShadows = true;		// Cast shadow rays
-bool	rtCastAmbient = false;		// Cast ambient rays
-int		rtAmbientSampleCount = 4;
+
 // Rendering parameters that must be explicitly set
 Vector	rtSkyBoxSize;				// Physical dimensions of the cube map sky box. Assumes ray will originate at center of these dimensions.
 
@@ -36,7 +28,6 @@ Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. Fo
 
 
 
-// Constructor
 RayTracer::RayTracer(Scene *s)
 {
 	// Warm up the number generator
@@ -48,12 +39,32 @@ RayTracer::RayTracer(Scene *s)
 	_rtSkyBoxMin = rtSkyBoxSize*-0.5f;
 	_rtSkyBoxMax = rtSkyBoxSize*0.5f;
 
+
+	// Assign the default rendering properties
+	setDefaultParameters();
+
+	//Store reference to provided scene object
 	scene = s;
 }
 
 RayTracer::~RayTracer()
 {
 	delete scene;
+}
+
+
+
+void RayTracer::setDefaultParameters()
+{
+	rtDefaultColour = Colour();
+	rtClipNear = eps;
+	rtClipFar = 5000.0f;
+	rtRefrIndex = 1.0f;
+	rtDepthMax = 5;
+	rtPixelSampleCount = 1;
+	rtCastShadows = true;
+	rtCastAmbient = false;
+	rtAmbientSampleCount = 1;
 }
 
 

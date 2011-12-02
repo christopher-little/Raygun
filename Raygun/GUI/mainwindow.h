@@ -38,12 +38,12 @@ private:
 	QAction *quitAction;
 
 	QWidget *mainWidget;	// Main window display area
-	QTextEdit *textEdit;	// Text editor (***will be used for modifying scene)
+	QTextEdit *textEdit;	// Text editor (***will be used for modifying scene?)
 	QPushButton *renderbtn;	// Big render button
 
 	ImageBuffer *image;	// buffer where rtthread renders image to
 	QMutex *rtLock;
-	RTThread *rtthread;	// Thread object to run renderer in a background thread
+	RTThread *rtthread;	// Thread object to run ray tracer in a background thread
 	QLabel *displayWindow;	// Window which opens when a rendered image is ready for display
 							// Note: this widget is NOT destroyed when it is closed, thus the
 							//	window can be closed by user and shown again (using show()) safely.

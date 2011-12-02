@@ -6,8 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // class RayTracer
 //
-// This object manages all aspects of ray tracing
+// This object manages casting rays and assembling final image
 ////////////////////////////////////////////////////////////////////////////////
+#include "Colour.h"
 #include "ImageBuffer.h"
 #include "Camera.h"
 #include "Scene.h"
@@ -16,8 +17,29 @@
 class RayTracer
 {
 public:
+	// Render parameters
+	Colour	rtDefaultColour;		// Default background colour (is set to black by default)
+	float	rtClipNear;				// Near and far ray clipping distance
+	float	rtClipFar;
+	float	rtRefrIndex;			// Refractive index of "air" (empty space of the scene)
+	int		rtDepthMax;				// Maximum recursion count, i.e. maximum number of reflections
+	int		rtPixelSampleCount;		// Number of samples per pixel
+	bool	rtCastShadows;			// Cast shadow rays
+	bool	rtCastAmbient;			// Cast ambient occlusion rays
+	int		rtAmbientSampleCount;	// Number of ambient occlusion samples
+
+
+	/**
+	 * Constructor. Initialize the ray tracer with a given scene
+	 */
 	RayTracer(Scene *s);
 	~RayTracer();
+
+
+	/**
+	 * Set the default rendering parameters
+	 */
+	void setDefaultParameters();
 
 
 	/**

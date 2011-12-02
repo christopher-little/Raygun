@@ -11,8 +11,8 @@ public:
 	Camera( Vector &position, Vector &direction, Vector &up, float &focalDist, float &w, float &h )
 	{
 		_e = position;
-		_g = direction;
-		_t = up;
+		_g = direction.normalized();
+		_t = up.normalized();
 		_N = focalDist;
 		_w = w;
 		_h = h;

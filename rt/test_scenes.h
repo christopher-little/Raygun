@@ -76,13 +76,19 @@ static Scene *test1()
 
 
 
-	// Set a sky box
-	scene->setSkyBox( readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
-					  readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
-					  readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
-					  readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
-					  readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
-					  readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
+    // Set a sky box
+//	scene->setSkyBox( readJPG((char*)"..\\textures\\skybox_space\\space-x.jpg"),
+//					  readJPG((char*)"..\\textures\\skybox_space\\space+x.jpg"),
+//					  readJPG((char*)"..\\textures\\skybox_space\\space-y.jpg"),
+//					  readJPG((char*)"..\\textures\\skybox_space\\space+y.jpg"),
+//					  readJPG((char*)"..\\textures\\skybox_space\\space-z.jpg"),
+//					  readJPG((char*)"..\\textures\\skybox_space\\space+z.jpg") );
+    scene->setSkyBox( readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg") );
 
 
 

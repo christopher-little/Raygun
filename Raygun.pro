@@ -1,14 +1,10 @@
 TEMPLATE = app
 TARGET = 
-DEPENDPATH += . gui rt rt\lights rt\shapes
-INCLUDEPATH += . gui rt rt\lights rt\shapes
-win32 {
-    INCLUDEPATH += C:\MinGW-nuwen\include
-    LIBS += C:\MinGW-nuwen\lib\libjpeg.a
-}
-unix {
-	LIBS += -ljpeg
-}
+
+DEPENDPATH += . gui rt rt/lights rt/shapes
+INCLUDEPATH += . gui rt rt/lights rt/shapes
+
+LIBS += -ljpeg
 
 # Input
 HEADERS += gui/mainwindow.h \
@@ -32,7 +28,9 @@ HEADERS += gui/mainwindow.h \
            rt/shapes/Mesh.h \
            rt/shapes/Metaballs.h \
            rt/shapes/Shape.h \
-           rt/shapes/Sphere.h
+           rt/shapes/Sphere.h \
+    rt/lights/all_lights.h \
+    rt/shapes/all_shapes.h
 SOURCES += gui/mainwindow.cpp \
            gui/rtthread.cpp \
            rt/ImageBuffer.cpp \

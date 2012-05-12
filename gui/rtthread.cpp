@@ -10,7 +10,7 @@ RTThread::RTThread(ImageBuffer *i, QMutex *m, QObject *parent) : QThread(parent)
 {
 	image = i;
 	rtLock = m;
-	scene = testscene::transformScene();
+    scene = testscene::test1();
 	rt = new RayTracer(scene);
 }
 

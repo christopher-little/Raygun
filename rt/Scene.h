@@ -11,8 +11,8 @@
 #include "ImageBuffer.h"
 #include "Vector.h"
 #include "Colour.h"
-#include "Shape.h"
-#include "Light.h"
+#include "shapes/Shape.h"
+#include "lights/Light.h"
 #include "Camera.h"
 #include "Material.h"
 
@@ -39,7 +39,7 @@ public:
 
 
 
-	// Get/search the for a material
+    // Get/search for a material
 	inline Material *getMat(string mtrlName)
 	{
 		map<string, Material*>::iterator it = matMap.find(mtrlName);

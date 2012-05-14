@@ -1,0 +1,54 @@
+- camera:
+    position: [-30.0, 30.0, 60.0]
+    direction: [0.6, -0.5, -1.0]
+    up_vector: [0.0, 1.0, 0.0]
+    # Width/Height of image plane, distance from camera position
+    image_plane: [16.0, 9.0, 16.0]
+
+
+- light:
+    type: point
+    position: [0.0, 100.0, 100.0]
+    colour: [1.0, 1.0, 1.0]
+
+
+- texture:
+    name: "cloud earth"
+    source: "textures/cloud_earth.jpg"
+
+
+- material:
+    name: "dielectric blue"
+    specular: [0.3, 0.3, 1.0]
+    shininess: 256.0
+    dielectric: true
+    refraction_index: 2.0
+
+- material:
+    name: "cloud earth"
+    ambient: [0.1, 0.1, 0.1]
+    diffuse: [1.0, 1.0, 1.0]
+    specular: [0.0, 0.0, 0.0]
+    shininess: 1.0
+    texture: "cloud earth"
+
+
+- shape:
+    type: sphere
+    position: [6.0, 4.0, 0.0]
+    radius: 1.0
+    material: "cloud earth"
+
+- shape:
+    type: sphere
+    position: [6.0, 4.0, 15.0]
+    radius: 1.0
+    material: "dielectric blue"
+
+- shape:
+    type: sphere
+    # Assume position of 0,0,0
+    radius: 1.0
+    material: "dielectric blue"
+    transform:
+      - translate: [10.0, 4.0, 15.0]

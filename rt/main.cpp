@@ -12,6 +12,7 @@ using namespace std;
 
 #include "rt/RayTracer.h"
 #include "rt/Scene.h"
+#include "rt/SceneParser.h"
 #include "rt/test_scenes.h"
 #include "rt/ImageBuffer.h"
 #include "rt/ImageIO.h"
@@ -41,12 +42,13 @@ int main(int argc, char **argv)
 
     cout << "Starting" << endl;
     Scene *scene = testscene::test1();
+    Scene *sceneYAML = SceneParser::parse_yaml("scenes/test1.yml");
 
     RayTracer *rt = new RayTracer(scene);
 
     ImageBuffer *image = new ImageBuffer(1280,720);
 
-    rt->render(image);
+    //rt->render(image);
 
     cout << "Writing image" << endl;
     writeJPG("image.jpg", image);

@@ -4,7 +4,7 @@ TARGET =
 DEPENDPATH += . gui rt rt/lights rt/shapes
 INCLUDEPATH += . gui rt rt/lights rt/shapes
 
-LIBS += -ljpeg
+LIBS += -ljpeg -lyaml-cpp
 
 # Input
 HEADERS += gui/mainwindow.h \
@@ -30,7 +30,8 @@ HEADERS += gui/mainwindow.h \
            rt/shapes/Shape.h \
            rt/shapes/Sphere.h \
     rt/lights/all_lights.h \
-    rt/shapes/all_shapes.h
+    rt/shapes/all_shapes.h \
+    rt/SceneParser.h
 SOURCES += gui/mainwindow.cpp \
            gui/rtthread.cpp \
            rt/ImageBuffer.cpp \
@@ -42,7 +43,8 @@ SOURCES += gui/mainwindow.cpp \
            rt/lights/PointLight.cpp \
            rt/shapes/Mesh.cpp \
            rt/shapes/Metaballs.cpp \
-           rt/shapes/Sphere.cpp
+           rt/shapes/Sphere.cpp \
+    rt/SceneParser.cpp
 
 
 

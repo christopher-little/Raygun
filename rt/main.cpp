@@ -3,11 +3,18 @@
 
 using namespace std;
 
+/*
 #include <QApplication>
 #include <QPoint>
 
 #include "GUI/mainwindow.h"
-#include "GUI/rtthread.h"
+*/
+
+#include "rt/RayTracer.h"
+#include "rt/Scene.h"
+#include "rt/test_scenes.h"
+#include "rt/ImageBuffer.h"
+#include "rt/ImageIO.h"
 
 
 int main(int argc, char **argv)
@@ -20,6 +27,7 @@ int main(int argc, char **argv)
 			testModeFlag = true;
 	}
 
+    /*
 	// Create the application and main window
 	QApplication app(argc, argv);
 
@@ -28,5 +36,20 @@ int main(int argc, char **argv)
 	mainWindow->move(QPoint(100,150));
 	mainWindow->show();
 
-	return app.exec();
+    return app.exec();
+    */
+
+    cout << "Starting" << endl;
+    Scene *scene = testscene::test1();
+
+    RayTracer *rt = new RayTracer(scene);
+
+    ImageBuffer *image = new ImageBuffer(1280,720);
+
+    rt->render(image);
+
+    cout << "Writing image" << endl;
+    writeJPG("image.jpg", image);
+
+    return 0;
 }

@@ -28,13 +28,17 @@ MainWindow::MainWindow(bool testModeFlag, QWidget *parent) : QMainWindow(parent)
 
 
 	mainWidget = new QWidget();
-	textEdit = new QTextEdit(mainWidget);
+    textEdit = new QTextEdit(mainWidget);
 	renderbtn = new QPushButton("Render", mainWidget);
+    renderbtn->setMinimumHeight(80);
 
 	mainWidget->setLayout(new QVBoxLayout());
 	mainWidget->layout()->addWidget(textEdit);
-	mainWidget->layout()->addWidget(renderbtn);
+    mainWidget->layout()->addWidget(renderbtn);
 	setCentralWidget(mainWidget);
+
+    // Set initial main window size
+    resize(800,600);
 
 
 	// Initialize the image buffer, ray tracer thread and display window

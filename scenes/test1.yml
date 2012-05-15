@@ -3,7 +3,7 @@
     direction: [0.6, -0.5, -1.0]
     up_vector: [0.0, 1.0, 0.0]
     # Width/Height of image plane, distance from camera position
-    image_plane: [16.0, 9.0, 16.0]
+    image_plane: [8.0, 4.5, 16.0]
 
 
 - light:
@@ -14,7 +14,7 @@
 
 - texture:
     name: "cloud earth"
-    source: "textures/cloud_earth.jpg"
+    source: "../textures/cloud_earth.jpg"
 
 
 - material:
@@ -36,7 +36,7 @@
 - shape:
     type: sphere
     position: [6.0, 4.0, 0.0]
-    radius: 1.0
+    radius: 3.0
     material: "cloud earth"
 
 - shape:

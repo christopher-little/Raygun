@@ -41,14 +41,14 @@ int main(int argc, char **argv)
     */
 
     cout << "Starting" << endl;
-    Scene *scene = testscene::test1();
+    //Scene *scene = testscene::test1();
     Scene *sceneYAML = SceneParser::parse_yaml("scenes/test1.yml");
 
-    RayTracer *rt = new RayTracer(scene);
+    RayTracer *rt = new RayTracer(sceneYAML);
 
     ImageBuffer *image = new ImageBuffer(1280,720);
 
-    //rt->render(image);
+    rt->render(image);
 
     cout << "Writing image" << endl;
     writeJPG("image.jpg", image);

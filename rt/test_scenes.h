@@ -700,19 +700,35 @@ static Scene *DOFtest(){
                              Vector(0.0,1.0,0.0),
                              (lookAt-e).length(),
                              32.0, 18.0,
-                             0.4));
+                             0.3));
 
 
     scene->addLight(new PointLight( e+Vector(16.0,16.0,0.0),
-                                    Colour(1.0,1.0,1.0)));
+                                    Colour(0.7,0.7,0.7)));
 
 
     Material *mat = new Material();
     mat->makePhongAmb(	Colour(0.05,0.05,0.05),
                         Colour(0.8,0.8,0.8),
-                        Colour(0.3,0.3,0.3),
+                        Colour(0.2,0.2,0.2),
                         128.0);
-    scene->setMat(string("matte white"), mat);
+    scene->setMat(string("dull white"), mat);
+
+    mat = new Material();
+    mat->makePhongAmb(	Colour(0.05,0.05,0.05),
+                        Colour(0.1,0.1,0.1),
+                        Colour(0.8,0.8,0.8),
+                        128.0);
+    scene->setMat(string("shiny white"), mat);
+
+
+
+    scene->setSkyBox( readJPG((char*)"..\\textures\\skybox_sun\\box-x.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+x.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box-y.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+y.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box-z.jpg"),
+                      readJPG((char*)"..\\textures\\skybox_sun\\box+z.jpg") );
 
 
 
@@ -732,29 +748,29 @@ static Scene *DOFtest(){
     mesh->addFacePoint(2);
     mesh->addFacePoint(3);
     MeshShape *meshShape = new MeshShape(mesh);
-    meshShape->setMat(scene->getMat("matte white"));
+    meshShape->setMat(scene->getMat("dull white"));
     scene->addShape(meshShape);
 
 
 
     Sphere *sphr = new Sphere(Vector(8.0,2.0,-24.0), 2.0);
-    sphr->setMat(scene->getMat("matte white"));
+    sphr->setMat(scene->getMat("shiny white"));
     scene->addShape(sphr);
 
     sphr = new Sphere(Vector(4.0,2.0,-20.0), 2.0);
-    sphr->setMat(scene->getMat("matte white"));
+    sphr->setMat(scene->getMat("dull white"));
     scene->addShape(sphr);
 
     sphr = new Sphere(Vector(0.0,2.0,-16.0), 2.0);
-    sphr->setMat(scene->getMat("matte white"));
+    sphr->setMat(scene->getMat("shiny white"));
     scene->addShape(sphr);
 
     sphr = new Sphere(Vector(-4.0,2.0,-12.0), 2.0);
-    sphr->setMat(scene->getMat("matte white"));
+    sphr->setMat(scene->getMat("dull white"));
     scene->addShape(sphr);
 
     sphr = new Sphere(Vector(-8.0,2.0,-8.0), 2.0);
-    sphr->setMat(scene->getMat("matte white"));
+    sphr->setMat(scene->getMat("shiny white"));
     scene->addShape(sphr);
 
 

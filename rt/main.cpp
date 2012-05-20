@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     RayTracer *rt = new RayTracer(scene);
     ImageBuffer *image = new ImageBuffer(960,540);
 
-    rt->rtPixelSampleCount = 64;
+    rt->rtPixelSampleCount = 8;
     rt->render(image);
 
     cout << "Writing image" << endl;

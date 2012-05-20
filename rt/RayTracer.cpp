@@ -384,57 +384,13 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
             if(ambDir.dot(nearest_n)  > 0.1f)
                 if(sampleTrace(Ray(nearest_p, ambDir), 0.01f, 5.0f))
                     ambientSample += 1.0f;
-
-            /*
-            float u1 = (float)rand()/(float)RAND_MAX;
-            float u2 = (float)rand()/(float)RAND_MAX;
-            float r = sqrt(1.0f - u1*u1);
-            float phi = 2*pi * u2;
-            Vector ambDir(cos(phi) * r, sin(phi) * r, u1);
-            // transform tangent space random hemisphere ray to world space ray
-            Vector w = nearest_n;
-            Vector u = cam->t().cross(w);
-            Vector v = w.cross(u);
-            ambDir = (u*ambDir.x() + v*ambDir.y() + w*ambDir.z()).normalized();
-            // sample ambient occlusion ray for intersections
-            if(sampleTrace(Ray(nearest_p, ambDir), epsilon, 5.0))
-            {
-                ambientOcclusion = 0.0f;
-            }
-            */
-            /*
-            float denom = sqrt(nearest_p.x()*nearest_p.x() + nearest_p.y()*nearest_p.y() + nearest_p.z()*nearest_p.z());
-            float maxHalf = (float)RAND_MAX * 0.5f;
-            Vector ambientDirection = Vector((float)rand()/maxHalf - 1.0f, (float)rand()/maxHalf - 1.0f, (float)rand()/maxHalf - 1.0f).normalized();
-            if(nearest_n.dot(ambientDirection) < 0.0f)
-                ambientDirection = ambientDirection*-1.0;
-            if(sampleTrace(Ray(nearest_p, ambientDirection), epsilon, 5.0))
-            {
-                ambientOcclusion = 0.0f;
-            }
-            */
         }
 
         ambientOcclusion -= ambientSample/rtAmbientSampleCount;
     }
 
 
-    // Sample the material texture (if present)
-    /*
-    Colour texColour(1.0f,1.0f,1.0f);
-    if(mat->hasTexture())
-    {
-        texColour = mat->sampleTex(nearest_u, nearest_v);
-    }
-
-    // Finalize the colour value and return
-    Colour returnColour =	ambient*mat->a()*texColour +
-                            diffuseIllum*mat->d()*texColour +
-                            specularIllum*mat->s() +
-                            specularRefl*mat->s()*fresnelR +
-                            specularRefr*mat->s()*(1-fresnelR);
-    return returnColour.clamp() * ambientOcclusion;
-    */
+    // Compute colour value
     return Shader::phong(mat, ambient, diffuseIllum, specularIllum, specularRefl, specularRefr, fresnelR, ambientOcclusion, nearest_p, nearest_n, nearest_u, nearest_v);
 }
 

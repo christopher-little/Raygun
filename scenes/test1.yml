@@ -13,7 +13,7 @@
 
 
 - texture:
-    name: "cloud earth"
+    name: "cloud earth tex"
     source: "../textures/cloud_earth.jpg"
 
 
@@ -30,7 +30,7 @@
     diffuse: [1.0, 1.0, 1.0]
     specular: [0.0, 0.0, 0.0]
     shininess: 1.0
-    texture: "cloud earth"
+    texture: "cloud earth tex"
 
 
 - shape:

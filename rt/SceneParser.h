@@ -3,7 +3,7 @@
 // Scene object.
 //
 // Currently only supports: Basic camera, Point lights, spheres, materials and
-// textures. ***Still need to implement: Transformations, mesh, metaballs
+// textures. ***Still need to implement: Transformations, mesh, metaballs, skybox
 //
 // Author: Chris Little
 //==============================================================================
@@ -32,7 +32,8 @@ public:
 private:
     //==========================================================================
     // Convenience functions to parse complex entities
-    // Note: textures are retrieved within the parse_yaml() function
+    // Note: textures and material/texture references are retrieved within the
+    // parse_yaml() function
     //==========================================================================
     // Retrieve and store a 3D vector
     static Vector yaml_vector(YAML::Node n);

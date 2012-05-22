@@ -1,4 +1,4 @@
-#include "PointLight.h"
+#include "lights/PointLight.h"
 
 
 vector<Vector> PointLight::getSamplePoints(int sampleCount)

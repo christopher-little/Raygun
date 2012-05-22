@@ -1,11 +1,5 @@
 #include "Scene.h"
 
-#include "ImageIO.h"
-#include "Sphere.h"
-#include "Light.h"
-#include "PointLight.h"
-#include "Mesh.h"
-
 Scene::Scene()
 {
     // Ensure a clean Scene has all object members initialized to NULL

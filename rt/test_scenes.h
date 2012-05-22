@@ -17,12 +17,8 @@ using namespace std;
 #include "Scene.h"
 #include "ImageIO.h"
 #include "Material.h"
-#include "Shape.h"
-#include "Sphere.h"
-#include "Mesh.h"
-#include "Metaballs.h"
-#include "Light.h"
-#include "PointLight.h"
+#include "shapes/all_shapes.h"
+#include "lights/all_lights.h"
 
 #include "Matrix.h"
 
@@ -693,14 +689,14 @@ static Scene *DOFtest(){
     Scene *scene = new Scene();
 
 
-    Vector e(0.0,6.0,12.0); // Camera position
+    Vector e(0.0,6.0,4.0); // Camera position
     Vector lookAt(0.0,2.0,-16.0); // Point of focus
     scene->setCam(new Camera(e,
                              (lookAt-e).normalized(),
                              Vector(0.0,1.0,0.0),
                              (lookAt-e).length(),
-                             32.0, 18.0,
-                             0.3));
+                             40.0, 22.5,
+                             0.5));
 
 
     scene->addLight(new PointLight( e+Vector(16.0,16.0,0.0),

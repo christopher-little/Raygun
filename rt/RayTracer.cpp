@@ -6,10 +6,8 @@
 
 using namespace std;
 
-#include "ImageIO.h"
-#include "Light.h"
+#include "lights/Light.h"
 #include "AABB.h"
-#include "Mesh.h"
 #include "Shader.h"
 
 
@@ -23,10 +21,10 @@ const float pi = 3.141592f;
 
 
 // Rendering parameters that must be explicitly set
-Vector	rtSkyBoxSize;				// Physical dimensions of the cube map sky box. Assumes ray will originate at center of these dimensions.
+Vector	rtSkyBoxSize; // Physical dimensions of the cube map sky box. Assumes ray will originate at center of these dimensions.
 
 // Variables used for rendering
-Vector	_rtSkyBoxMin, _rtSkyBoxMax;	// Minimum and maximum of the skybox AABB. For now these are in the ray tracer, but the textures themselves are in the Scene.
+Vector	_rtSkyBoxMin, _rtSkyBoxMax; // Minimum and maximum of the skybox AABB. For now these are in the ray tracer, but the textures themselves are in the Scene.
 
 
 

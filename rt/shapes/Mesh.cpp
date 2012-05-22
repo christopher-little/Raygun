@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "shapes/Mesh.h"
 
 // epsilon - allowable margin of error ( 0.999999 == 1.0 )
 extern const float epsilon;

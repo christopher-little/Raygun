@@ -1,4 +1,4 @@
-#include "Sphere.h"
+#include "shapes/Sphere.h"
 
 extern const float epsilon;
 extern const float pi;

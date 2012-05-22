@@ -1,10 +1,11 @@
 TEMPLATE = app
 TARGET =
 
-DEPENDPATH += . gui rt rt/lights rt/shapes
-INCLUDEPATH += . gui rt rt/lights rt/shapes
+DEPENDPATH += . gui rt
+INCLUDEPATH += . gui rt
 
-# Ensure build will trigger recompile/relink when only a header file is changed (this is a bug or at least a severe annoyance in QT Creator as far as I'm concerned...)
+# Ensure build will trigger recompile/relink when only a header file is changed
+# (this is a bug or at least a severe annoyance in QT Creator as far as I'm concerned...)
 CONFIG += depend_includepath
 
 LIBS += -ljpeg -lyaml-cpp
@@ -34,7 +35,8 @@ HEADERS += gui/mainwindow.h \
 	   rt/shapes/Sphere.h \
     rt/lights/all_lights.h \
     rt/shapes/all_shapes.h \
-    rt/SceneParser.h
+    rt/SceneParser.h \
+    rt/shapes/Cylinder.h
 SOURCES += gui/mainwindow.cpp \
 	   gui/rtthread.cpp \
 	   rt/ImageBuffer.cpp \
@@ -47,7 +49,8 @@ SOURCES += gui/mainwindow.cpp \
 	   rt/shapes/Mesh.cpp \
 	   rt/shapes/Metaballs.cpp \
 	   rt/shapes/Sphere.cpp \
-    rt/SceneParser.cpp
+    rt/SceneParser.cpp \
+    rt/shapes/Cylinder.cpp
 
 
 

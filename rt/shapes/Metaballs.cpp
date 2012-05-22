@@ -1,4 +1,4 @@
-#include "Metaballs.h"
+#include "shapes/Metaballs.h"
 
 #include <vector>
 #include <algorithm>

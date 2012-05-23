@@ -710,7 +710,7 @@ static Scene *DOFtest(){
 
     mat = new Material();
     mat->makePhongAmb(	Colour(0.05,0.05,0.05),
-                        Colour(0.1,0.1,0.1),
+                        Colour(0.2,0.2,0.2),
                         Colour(0.8,0.8,0.8),
                         128.0);
     scene->setMat(string("shiny white"), mat);
@@ -768,7 +768,7 @@ static Scene *DOFtest(){
     scene->addShape(sphr);
 
 
-    Cylinder *cyl = new Cylinder(Vector(8.0,5.0,-12.0), 1.0, 5.0);
+    Cylinder *cyl = new Cylinder(Vector(10.0,1.0,-12.0), 2.0, 8.0);
     cyl->setMat(scene->getMat("shiny white"));
     scene->addShape(cyl);
 

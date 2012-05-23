@@ -216,7 +216,7 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
             if(v >= 1.0f)
                 v = 1.0f-epsilon;
 
-        // Compute texture position, texture texel position, and fractional distance inside texel
+            // Compute texture position, texture texel position, and fractional distance inside texel
             ImageBuffer *skyTex = scene->getSkyBox(exit_face);
             float uT = u*(skyTex->width()-1);
             float vT = v*(skyTex->height()-1);
@@ -273,23 +273,24 @@ Colour RayTracer::trace(const Ray &ray, float clipNear, float clipFar, int depth
         for(vector<Vector>::iterator li=lightPoints.begin(); li!=lightPoints.end(); li++)
         {
             // Get the light direction
-            Vector l = *li - nearest_p;
+            Vector l = *li - nearest_p; // Note this is not yet normalized in order to calculate distance between surface and light source
             // Bail out if the surface normal points away from light
-            if(nearest_n.dot(l) < epsilon)
+            if(nearest_n.dot(l) < 0.0)
                 continue;
 
             // Check for shadows (light direction ray occluded)
             shadow = false;
+            float dist = l.length();
+            l = l.normalized();
             if(rtCastShadows)
             {
-                if(sampleTrace(Ray(nearest_p, l), epsilon, 1.0))
+                if(sampleTrace(Ray(nearest_p, l),epsilon, dist))
                     shadow = true;
             }
 
             // Perform diffuse and specular shading when not in shadow
             if(!shadow)
             {
-                l = l.normalized();
                 // Only compute illumination if diffuse or specular components are valid/non-zero)
                 if(mat->d().visible())
                 {

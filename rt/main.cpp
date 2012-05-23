@@ -62,6 +62,15 @@ int main(int argc, char **argv)
     writeJPG("image3.jpg", image);
     */
 
+    Cylinder *cyl = new Cylinder(Vector(0.0,0.0,0.0), 1.0, 1.0);
+    Ray ray(Vector(2.0,2.0,0.0), Vector(0.0,-1.0,0.0));
+    float t,u,v;
+    Vector p,n;
+    if(cyl->intersect(ray, t, p, n, u, v))
+    {
+        cout << "YES " << p.x() << "," << p.y() << "," << p.z() << endl;
+    }
+
 
     cout << "Starting" << endl;
     Scene *scene = testscene::DOFtest();

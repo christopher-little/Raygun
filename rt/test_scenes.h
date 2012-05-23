@@ -6,8 +6,8 @@
 
 #pragma once
 
-#ifndef _TEST_SCENES_
-#define _TEST_SCENES_
+#ifndef TEST_SCENES_H
+#define TEST_SCENES_H
 
 #include <string>
 #include <iostream>
@@ -19,9 +19,7 @@ using namespace std;
 #include "Material.h"
 #include "shapes/all_shapes.h"
 #include "lights/all_lights.h"
-
 #include "Matrix.h"
-
 #include "Perlin.h"
 
 
@@ -768,6 +766,11 @@ static Scene *DOFtest(){
     sphr = new Sphere(Vector(-8.0,2.0,-8.0), 2.0);
     sphr->setMat(scene->getMat("shiny white"));
     scene->addShape(sphr);
+
+
+    Cylinder *cyl = new Cylinder(Vector(8.0,5.0,-12.0), 1.0, 5.0);
+    cyl->setMat(scene->getMat("shiny white"));
+    scene->addShape(cyl);
 
 
     return scene;
